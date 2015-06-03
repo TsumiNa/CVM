@@ -1,4 +1,4 @@
 import cvm
 
-test = cvm.ClassName
-test.pri()
+test = cvm.CvmCalc()
+test._check()
