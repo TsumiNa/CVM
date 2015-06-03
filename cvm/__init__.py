@@ -15,9 +15,10 @@ import json
 import sys
 import os
 
-import interalEnergy
-import entropy
-import naturalIteMethod
+from .data import data
+from .interalEnergy import clusterExpansion as ce
+from . import entropy as entropy
+from . import naturalIteMethod as nim
 
 __version__ = '0.0.1'
 
@@ -43,32 +44,37 @@ class CvmCalc(object):
     directly. Just pass a backend function to the second paramater.
     """
 
-    __slots__ = ('backend')
+    __slots__ = ('data', 'backend')
 
-    inp = {}  # input
-    outp = {}  # output
     arg_dict = {}  # argvs will be reformatted as {'option': 'value'}
+    shared_data = {}  # share between subroutines
 
     def __init__(self, inp=None, backend=None):
         """
         keep None when you don't want to custom yourself.
         """
-        CvmCalc._init_arg_dict()
+        super(CvmCalc, self).__init__()
 
+        CvmCalc._init_arg_dict()
         if inp is not None:
-            CvmCalc.inp = inp
+            self.data = data(inp)
         else:
             if 'inp' not in CvmCalc.arg_dict:
                 print('Need a INCAR!')
                 sys.exit(0)
             with open(os.getcwd() + '/' + CvmCalc.arg_dict['inp'][0]) as f:
-                CvmCalc.inp = json.load(f)
+                self.data = data(json.load(f))
 
-        if backend is not None:
-            self.backend = backend
+        self.backend = None if backend is None else backend
 
-    def run():
-        pass
+    def run(self):
+        ce.process(self.data)
+
+        if self.backend is not None:
+            self.backend(self.data.output)
+        else:
+            with open(os.getcwd() + '/output.json', 'w') as f:
+                json.dump(self.data.output, f)
 
     @classmethod
     def _init_arg_dict(cls):
@@ -101,4 +107,3 @@ class CvmCalc(object):
 
     def _check(self):
         print(CvmCalc.arg_dict)
-        print(type(self.inp))

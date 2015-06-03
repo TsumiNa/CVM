@@ -1,4 +1,5 @@
-import cvm
+from cvm import CvmCalc
 
-test = cvm.CvmCalc()
+test = CvmCalc()
+test.run()
 test._check()
