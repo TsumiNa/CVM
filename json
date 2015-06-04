@@ -1,3 +1,49 @@
 {
-    "energy": 100
+    /*
+    name will also be used as output file(s) name like "name.json".   
+    */
+    "name": "Pd_Ru_cvmt",
+
+
+    /*
+    descripton your calculation. it's optional
+    */
+    "description": "PdRu solubility limit calculation with tetrahedron approximation",
+
+
+    /*
+    Crystal structure
+
+    Please use Strukturbericht symbol method. For example: Cu => A1; W => A2
+    */
+    "structure": "A1",
+
+
+    /*
+    Cluster
+
+    Which sit will be chosen to export entropy term. Assume cube length as 1.
+    */
+    "cluster": [[0.0, 0.0, 0.0],
+                [0.5, 0.5, 0.0],
+                [0.0, 0.5, 0.5],
+                [0.5, 0.0, 0.5]],
+
+
+    /*
+    Interaction energy
+    */
+    "int_en": {
+        "pair": [-0.132, 0.0476, 0.00674, 0.02987, 0.01002, -0.00649, 0.00466, -0.00042],
+        "triple": [],
+        "tetrad": []
+    },
+
+
+    /*
+    Temperature (K)
+
+    Temperature can be setted as a single value or continuous as [star, end, step]
+    */
+    "temperature": []
 }

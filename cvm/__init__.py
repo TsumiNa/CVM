@@ -14,6 +14,8 @@ calculated solubility limit.
 import json
 import sys
 import os
+import tempfile
+import re as regex
 
 from .data import data
 from .interalEnergy import clusterExpansion as ce
@@ -21,6 +23,7 @@ from . import entropy as entropy
 from . import naturalIteMethod as nim
 
 __version__ = '0.0.1'
+pattern = regex.compile(r"(/\*)+.+?(\*/)", regex.S)  # remove comment in json
 
 
 class CvmCalc(object):
@@ -63,7 +66,13 @@ class CvmCalc(object):
                 print('Need a INCAR!')
                 sys.exit(0)
             with open(os.getcwd() + '/' + CvmCalc.arg_dict['inp'][0]) as f:
-                self.data = data(json.load(f))
+                _content = f.read()
+                _content = pattern.sub('', _content)
+            f = tempfile.TemporaryFile(mode='w+t')
+            f.write(_content)
+            f.seek(0)
+            self.data = data(json.load(f))
+            f.close()
 
         self.backend = None if backend is None else backend
 
@@ -107,3 +116,4 @@ class CvmCalc(object):
 
     def _check(self):
         print(CvmCalc.arg_dict)
+        print('Done')
