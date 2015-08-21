@@ -28,11 +28,11 @@ class process(object):
         _int_pair_list = np.array(self.data.inp['int_en']['pair'])
         _int_trip_list = np.array(self.data.inp['int_en']['triple'])
         _int_tetr_list = np.array(self.data.inp['int_en']['tetrad'])
-        _int_pair = process._pair_int_generator(_int_pair_list)
+        _int_pair = self._pair_int_generator(_int_pair_list)
 
         self.data.output['pair_int'] = _int_pair
 
-    def _pair_int_generator(neighb, cut=None):
+    def _pair_int_generator(self, neighb, cut=None):
 
         # coordination number
         _coord_num = np.array([12,      # 1st
@@ -45,7 +45,17 @@ class process(object):
                                6,       # 8th
                                24,      # 9th
                                12,      # 10th
-                               24])     # 11th
+                               24,      # 11th
+                               24,      # 12th
+                               48,      # 13th
+                               48,      # 14th
+                               12,      # 15th
+                               24,      # 16th
+                               24,      # 17th
+                               6,       # 17th
+                               48,      # 18th
+                               24,      # 19th
+                               48])     # 20th
 
         # fix to input length
         _tmp = _coord_num[:neighb.size]
@@ -57,9 +67,11 @@ class process(object):
 
         # calculation pair interaction
         _int_pair = 0.0
+        _pair_list = []
         for index in range(len(_tmp)):
             _int_pair += _tmp[index]*neighb[index]/12
             print('pair interaction with %sth approximation is %s' %
                   (index+1, _int_pair))
+            _pair_list.append(_int_pair)
 
-        return _int_pair
+        return _pair_list

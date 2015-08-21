@@ -82,7 +82,7 @@ class CvmCalc(object):
             self.backend(self.data.output)
         else:
             with open(os.getcwd() + '/output.json', 'w') as f:
-                json.dump(self.data.output, f)
+                json.dump(self.data.output, f, indent=2)
 
     @classmethod
     def _init_arg_dict(cls):
