@@ -5,7 +5,7 @@
 CVM data class
 ==============
 
-This is a data class for data storage and share
+data class for data storage and share
 """
 
 
@@ -15,6 +15,8 @@ class data(object):
 
     __slots__ = ('inp',  # INCAR
                  'output'  # output data
+                 'temp' # temperature
+                 'mu' # 
                  )
 
     def __init__(self, inp):

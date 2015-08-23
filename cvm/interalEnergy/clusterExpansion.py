@@ -17,7 +17,7 @@ class process(object):
 
     def _check(self, data):
         """
-        somethong check for input data.
+        something check for input data.
         """
 
         if 'int_en' not in data.inp:
