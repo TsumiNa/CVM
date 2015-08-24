@@ -67,5 +67,10 @@
 
     Temperature can be setted as a single value or continuous as [star, end, step]
     */
-    "temperature": []
+    "temperature": [],
+
+    /*
+    Boltzmann constant
+    */
+    "bzconst": 8.6173324E-5
 }

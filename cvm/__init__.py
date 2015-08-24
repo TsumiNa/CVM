@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 
 """
@@ -76,8 +76,8 @@ class CvmCalc(object):
         self.backend = None if backend is None else backend
 
     def run(self):
-        ce.process(self.data)
-
+        # ce.process(self.data)
+        nim.process(self.data)
         if self.backend is not None:
             self.backend(self.data.output)
         else:
