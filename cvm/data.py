@@ -30,7 +30,7 @@ class data(object):
         self.output = {}
 
         # init
-        self.mu_ij = np.float32(-0.0)
+        self.mu_ij = np.float32(0.00)
         self.temp = np.intc(0)
         self.k = np.float32(inp['bzc'])
         self.e_ij = np.matrix(inp['int_en']['pair'], np.float32)

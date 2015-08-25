@@ -77,7 +77,7 @@ class CvmCalc(object):
 
     def run(self):
         # ce.process(self.data)
-        self.data.temp = 800
+        self.data.temp = 1000
         nim.process(self.data)
         if self.backend is not None:
             self.backend(self.data.output)

@@ -62,7 +62,8 @@ class process(object):
         """
         lam = self.lam
         y_ij = self.__y_ij()
-        print('old lambda is: {}\n the new one: {}'.format(lam, self.lam))
+        print('lambda is: {}'.format(self.lam))
+        print(y_ij)
         self.x_i = y_ij.sum(0)
-        if np.absolute(lam - self.lam) > 0.001:
+        if 10000*np.absolute(lam - self.lam) > 0.001:
             self.__run()
