@@ -11,11 +11,11 @@ class process(object):
 
     def __init__(self, data):
         super(process, self).__init__()
-        self._check(data)
+        self.__check(data)
         self.data = data
-        self._run()
+        self.__run()
 
-    def _check(self, data):
+    def __check(self, data):
         """
         something check for input data.
         """
@@ -24,15 +24,15 @@ class process(object):
             print('Need interaction energy')
             sys.exit(0)
 
-    def _run(self):
+    def __run(self):
         _int_pair_list = np.array(self.data.inp['int_en']['pair'])
         _int_trip_list = np.array(self.data.inp['int_en']['triple'])
         _int_tetr_list = np.array(self.data.inp['int_en']['tetrad'])
-        _int_pair = self._pair_int_generator(_int_pair_list)
+        _int_pair = self.__pair_int_generator(_int_pair_list)
 
         self.data.output['pair_int'] = _int_pair
 
-    def _pair_int_generator(self, neighb, cut=None):
+    def __pair_int_generator(self, neighb, cut=None):
 
         # coordination number
         _coord_num = np.array([12,      # 1st

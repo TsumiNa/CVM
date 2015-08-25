@@ -17,16 +17,22 @@ class data(object):
     __slots__ = ('inp',  # INCAR
                  'output',  # output data
                  'temp',  # temperature
-                 'mu',  # opposite chemical potential
-                 'eij',  # interaction energy
+                 'mu_ij',  # opposite chemical potential
+                 'e_ij',  # interaction energy
                  'k',  # Boltzmann constant
+                 'x_i',  # elements concentration
+                 'omega'  # coordination number
                  )
 
     def __init__(self, inp):
         super(data, self).__init__()
-        self.inp = inp
+        self.inp = inp  # copy inpcard
         self.output = {}
+
+        # init
+        self.mu_ij = np.float32(-0.0)
         self.temp = np.intc(0)
-        self.k = inp[]
-        self.mu = np.float32(0.0)
-        self.eij = np.float32(inp['pair'])
+        self.k = np.float32(inp['bzc'])
+        self.e_ij = np.matrix(inp['int_en']['pair'], np.float32)
+        self.x_i = np.matrix(inp['c'], np.float32)
+        self.omega = np.matrix(inp['omega'], dtype=np.uint8)

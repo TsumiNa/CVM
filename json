@@ -29,6 +29,16 @@
                 [0.0, 0.5, 0.5],
                 [0.5, 0.0, 0.5]],
 
+    /*
+    coordination number
+    */
+    "omega": [6],
+
+    /*
+    elements concentration
+    must be normalized
+    */
+    "c": [0.01, 0.99],
 
     /*
     Interaction energy
@@ -67,10 +77,10 @@
 
     Temperature can be setted as a single value or continuous as [star, end, step]
     */
-    "temperature": [],
+    "temp": [],
 
     /*
     Boltzmann constant
     */
-    "bzconst": 8.6173324E-5
+    "bzc": 8.6173324E-5
 }

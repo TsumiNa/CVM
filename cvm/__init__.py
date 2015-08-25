@@ -20,7 +20,7 @@ import re as regex
 from .data import data
 from .interalEnergy import clusterExpansion as ce
 from . import entropy as entropy
-from . import naturalIteMethod as nim
+from .naturalIteMethod import naturalIteMethod as nim
 
 __version__ = '0.0.1'
 pattern = regex.compile(r"(/\*)+.+?(\*/)", regex.S)  # remove comment in json
@@ -77,6 +77,7 @@ class CvmCalc(object):
 
     def run(self):
         # ce.process(self.data)
+        self.data.temp = 800
         nim.process(self.data)
         if self.backend is not None:
             self.backend(self.data.output)
