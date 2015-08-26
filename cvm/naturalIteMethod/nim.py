@@ -36,7 +36,7 @@ class process(object):
 
         # run
         self.__run()
-        data.output['x_i'] = np.array(self.x_i).reshape(2)
+        data.output['x_i'] = np.array(self.x_i).reshape(2).tolist()
 
     def __eta_ij(self):
         """
@@ -45,7 +45,7 @@ class process(object):
         return np.power((self.x_i.T * self.x_i),
                         ((2 * self.omega - 1) / (2 * self.omega))) * \
             np.exp(-self.beta * self.e_ij +
-                   (self.beta / 2 * self.omega) * self.mu_ij)
+                   (self.beta / (2 * self.omega)) * self.mu_ij)
 
     def __y_ij(self):
         """
@@ -63,7 +63,7 @@ class process(object):
         lam = self.lam
         y_ij = self.__y_ij()
         print('lambda is: {}'.format(self.lam))
-        print(y_ij)
         self.x_i = y_ij.sum(0)
-        if 10000*np.absolute(lam - self.lam) > 0.001:
+        print(self.x_i)
+        if 10000000*np.absolute(lam - self.lam) > 0.001:
             self.__run()
