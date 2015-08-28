@@ -30,9 +30,9 @@ class data(object):
         self.output = {}
 
         # init
-        self.mu_ij = np.float32(0.00)
+        self.mu_ij = np.float64(0.00)
         self.temp = np.intc(0)
         self.k = np.float32(inp['bzc'])
-        self.e_ij = np.matrix(inp['int_en']['pair'], np.float32)
-        self.x_i = np.matrix(inp['c'], np.float32)
+        self.e_ij = np.matrix(inp['int_en']['pair'], np.float64)
+        self.x_i = np.matrix(inp['c'], np.float64).T
         self.omega = np.matrix(inp['omega'], dtype=np.uint8)

@@ -13,7 +13,6 @@ class process(object):
                  'beta',  # beat = 1/kt
                  'lam',  # λ Lagrange multiplier
                  'x_i',  # concentration
-                 'dim',  # number of elements
                  'eta_ij',  # median value
                  'e_ij',  # interaction energy
                  'mu_ij',  # opposite chemical potential
@@ -33,6 +32,7 @@ class process(object):
                                [data.e_ij[0, 0], 0.]])
         self.mu_ij = np.matrix([[2 * data.mu_ij, 0],
                                 [0, -2 * data.mu_ij]])
+        self.e_ij = -0.5*self.e_ij
 
         # run
         self.__run()
@@ -42,7 +42,7 @@ class process(object):
         """
         η_ij = (x_i*x_j)^((2ω-1)/2ω) * exp( -βe_ij + (β/2ω)(mu_i + mu_j) )
         """
-        return np.power((self.x_i.T * self.x_i),
+        return np.power((self.x_i * self.x_i.T),
                         ((2 * self.omega - 1) / (2 * self.omega))) * \
             np.exp(-self.beta * self.e_ij +
                    (self.beta / (2 * self.omega)) * self.mu_ij)
@@ -63,7 +63,8 @@ class process(object):
         lam = self.lam
         y_ij = self.__y_ij()
         print('lambda is: {}'.format(self.lam))
-        self.x_i = y_ij.sum(0)
+        self.x_i = y_ij.sum(1)
         print(self.x_i)
-        if 10000000*np.absolute(lam - self.lam) > 0.001:
+        print('\n')
+        if np.absolute(self.lam - lam) > 1e-6:
             self.__run()
