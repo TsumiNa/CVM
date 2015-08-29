@@ -16,11 +16,13 @@ class process(object):
                  'eta_ij',  # median value
                  'e_ij',  # interaction energy
                  'mu_ij',  # opposite chemical potential
-                 'omega'  # coordination number
+                 'omega',  # coordination number
+                 'count'  # count
                  )
 
     def __init__(self, data):
         super(process, self).__init__()
+        self.count = 0
 
         # init
         self.x_i = data.x_i
@@ -32,20 +34,22 @@ class process(object):
                                [data.e_ij[0, 0], 0.]])
         self.mu_ij = np.matrix([[2 * data.mu_ij, 0],
                                 [0, -2 * data.mu_ij]])
-        self.e_ij = -0.5*self.e_ij
+        self.e_ij = -0.5 * self.e_ij
 
         # run
         self.__run()
+        print(self.count)
         data.output['x_i'] = np.array(self.x_i).reshape(2).tolist()
 
     def __eta_ij(self):
         """
         η_ij = (x_i*x_j)^((2ω-1)/2ω) * exp( -βe_ij + (β/2ω)(mu_i + mu_j) )
         """
-        return np.power((self.x_i * self.x_i.T),
-                        ((2 * self.omega - 1) / (2 * self.omega))) * \
-            np.exp(-self.beta * self.e_ij +
-                   (self.beta / (2 * self.omega)) * self.mu_ij)
+        entro = np.power((self.x_i * self.x_i.T),
+                         ((2 * self.omega - 1) / (2 * self.omega)))
+        energy = np.exp(-self.beta * self.e_ij +
+                        (self.beta / (2 * self.omega)) * self.mu_ij)
+        return np.multiply(entro, energy)
 
     def __y_ij(self):
         """
@@ -62,8 +66,10 @@ class process(object):
         """
         lam = self.lam
         y_ij = self.__y_ij()
+        self.count += 1
         print('lambda is: {}'.format(self.lam))
         self.x_i = y_ij.sum(1)
+        print(y_ij)
         print(self.x_i)
         print('\n')
         if np.absolute(self.lam - lam) > 1e-6:
