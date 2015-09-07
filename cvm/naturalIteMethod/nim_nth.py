@@ -3,7 +3,6 @@
 
 import numpy as np
 from copy import deepcopy
-from numpy.matlib import zeros
 
 
 class process(object):
@@ -67,7 +66,8 @@ class process(object):
             eta_ij[t] = self.__eta_ij(t)
             eta_sum[t] = np.sum(eta_ij[t])
             self.lam[t] = -np.log(eta_sum[t]) * self.omega[t] / self.beta
-            y_ij[t] = eta_ij[t] * np.power(eta_sum[t], -1)
+        for t in range(self.omega.size):
+            y_ij[t] = eta_ij[t] * np.power(eta_sum.sum(), -1)
         return y_ij
 
     def __run(self):
