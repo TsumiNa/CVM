@@ -39,18 +39,23 @@ class process(object):
         for t in range(self.omega.size):
             self.e_ij[t] = -0.5 * np.matrix([[0., data.e_ij[t]],
                                              [data.e_ij[t], 0.]])
+        # init x_i
+        self.x_i = np.zeros(self.omega.size, dtype='(2,1)float64')
+        for t in range(self.omega.size):
+            self.x_i[t] = data.x_i
 
         # run
         self.__run()
         print(self.count)
-        data.output['x_i'] = np.array(self.x_i).reshape(2).tolist()
+        print(self.x_i.sum(0))
+        data.output['x_i'] = np.array(self.x_i.sum(0)).reshape(2).tolist()
 
     def __eta_ij(self, t):
         """
         η^t_ij = (x_i*x_j)^((2Σω^t-1)/2ω^t) * exp( -βe^t_ij + (β/2ω^t)(mu_i + mu_j) )
         """
-        entro = np.power((self.x_i * self.x_i.T),
-                         ((2 * self.omega_sum - 1) / (2 * self.omega[t])))
+        entro = np.power((self.x_i[t] * self.x_i[t].T),
+                         ((2 * self.omega[t] - 1) / (2 * self.omega[t])))
         energy = np.exp(-self.beta * np.matrix(self.e_ij[t]) +
                         (self.beta / (2 * self.omega[t])) * self.mu_ij)
         return np.multiply(entro, energy)
@@ -66,8 +71,9 @@ class process(object):
             eta_ij[t] = self.__eta_ij(t)
             eta_sum[t] = np.sum(eta_ij[t])
             self.lam[t] = -np.log(eta_sum[t]) * self.omega[t] / self.beta
+            print('eta_sum: {}'.format(eta_sum[t]))
         for t in range(self.omega.size):
-            y_ij[t] = eta_ij[t] * np.power(eta_sum.sum(), -1)
+            y_ij[t] = eta_ij[t] * np.power(eta_sum[t], -1)
         return y_ij
 
     def __run(self):
@@ -77,12 +83,10 @@ class process(object):
         lam = deepcopy(self.lam)
         self.count += 1
         y_ij = self.__y_ij()
-        print(y_ij)
         print('lambda is: {}'.format(self.lam))
         print('old lambda is: {}'.format(lam))
-        self.x_i.fill(0)
         for t in range(self.omega.size):
-            self.x_i += np.matrix(y_ij[t]).sum(1)
+            self.x_i[t] = np.matrix(y_ij[t]).sum(1)
         print(self.x_i)
         print('\n')
         if np.absolute(self.lam.sum() - lam.sum()) > 1e-6:
