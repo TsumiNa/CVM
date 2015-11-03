@@ -34,11 +34,10 @@ class CvmCalc(object):
 
     Initialaztion
     -------------
-    Following general science calculation practice, we use a INCAR as our
-    calculation by inner the program we trade it as json. You can write a
-    INCAR in JSON and and saved it as UTF-8 and pass the file to program using
-    '-inp FileName'. Also you can pass a dictionary object contained you input
-    to the first paramater directly.
+    We use a INCAR as our calculation by inner the program we trade it as json.
+    You can write a INCAR in JSON and and saved it as UTF-8 and pass the file
+    to program using '-inp FileName'. Also you can pass a dictionary object
+    contained you input to the first paramater directly.
 
     The output will be saved as output.json by default.However you can set the
     output file's name and path in the INCAR.
