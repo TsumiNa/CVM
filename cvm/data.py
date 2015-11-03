@@ -18,9 +18,11 @@ class data(object):
                  'output',  # output data
                  'temp',  # temperature
                  'mu_ij',  # opposite chemical potential
-                 'e_ij',  # interaction energy
-                 'k',  # Boltzmann constant
-                 'x_i',  # elements concentration
+                 'int_pair',  # pair interaction energy
+                 'int_trip',  # triple interaction energy
+                 'int_tetra',  # tetrahedron interaction energy
+                 'bzc',  # Boltzmann constant
+                 'x_1',  # elements concentration
                  'omega'  # coordination number
                  )
 
@@ -28,11 +30,14 @@ class data(object):
         super(data, self).__init__()
         self.inp = inp  # copy inpcard
         self.output = {}
-
-        # init
         self.mu_ij = np.float64(0.00)
         self.temp = np.intc(0)
-        self.k = np.float32(inp['bzc'])
-        self.e_ij = np.array(inp['int_en']['pair'], np.float64)
-        self.x_i = np.matrix(inp['c'], np.float64).T
+
+        # init
+        self.bzc = np.float32(inp['bzc'])
+        self.int_pair = np.float64(inp['int_en']['pair'][0])
+        self.int_trip = np.float64(inp['int_en']['trip'][0])
+        self.int_tetra = np.float64(inp['int_en']['tetra'][0])
+        # print('Boltzmann constant is: {}'.format(self.bzc))
+        self.x_1 = np.float64(inp['x_1'])
         self.omega = np.array(inp['omega'], dtype=np.uint8)

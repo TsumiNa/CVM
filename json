@@ -38,22 +38,22 @@
     elements concentration
     must be normalized
     */
-    "c": [0.35, 0.65],
+    "x_1": 0.10,
 
     /*
     Interaction energy
     */
     "int_en": {
         "pair": [
-            -0.159264,
+            -0.096000,
             0.030575677,
             0.004342721,
             0.02998138,
             0.007667491,
             -0.013065552
             ],
-        "triple": [],
-        "tetrad": []
+        "trip": [0.002],
+        "tetra": [0]
     },
 
 
