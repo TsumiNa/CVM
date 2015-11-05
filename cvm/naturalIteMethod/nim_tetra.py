@@ -10,12 +10,12 @@ class process(object):
 
     __slots__ = ('data',
                  'beta',  # beat = 1/kt
-                 'lam',  # λ Lagrange multiplier
-                 'x_i',  # concentration
-                 'y_ij',  # concentration
-                 'z_ijkl',  # median value, dim is 2x2x2x2
-                 'e_ijkl',  # interaction energy
-                 'mu',  # opposite chemical potential
+                 'eta_sum',  # sum of η_ijkl
+                 'x_',  # concentration of point, dim is 2
+                 'y_',  # concentration of pair, dim is 2x2
+                 'z_',  # median value, dim is 2x2x2x2
+                 'e_',  # interaction energy, dim is 2x2x2x2
+                 'mu',  # opposite chemical potential, dim is 2
                  'omega',  # coordination number
                  'count'  # count
                  )
@@ -27,38 +27,43 @@ class process(object):
         ####################
         # define var
         ####################
-        self.x_i = np.zeros((2))
-        self.y_ij = np.zeros((2, 2))
-        # self.omega = data.omega[0, 0]  # TODO: now only the first neighbour
+        self.mu = np.zeros((2), np.float64)
+        self.x_ = np.zeros((2), np.float64)
+        self.y_ = np.zeros((2, 2), np.float64)
+        self.z_ = np.zeros((2, 2, 2, 2), np.float64)
+        self.e_ = np.zeros((2, 2, 2, 2), np.float64)
         self.beta = np.float64(pow(data.bzc * data.temp, -1))
-        self.lam = np.float64(0.0)
-        self.z_ijkl = np.zeros((2, 2, 2, 2))
-        self.e_ijkl = np.zeros((2, 2, 2, 2))
-        self.mu = np.zeros((2))
+        self.eta_sum = np.float64(0.0)
 
         #######################
         # init
         ########################
-        self.mu[0] = -0.00
+        self.mu[0] = 0.00
         self.mu[1] = -self.mu[0]
 
-        self.x_i[0] = data.x_1
-        self.x_i[1] = 1 - self.x_i[0]
+        self.x_[0] = data.x_1
+        self.x_[1] = 1 - self.x_[0]
 
-        self.y_ij[0, 0] = self.y_ij[0, 1] = self.y_ij[1, 0] = self.x_i[0] / 2
-        self.y_ij[1, 1] = self.x_i[1] - self.y_ij[1, 0]
+        self.y_[0, 0] = self.x_[0]**2
+        self.y_[0, 1] = self.y_[1, 0] = self.x_[0] * self.x_[1]
+        self.y_[1, 1] = self.x_[1]**2
 
-        self.e_ijkl[1, 0, 0, 0] = \
+        self.e_[1, 0, 0, 0] = \
             -(6 * data.int_pair + 8 * data.int_trip + 2 * data.int_tetra) / 4
-        self.e_ijkl[1, 1, 0, 0] = \
+        self.e_[1, 1, 0, 0] = \
             -(12 * data.int_pair + 24 * data.int_trip + 6 * data.int_tetra) / 6
-        self.e_ijkl[1, 1, 1, 0] = \
+        self.e_[1, 1, 1, 0] = \
             -(6 * data.int_pair + 16 * data.int_trip + 6 * data.int_tetra) / 4
 
         # run
         self.__run()
-        print(self.count)
-        data.output['x_i'] = self.x_i.tolist()
+
+        # output
+        lam = -np.log(self.eta_sum) * 2 / self.beta
+        print('lambda is: {}'.format(lam))
+        print('counts of self consistent: {}'.format(self.count))
+        print('concentration of x is: {}'.format(self.x_))
+        data.output['x_'] = self.x_.tolist()
 
     def __eta_ijkl(self, i, j, k, l):
         """
@@ -69,23 +74,23 @@ class process(object):
         Y = y_ij * y_ik * y_il * y_jk * y_jl * y_kl
         """
         # exp
-        exp = np.exp(-self.beta * self.e_ijkl[i, j, k, l] +
+        exp = np.exp(-self.beta * self.e_[i, j, k, l] +
                      (self.beta / 8) *
                      (self.mu[i] + self.mu[j] +
                       self.mu[k] + self.mu[l]))
 
         # X
-        X = self.x_i[i] * self.x_i[j] * self.x_i[k] * self.x_i[l]
+        X = self.x_[i] * self.x_[j] * self.x_[k] * self.x_[l]
 
         # Y
-        Y = self.y_ij[i, j] * self.y_ij[i, k] * self.y_ij[i, l] * \
-            self.y_ij[j, k] * self.y_ij[l, j] * self.y_ij[k, l]
+        Y = self.y_[i, j] * self.y_[i, k] * self.y_[i, l] * \
+            self.y_[j, k] * self.y_[l, j] * self.y_[k, l]
 
         return exp * np.power(X, -5 / 8) * np.power(Y, 1 / 2)
 
     def __z_ijkl(self):
         """
-        y_ij = η_ij * exp(β*λ/2)
+        z_ijkl = η_ijkl * exp(β*λ/2)
         """
         eta_1111 = self.__eta_ijkl(0, 0, 0, 0)
         print('eta_1111 is: {}'.format(eta_1111))
@@ -97,43 +102,43 @@ class process(object):
         print('eta_2211 is: {}'.format(eta_2211))
         eta_2221 = self.__eta_ijkl(1, 1, 1, 0)
         print('eta_2221 is: {}'.format(eta_2221))
-        eta_sum = eta_2222 + eta_2221 * 4 + \
+        self.eta_sum = eta_2222 + eta_2221 * 4 + \
             eta_2211 * 6 + eta_2111 * 4 + eta_1111
-        self.lam = np.log(1 / eta_sum) * 2 / self.beta
-        self.z_ijkl[0, 0, 0, 0] = eta_1111 * np.power(eta_sum, -1)
-        self.z_ijkl[1, 1, 1, 1] = eta_2222 * np.power(eta_sum, -1)
-        self.z_ijkl[1, 0, 0, 0] = eta_2111 * np.power(eta_sum, -1)
-        self.z_ijkl[1, 1, 0, 0] = eta_2211 * np.power(eta_sum, -1)
-        self.z_ijkl[1, 1, 1, 0] = eta_2221 * np.power(eta_sum, -1)
+        self.z_[0, 0, 0, 0] = eta_1111 / self.eta_sum
+        self.z_[1, 1, 1, 1] = eta_2222 / self.eta_sum
+        self.z_[1, 0, 0, 0] = eta_2111 / self.eta_sum
+        self.z_[1, 1, 0, 0] = eta_2211 / self.eta_sum
+        self.z_[1, 1, 1, 0] = eta_2221 / self.eta_sum
 
     def __run(self):
         """
         TODO: need doc
         """
-        lam = self.lam
+        eta_sum = self.eta_sum
+
+        # calculate z_ijkl
         self.__z_ijkl()
+
+        # counts
         self.count += 1
-        print('lambda is: {}'.format(self.lam))
 
-        # x_i
-        self.x_i[0] = 1 * self.z_ijkl[0, 0, 0, 0] + \
-            3 * self.z_ijkl[1, 0, 0, 0] + \
-            3 * self.z_ijkl[1, 1, 0, 0] + \
-            1 * self.z_ijkl[1, 1, 1, 0]
-        self.x_i[1] = 1 - self.x_i[0]
+        # y_
+        self.y_[0, 0] = 1 * self.z_[0, 0, 0, 0] + \
+            2 * self.z_[1, 0, 0, 0] + \
+            1 * self.z_[1, 1, 0, 0]
+        self.y_[1, 0] = self.y_[0, 1] = 1 * self.z_[1, 0, 0, 0] + \
+            2 * self.z_[1, 1, 0, 0] + \
+            1 * self.z_[1, 1, 1, 0]
+        self.y_[1, 1] = 1 * self.z_[1, 1, 0, 0] + \
+            2 * self.z_[1, 1, 1, 0] + \
+            1 * self.z_[1, 1, 1, 1]
 
-        # y_ij
-        self.y_ij[0, 0] = 1 * self.z_ijkl[0, 0, 0, 0] + \
-            2 * self.z_ijkl[1, 0, 0, 0] + \
-            1 * self.z_ijkl[1, 1, 0, 0]
-        self.y_ij[1, 0] = self.y_ij[0, 1] = 1 * self.z_ijkl[1, 0, 0, 0] + \
-            2 * self.z_ijkl[1, 1, 0, 0] + \
-            1 * self.z_ijkl[1, 1, 1, 0]
-        self.y_ij[1, 1] = 1 * self.z_ijkl[1, 1, 0, 0] + \
-            2 * self.z_ijkl[1, 1, 1, 0] + \
-            1 * self.z_ijkl[1, 1, 1, 1]
+        # x_
+        self.x_[0] = self.y_[0, 0] + self.y_[0, 1]
+        self.x_[1] = self.y_[1, 0] + self.y_[1, 1]
 
-        print(self.y_ij)
+        print(self.y_)
+
         print('\n')
-        if np.absolute(self.lam - lam) > 1e-6:
+        if np.absolute(self.eta_sum - eta_sum) > 1e-12:  # e-12 is needed
             self.__run()

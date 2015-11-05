@@ -76,7 +76,7 @@ class CvmCalc(object):
 
     def run(self):
         # ce.process(self.data)
-        self.data.temp = 5850  # TODO: since there is a data overflow from 5849 to 5850 
+        self.data.temp = 950  # TODO: since there is a data overflow from 5849 to 5850 
         nim.process(self.data)
         if self.backend is not None:
             self.backend(self.data.output)

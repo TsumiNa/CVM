@@ -57,7 +57,7 @@ class process(object):
         """
         eta_ij = self.__eta_ij()
         eta_sum = np.sum(eta_ij)
-        self.lam = np.log(1 / eta_sum) * self.omega / self.beta
+        self.lam = -np.log(eta_sum) * self.omega / self.beta
         return eta_ij * np.power(eta_sum, -1)
 
     def __run(self):

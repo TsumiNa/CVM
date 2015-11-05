@@ -38,14 +38,14 @@
     elements concentration
     must be normalized
     */
-    "x_1": 0.10,
+    "x_1": 0.05,
 
     /*
     Interaction energy
     */
     "int_en": {
         "pair": [
-            -0.096000,
+            -0.045,
             0.030575677,
             0.004342721,
             0.02998138,
