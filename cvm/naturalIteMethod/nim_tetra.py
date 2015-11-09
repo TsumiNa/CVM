@@ -14,7 +14,7 @@ class process(object):
                  'x_',  # concentration of point, dim is 2
                  'y_',  # concentration of pair, dim is 2x2
                  'z_',  # median value, dim is 2x2x2x2
-                 'e_',  # interaction energy, dim is 2x2x2x2
+                 'en',  # interaction energy, dim is 2x2x2x2
                  'mu',  # opposite chemical potential, dim is 2
                  'omega',  # coordination number
                  'count'  # count
@@ -28,17 +28,17 @@ class process(object):
         # define var
         ####################
         self.mu = np.zeros((2), np.float64)
+        self.en = np.zeros((2, 2, 2, 2), np.float64)
         self.x_ = np.zeros((2), np.float64)
         self.y_ = np.zeros((2, 2), np.float64)
         self.z_ = np.zeros((2, 2, 2, 2), np.float64)
-        self.e_ = np.zeros((2, 2, 2, 2), np.float64)
         self.beta = np.float64(pow(data.bzc * data.temp, -1))
         self.eta_sum = np.float64(0.0)
 
         #######################
         # init
         ########################
-        self.mu[0] = 0.00
+        self.mu[0] = 0.028
         self.mu[1] = -self.mu[0]
 
         self.x_[0] = data.x_1
@@ -48,11 +48,11 @@ class process(object):
         self.y_[0, 1] = self.y_[1, 0] = self.x_[0] * self.x_[1]
         self.y_[1, 1] = self.x_[1]**2
 
-        self.e_[1, 0, 0, 0] = \
+        self.en[1, 0, 0, 0] = \
             -(6 * data.int_pair + 8 * data.int_trip + 2 * data.int_tetra) / 4
-        self.e_[1, 1, 0, 0] = \
+        self.en[1, 1, 0, 0] = \
             -(12 * data.int_pair + 24 * data.int_trip + 6 * data.int_tetra) / 6
-        self.e_[1, 1, 1, 0] = \
+        self.en[1, 1, 1, 0] = \
             -(6 * data.int_pair + 16 * data.int_trip + 6 * data.int_tetra) / 4
 
         # run
@@ -63,7 +63,7 @@ class process(object):
         print('lambda is: {}'.format(lam))
         print('counts of self consistent: {}'.format(self.count))
         print('concentration of x is: {}'.format(self.x_))
-        data.output['x_'] = self.x_.tolist()
+        data.output['x_i'] = self.x_.tolist()
 
     def __eta_ijkl(self, i, j, k, l):
         """
@@ -74,7 +74,7 @@ class process(object):
         Y = y_ij * y_ik * y_il * y_jk * y_jl * y_kl
         """
         # exp
-        exp = np.exp(-self.beta * self.e_[i, j, k, l] +
+        exp = np.exp(-self.beta * self.en[i, j, k, l] +
                      (self.beta / 8) *
                      (self.mu[i] + self.mu[j] +
                       self.mu[k] + self.mu[l]))
@@ -140,5 +140,5 @@ class process(object):
         print(self.y_)
 
         print('\n')
-        if np.absolute(self.eta_sum - eta_sum) > 1e-12:  # e-12 is needed
+        if np.absolute(self.eta_sum - eta_sum) > 1e-10:  # e-10 is needed
             self.__run()
