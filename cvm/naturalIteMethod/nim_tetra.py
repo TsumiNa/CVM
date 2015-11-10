@@ -32,15 +32,12 @@ class process(object):
         self.x_ = np.zeros((2), np.float64)
         self.y_ = np.zeros((2, 2), np.float64)
         self.z_ = np.zeros((2, 2, 2, 2), np.float64)
-        self.beta = np.float64(pow(data.bzc * data.temp, -1))
+        self.beta = np.float64(0.0)
         self.eta_sum = np.float64(0.0)
 
         #######################
         # init
         ########################
-        self.mu[0] = 0.028
-        self.mu[1] = -self.mu[0]
-
         self.x_[0] = data.x_1
         self.x_[1] = 1 - self.x_[0]
 
@@ -48,29 +45,36 @@ class process(object):
         self.y_[0, 1] = self.y_[1, 0] = self.x_[0] * self.x_[1]
         self.y_[1, 1] = self.x_[1]**2
 
-        self.en[1, 0, 0, 0] = \
-            -(6 * data.int_pair + 8 * data.int_trip + 2 * data.int_tetra) / 4
-        self.en[1, 1, 0, 0] = \
-            -(12 * data.int_pair + 24 * data.int_trip + 6 * data.int_tetra) / 6
-        self.en[1, 1, 1, 0] = \
-            -(6 * data.int_pair + 16 * data.int_trip + 6 * data.int_tetra) / 4
+        en = np.zeros((2, 2), np.float64)
+        en[0, 1] = en[0, 1] = 0.5 * (en[0, 0] + en[1, 1] - data.int_pair)
+        self.en[0, 0, 0, 0] = 0.0
+        self.en[1, 0, 0, 0] = 1.5 * (en[0, 0] + en[0, 1])
+        self.en[1, 1, 0, 0] = 0.5 * (en[0, 0] + 4 * en[0, 1] + en[1, 1])
+        self.en[1, 1, 1, 0] = 1.5 * (en[0, 1] + en[1, 1]) + data.int_trip
+        self.en[1, 1, 1, 1] = \
+            3.0 * en[1, 1] + 4 * data.int_trip + data.int_tetra
+
+        self.mu[0] = self.en[0, 0, 0, 0] - self.en[1, 1, 1, 1]
+        self.mu[1] = -self.mu[0]
 
         # run
-        self.__run()
-
-        # output
-        lam = -np.log(self.eta_sum) * 2 / self.beta
-        print('lambda is: {}'.format(lam))
-        print('counts of self consistent: {}'.format(self.count))
-        print('concentration of x is: {}'.format(self.x_))
-        data.output['x_i'] = self.x_.tolist()
+        temp = np.nditer(data.temp, flags=['f_index'])
+        while not temp.finished:
+            self.beta = np.float64(pow(data.bzc * temp[0], -1))
+            self.__run()
+            output = {}
+            print('concentration at {0}K: {1}'.format(temp[0], self.x_))
+            output['temperature'] = temp[0].item(0)
+            output['concentration'] = self.x_[0].item(0)
+            data.output['Calculation ' + str(temp.index)] = output
+            temp.iternext()
 
     def __eta_ijkl(self, i, j, k, l):
         """
         η_ijkl = exp[-β*e_ijkl + (β/8)(mu_i + mu_j + mu_k + mu_l)]
                     * X^(-5/8)
                     * Y^(1/2)
-        X = x_i * x_j * x_k * x_l
+        X = x_ * x_j * x_k * x_l
         Y = y_ij * y_ik * y_il * y_jk * y_jl * y_kl
         """
         # exp
@@ -93,15 +97,10 @@ class process(object):
         z_ijkl = η_ijkl * exp(β*λ/2)
         """
         eta_1111 = self.__eta_ijkl(0, 0, 0, 0)
-        print('eta_1111 is: {}'.format(eta_1111))
         eta_2222 = self.__eta_ijkl(1, 1, 1, 1)
-        print('eta_2222 is: {}'.format(eta_2222))
         eta_2111 = self.__eta_ijkl(1, 0, 0, 0)
-        print('eta_2111 is: {}'.format(eta_2111))
         eta_2211 = self.__eta_ijkl(1, 1, 0, 0)
-        print('eta_2211 is: {}'.format(eta_2211))
         eta_2221 = self.__eta_ijkl(1, 1, 1, 0)
-        print('eta_2221 is: {}'.format(eta_2221))
         self.eta_sum = eta_2222 + eta_2221 * 4 + \
             eta_2211 * 6 + eta_2111 * 4 + eta_1111
         self.z_[0, 0, 0, 0] = eta_1111 / self.eta_sum
@@ -137,8 +136,5 @@ class process(object):
         self.x_[0] = self.y_[0, 0] + self.y_[0, 1]
         self.x_[1] = self.y_[1, 0] + self.y_[1, 1]
 
-        print(self.y_)
-
-        print('\n')
-        if np.absolute(self.eta_sum - eta_sum) > 1e-10:  # e-10 is needed
+        if np.absolute(self.eta_sum - eta_sum) > 1e-12:  # e-10 is needed
             self.__run()

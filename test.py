@@ -1,5 +1,4 @@
 from cvm import CvmCalc
 
-test = CvmCalc()
-test.run()
+CvmCalc().run()
 # test._check()

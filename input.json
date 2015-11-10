@@ -55,9 +55,9 @@
     /*
     Temperature (K)
 
-    Temperature can be setted as a single value or continuous as [star, end, step]
+    Temperature can be setted as a single value or continuous as [star, end, num]
     */
-    "temp": [],
+    "temp": [100, 1500, 29],
 
     /*
     Boltzmann constant

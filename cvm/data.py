@@ -31,13 +31,12 @@ class data(object):
         self.inp = inp  # copy inpcard
         self.output = {}
         self.mu_ij = np.float64(0.00)
-        self.temp = np.intc(0)
 
         # init
+        self.temp = np.linspace(inp['temp'][0], inp['temp'][1], inp['temp'][2])
         self.bzc = np.float32(inp['bzc'])
         self.int_pair = np.float64(inp['int_en']['pair'][0])
         self.int_trip = np.float64(inp['int_en']['trip'][0])
         self.int_tetra = np.float64(inp['int_en']['tetra'][0])
-        # print('Boltzmann constant is: {}'.format(self.bzc))
         self.x_1 = np.float64(inp['x_1'])
         self.omega = np.array(inp['omega'], dtype=np.uint8)

@@ -12,6 +12,7 @@ calculated solubility limit.
 """
 
 import json
+import yaml
 import sys
 import os
 import tempfile
@@ -76,13 +77,12 @@ class CvmCalc(object):
 
     def run(self):
         # ce.process(self.data)
-        self.data.temp = 840.5  # TODO: since there is a data overflow from 5849 to 5850 
         nim.process(self.data)
         if self.backend is not None:
             self.backend(self.data.output)
         else:
-            with open(os.getcwd() + '/output.json', 'w') as f:
-                json.dump(self.data.output, f, indent=2)
+            with open(os.getcwd() + '/output.yaml', 'w') as f:
+                yaml.dump(self.data.output, f, default_flow_style=False)
 
     @classmethod
     def _init_arg_dict(cls):
