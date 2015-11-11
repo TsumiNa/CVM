@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 
-from . import clusterExpansion
+from .tetrahedron import tetrahedron 
 
-__all__ = ['clusterExpansion']
+__all__ = ['tetrahedron']

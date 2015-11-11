@@ -2,71 +2,70 @@
 # -*- coding:utf-8 -*-
 
 import numpy as np
+from ..utilities import CVM
 
 
-class process(object):
+class tetrahedron(CVM):
 
-    """docstring for process"""
+    """docstring for tetrahedron"""
 
-    __slots__ = ('data',
-                 'beta',  # beat = 1/kt
-                 'eta_sum',  # sum of η_ijkl
-                 'x_',  # concentration of point, dim is 2
-                 'y_',  # concentration of pair, dim is 2x2
-                 'z_',  # median value, dim is 2x2x2x2
-                 'en',  # interaction energy, dim is 2x2x2x2
-                 'mu',  # opposite chemical potential, dim is 2
-                 'omega',  # coordination number
-                 'count'  # count
-                 )
+    __slots__ = (
+        'x_',  # concentration of point, dim is 2
+        'y_',  # concentration of pair, dim is 2x2
+        'z_',  # median value, dim is 2x2x2x2
+        'en',  # interaction energy, dim is 2x2x2x2
+        'mu',  # opposite chemical potential, dim is 2
+        'beta',  # beat = 1/kt
+        'eta_sum',  # sum of η_ijkl
+    )
 
-    def __init__(self, data):
-        super(process, self).__init__()
-        self.count = 0
-
+    def __init__(self, inp):
+        super(tetrahedron, self).__init__(inp)
         ####################
         # define var
         ####################
-        self.mu = np.zeros((2), np.float64)
-        self.en = np.zeros((2, 2, 2, 2), np.float64)
         self.x_ = np.zeros((2), np.float64)
         self.y_ = np.zeros((2, 2), np.float64)
         self.z_ = np.zeros((2, 2, 2, 2), np.float64)
+        self.en = np.zeros((2, 2, 2, 2), np.float64)
         self.beta = np.float64(0.0)
+        self.mu = np.zeros((2), np.float64)
         self.eta_sum = np.float64(0.0)
 
-        #######################
         # init
-        ########################
-        self.x_[0] = data.x_1
-        self.x_[1] = 1 - self.x_[0]
+        self.__init()
+
+    def __init(self):
+        self.x_[0] = self.x_1
+        self.x_[1] = 1 - self.x_1
 
         self.y_[0, 0] = self.x_[0]**2
         self.y_[0, 1] = self.y_[1, 0] = self.x_[0] * self.x_[1]
         self.y_[1, 1] = self.x_[1]**2
 
         en = np.zeros((2, 2), np.float64)
-        en[0, 1] = en[0, 1] = 0.5 * (en[0, 0] + en[1, 1] - data.int_pair)
+        en[0, 1] = en[0, 1] = 0.5 * (en[0, 0] + en[1, 1] - self.int_pair)
         self.en[0, 0, 0, 0] = 0.0
         self.en[1, 0, 0, 0] = 1.5 * (en[0, 0] + en[0, 1])
         self.en[1, 1, 0, 0] = 0.5 * (en[0, 0] + 4 * en[0, 1] + en[1, 1])
-        self.en[1, 1, 1, 0] = 1.5 * (en[0, 1] + en[1, 1]) + data.int_trip
+        self.en[1, 1, 1, 0] = 1.5 * (en[0, 1] + en[1, 1]) + self.int_trip
         self.en[1, 1, 1, 1] = \
-            3.0 * en[1, 1] + 4 * data.int_trip + data.int_tetra
+            3.0 * en[1, 1] + 4 * self.int_trip + self.int_tetra
 
         self.mu[0] = self.en[0, 0, 0, 0] - self.en[1, 1, 1, 1]
         self.mu[1] = -self.mu[0]
 
-        # run
-        temp = np.nditer(data.temp, flags=['f_index'])
+    # implement the inherited abstract method run()
+    def run(self):
+        temp = np.nditer(self.temp, flags=['f_index'])
         while not temp.finished:
-            self.beta = np.float64(pow(data.bzc * temp[0], -1))
+            self.beta = np.float64(pow(self.bzc * temp[0], -1))
             self.__run()
             output = {}
             print('concentration at {0}K: {1}'.format(temp[0], self.x_))
             output['temperature'] = temp[0].item(0)
             output['concentration'] = self.x_[0].item(0)
-            data.output['Calculation ' + str(temp.index)] = output
+            self.output['Calculation ' + str(temp.index)] = output
             temp.iternext()
 
     def __eta_ijkl(self, i, j, k, l):

@@ -18,12 +18,9 @@ import os
 import tempfile
 import re as regex
 
-from .data import data
-from .interalEnergy import clusterExpansion as ce
-from . import entropy as entropy
-from .naturalIteMethod import naturalIteMethod as nim
+from .tetrahedron import tetrahedron as nim
 
-__version__ = '0.0.1'
+__version__ = '0.1.0'
 pattern = regex.compile(r"(/\*)+.+?(\*/)", regex.S)  # remove comment in json
 
 
@@ -47,7 +44,7 @@ class CvmCalc(object):
     directly. Just pass a backend function to the second paramater.
     """
 
-    __slots__ = ('data', 'backend')
+    __slots__ = ('backend')
 
     arg_dict = {}  # argvs will be reformatted as {'option': 'value'}
 
@@ -56,13 +53,14 @@ class CvmCalc(object):
         keep None when you don't want to custom yourself.
         """
         super(CvmCalc, self).__init__()
+        self.backend = None if backend is None else backend
 
-        CvmCalc._init_arg_dict()
+        CvmCalc.__initArg()
         if inp is not None:
-            self.data = data(inp)
+            self.run(inp)
         else:
             if 'inp' not in CvmCalc.arg_dict:
-                print('Need a INCAR!')
+                print('Need a INPCARD!')
                 sys.exit(0)
             with open(os.getcwd() + '/' + CvmCalc.arg_dict['inp'][0]) as f:
                 _content = f.read()
@@ -70,22 +68,21 @@ class CvmCalc(object):
             f = tempfile.TemporaryFile(mode='w+t')
             f.write(_content)
             f.seek(0)
-            self.data = data(json.load(f))
+            inp = json.load(f)
             f.close()
+            self.run(inp)
 
-        self.backend = None if backend is None else backend
-
-    def run(self):
-        # ce.process(self.data)
-        nim.process(self.data)
+    def run(self, inp):
+        worker = nim(inp)
+        worker.run()
         if self.backend is not None:
-            self.backend(self.data.output)
+            self.backend(worker.output)
         else:
             with open(os.getcwd() + '/output.yaml', 'w') as f:
-                yaml.dump(self.data.output, f, default_flow_style=False)
+                yaml.dump(worker.output, f, default_flow_style=False)
 
     @classmethod
-    def _init_arg_dict(cls):
+    def __initArg(cls):
         if len(sys.argv) > 1:
 
             _key = ''
@@ -106,13 +103,7 @@ class CvmCalc(object):
             del _value
             del _key
 
-    @staticmethod
-    def _usage():
-        """
-        Usage
-        """
-        pass
-
-    def _check(self):
-        print(CvmCalc.arg_dict)
+    @classmethod
+    def check(cls):
+        print(cls.arg_dict)
         print('Done')

@@ -51,6 +51,11 @@
         "tetra": [0.008]
     },
 
+    /*
+    Chemical potential
+    */
+    "chemical_mu": [
+    ],
 
     /*
     Temperature (K)
