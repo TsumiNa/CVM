@@ -57,7 +57,7 @@ class CvmCalc(object):
 
         CvmCalc.__initArg()
         if inp is not None:
-            self.run(inp)
+            self.__run(inp)
         else:
             if 'inp' not in CvmCalc.arg_dict:
                 print('Need a INPCARD!')
@@ -70,9 +70,9 @@ class CvmCalc(object):
             f.seek(0)
             inp = json.load(f)
             f.close()
-            self.run(inp)
+            self.__run(inp)
 
-    def run(self, inp):
+    def __run(self, inp):
         worker = nim(inp)
         worker.run()
         if self.backend is not None:
