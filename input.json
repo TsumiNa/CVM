@@ -2,8 +2,7 @@
     /*
     name will also be used as output file(s) name like "name.json".   
     */
-    "name": "Pd_Ru_cvmt",
-
+    "name": "Pd_Rh_cvmt",
 
     /*
     descripton your calculation. it's optional
@@ -30,11 +29,6 @@
                 [0.5, 0.0, 0.5]],
 
     /*
-    coordination number
-    */
-    "omega": [6.000, 3.000, 12.000, 6.000, 12.000, 4.000],
-
-    /*
     elements concentration
     must be normalized
     */
@@ -53,9 +47,10 @@
 
     /*
     Chemical potential
+
+    Chemical potential can be setted as a single value or continuous as [star, end, num]
     */
-    "chemical_mu": [
-    ],
+    "delta_mu": [-0.003, 0.003, 5],
 
     /*
     Temperature (K)

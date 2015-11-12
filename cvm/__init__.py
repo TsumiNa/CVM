@@ -16,11 +16,16 @@ import yaml
 import sys
 import os
 import tempfile
+import datetime as dt
 import re as regex
 
-from .tetrahedron import tetrahedron as nim
+from .A1 import tetrahedron as nim
 
 __version__ = '0.1.0'
+__all__ = [
+    'CvmCalc'
+]
+
 pattern = regex.compile(r"(/\*)+.+?(\*/)", regex.S)  # remove comment in json
 
 
@@ -53,6 +58,10 @@ class CvmCalc(object):
         keep None when you don't want to custom yourself.
         """
         super(CvmCalc, self).__init__()
+        cmd_folder = os.path.dirname(__file__)
+        if cmd_folder not in sys.path:
+            sys.path.append(cmd_folder)
+
         self.backend = None if backend is None else backend
 
         CvmCalc.__initArg()
@@ -75,11 +84,22 @@ class CvmCalc(object):
     def __run(self, inp):
         worker = nim(inp)
         worker.run()
+
+        log_name = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
+        log_path = os.path.join(os.getcwd() + '/log/' + log_name)
+        if not os.path.exists('log/'):
+            os.makedirs('log/')
+
         if self.backend is not None:
             self.backend(worker.output)
-        else:
-            with open(os.getcwd() + '/output.yaml', 'w') as f:
-                yaml.dump(worker.output, f, default_flow_style=False)
+
+        if 'opt' in CvmCalc.arg_dict:
+            if CvmCalc.arg_dict['opt'][0] == 'json':
+                with open(log_path + '.json', 'w') as f:
+                    json.dump(worker.output, f, indent=2)
+                return
+        with open(log_path + '.yaml', 'w') as f:
+            yaml.dump(worker.output, f, default_flow_style=False, indent=3)
 
     @classmethod
     def __initArg(cls):
@@ -107,3 +127,6 @@ class CvmCalc(object):
     def check(cls):
         print(cls.arg_dict)
         print('Done')
+
+if __name__ == '__main__':
+    CvmCalc()

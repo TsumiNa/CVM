@@ -5,7 +5,7 @@ import numpy as np
 from numpy.matlib import zeros
 
 
-class process(object):
+class pair(object):
 
     """docstring for process"""
 

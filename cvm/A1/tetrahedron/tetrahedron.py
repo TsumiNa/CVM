@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 import numpy as np
-from ..utilities import CVM
+from cvm.utilities import CVM
 
 
 class tetrahedron(CVM):
@@ -57,16 +57,26 @@ class tetrahedron(CVM):
 
     # implement the inherited abstract method run()
     def run(self):
-        temp = np.nditer(self.temp, flags=['f_index'])
-        while not temp.finished:
-            self.beta = np.float64(pow(self.bzc * temp[0], -1))
-            self.__run()
-            output = {}
-            print('concentration at {0}K: {1}'.format(temp[0], self.x_))
-            output['temperature'] = temp[0].item(0)
-            output['concentration'] = self.x_[0].item(0)
-            self.output['Calculation ' + str(temp.index)] = output
-            temp.iternext()
+
+        # temperature iteration
+        for temp in np.nditer(self.temp):
+            data = []
+            self.beta = np.float64(pow(self.bzc * temp, -1))
+            print('T = {:06.2f}K:'.format(temp.item(0)))
+
+            # delta mu iteration
+            for dmu in np.nditer(self.delta_mu):
+                self.mu[0] += dmu
+                self.__run()
+                data.append(
+                    {'mu': self.mu[0].item(0), 'c': self.x_[0].item(0)})
+                print('    mu = {:06.4f},  c = {:06.4f}\n'.format(
+                    self.mu[0].item(0), self.x_[0].item(0)))
+                self.mu[0] -= dmu
+
+            # save result to output
+            self.output['Results'].append(
+                {'Temp': temp.item(0), 'Data': data})
 
     def __eta_ijkl(self, i, j, k, l):
         """

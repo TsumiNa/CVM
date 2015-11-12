@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 import numpy as np
-
+import datetime as dt
 
 class CVM(object):
 
@@ -18,30 +18,64 @@ class CVM(object):
         'count',  # count for self-consistent
         'output',  # output
         'temp',  # temperature
-        'chemical_mu',  # opposite chemical potential
-        'int_pair',  # pair interaction energy
-        'int_trip',  # triple interaction energy
-        'int_tetra',  # tetrahedron interaction energy
         'bzc',  # Boltzmann constant
         'x_1',  # elements concentration
-        'omega'  # coordination number
+        'delta_mu',  # opposite chemical potential
+        'int_pair',  # pair interaction energy
+        'int_trip',  # triple interaction energy
+        'int_tetra'  # tetrahedron interaction energy
     )
 
     def __init__(self, inp):
         super(CVM, self).__init__()
         self.count = 0
         self.output = {}
+        self.output['Meta'] = {}
+        self.output['Results'] = []
 
+        ##################
         # init
-        self.chemical_mu = np.array(inp['chemical_mu'], np.float64)
-        self.temp = np.linspace(inp['temp'][0], inp['temp'][1], inp['temp'][2])
+        ##################
+
+        # Meta
+        date_time_str = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.output['Meta']['Name'] = inp['name']
+        self.output['Meta']['Description'] = inp['description']
+        self.output['Meta']['Structure'] = inp['structure']
+        self.output['Meta']['Date'] = date_time_str
+
+        # chemical potential
+        if len(inp['delta_mu']) <= 1:
+            self.delta_mu = np.array(inp['delta_mu'], np.float64)
+        else:
+            self.delta_mu = np.linspace(
+                inp['delta_mu'][0],
+                inp['delta_mu'][1],
+                inp['delta_mu'][2]
+            )
+
+        # Temperature
+        if len(inp['temp']) == 1:
+            raise NameError('must set temperature in input card')
+        if len(inp['temp']) == 1:
+            self.temp = np.array(inp['temp'], np.single)
+        else:
+            self.temp = np.linspace(
+                inp['temp'][0],
+                inp['temp'][1],
+                inp['temp'][2]
+            )
+
+        # Boltzmann constant
         self.bzc = np.float32(inp['bzc'])
+
+        # Interation energies
         self.int_pair = np.float64(inp['int_en']['pair'])
         self.int_trip = np.float64(inp['int_en']['trip'])
         self.int_tetra = np.float64(inp['int_en']['tetra'])
+
+        # Concentration of impuity
         self.x_1 = np.float64(inp['x_1'])
-        self.omega = np.array(inp['omega'], np.uint8)
 
     def run(self):
         raise NameError('must implement the inherited abstract method')
-        pass

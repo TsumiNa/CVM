@@ -1,3 +1,4 @@
+.spyderproject
 __pycache__/
 output.json
-.spyderproject
+/log
