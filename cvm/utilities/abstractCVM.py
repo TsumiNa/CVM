@@ -4,6 +4,7 @@
 import numpy as np
 import datetime as dt
 
+
 class CVM(object):
 
     """
@@ -37,13 +38,6 @@ class CVM(object):
         # init
         ##################
 
-        # Meta
-        date_time_str = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.output['Meta']['Name'] = inp['name']
-        self.output['Meta']['Description'] = inp['description']
-        self.output['Meta']['Structure'] = inp['structure']
-        self.output['Meta']['Date'] = date_time_str
-
         # chemical potential
         if len(inp['delta_mu']) <= 1:
             self.delta_mu = np.array(inp['delta_mu'], np.float64)
@@ -76,6 +70,15 @@ class CVM(object):
 
         # Concentration of impuity
         self.x_1 = np.float64(inp['x_1'])
+
+        # Meta
+        date_time_str = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.output['Meta']['Name'] = inp['name']
+        self.output['Meta']['Description'] = inp['description']
+        self.output['Meta']['Structure'] = inp['structure']
+        self.output['Meta']['Date'] = date_time_str
+        self.output['Meta']['Temperature'] = self.temp.tolist()
+        self.output['Meta']['DeltaMu'] = self.delta_mu.tolist()
 
     def run(self):
         raise NameError('must implement the inherited abstract method')

@@ -57,7 +57,7 @@
 
     Temperature can be setted as a single value or continuous as [star, end, num]
     */
-    "temp": [100, 1500, 29],
+    "temp": [100, 1000, 37],
 
     /*
     Boltzmann constant

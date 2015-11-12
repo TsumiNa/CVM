@@ -59,24 +59,32 @@ class tetrahedron(CVM):
     def run(self):
 
         # temperature iteration
-        for temp in np.nditer(self.temp):
+        for dmu in np.nditer(self.delta_mu):
             data = []
-            self.beta = np.float64(pow(self.bzc * temp, -1))
-            print('T = {:06.2f}K:'.format(temp.item(0)))
+            self.mu[0] += dmu
+            # print('mu = {:06.4f}:'.format(self.mu[0].item(0)))
 
             # delta mu iteration
-            for dmu in np.nditer(self.delta_mu):
-                self.mu[0] += dmu
+            for temp in np.nditer(self.temp):
+                self.beta = np.float64(pow(self.bzc * temp, -1))
+                self.x_[0] = self.x_1
+                self.x_[1] = 1 - self.x_1
+
+                self.y_[0, 0] = self.x_[0]**2
+                self.y_[0, 1] = self.y_[1, 0] = self.x_[0] * self.x_[1]
+                self.y_[1, 1] = self.x_[1]**2
+
                 self.__run()
                 data.append(
-                    {'mu': self.mu[0].item(0), 'c': self.x_[0].item(0)})
-                print('    mu = {:06.4f},  c = {:06.4f}\n'.format(
-                    self.mu[0].item(0), self.x_[0].item(0)))
-                self.mu[0] -= dmu
+                    {'temp': temp.item(0), 'c': self.x_[0].item(0)})
+                # print('    T = {:06.4f}K,  c = {:06.4f}'.format(
+                #     temp.item(0), self.x_[0].item(0)))
 
+            # print('\n')
             # save result to output
             self.output['Results'].append(
-                {'Temp': temp.item(0), 'Data': data})
+                {'mu': self.mu[0].item(0), 'data': data})
+            self.mu[0] -= dmu
 
     def __eta_ijkl(self, i, j, k, l):
         """
