@@ -2,63 +2,72 @@
 # -*- coding:utf-8 -*-
 
 import numpy as np
+from cvm.utilities import CVM
 from numpy.matlib import zeros
 
 
-class pair(object):
+class pair(CVM):
 
     """docstring for process"""
 
-    __slots__ = ('data',
-                 'beta',  # beat = 1/kt
-                 'lam',  # λ Lagrange multiplier
-                 'x_i',  # concentration
-                 'eta_ij',  # median value
-                 'e_ij',  # interaction energy
-                 'mu_ij',  # opposite chemical potential
-                 'omega',  # coordination number
-                 'count'  # count
-                 )
+    __slots__ = (
+        'x_',  # concentration of point, dim is 2
+        'y_',  # concentration of pair, dim is 2x2
+        'en',  # interaction energy, dim is 2x2
+        'mu'  # opposite chemical potential, dim is 2
+        'beta',  # β = 1/kt
+        'eta_sum',  # sum of η_ij
+    )
 
-    def __init__(self, data):
-        super(process, self).__init__()
-        self.count = 0
+    def __init__(self, inp):
+        super(pair, self).__init__(inp)
+        ####################
+        # define var
+        ####################
+        self.x_ = np.zeros((2), np.float64)
+        self.y_ = np.zeros((2, 2), np.float64)
+        self.en = np.zeros((2, 2), np.float64)
+        self.mu = np.zeros((2), np.float64)
+        self.beta = np.float64(0)
+        self.eta_sum = np.float64(0)
 
         # init
-        self.x_i = data.x_i
-        self.omega = data.omega[0, 0]  # TODO: now only the first neighbour
-        self.beta = np.float64(pow(data.k * data.temp, -1))
-        self.lam = np.float64(0.0)
-        self.eta_ij = zeros((data.x_i.size, data.x_i.size))
-        self.e_ij = np.matrix([[0., data.e_ij[0, 0]],
-                               [data.e_ij[0, 0], 0.]])
-        self.mu_ij = np.matrix([[2 * data.mu_ij, 0],
-                                [0, -2 * data.mu_ij]])
-        self.e_ij = -0.5 * self.e_ij
+        self.__init()
 
         # run
         self.__run()
         print(self.count)
-        data.output['x_i'] = np.array(self.x_i).reshape(2).tolist()
+        inp.output['x_'] = np.array(self.x_).reshape(2).tolist()
+
+    def __init():
+        self.x_ = inp.x_
+        self.beta = np.float64(pow(inp.k * inp.temp, -1))
+        self.lam = np.float64(0.0)
+        self.eta_sum = zeros((inp.x_.size, inp.x_.size))
+        self.en = np.matrix([[0., inp.en[0, 0]],
+                               [inp.en[0, 0], 0.]])
+        self.mu = np.matrix([[2 * inp.mu, 0],
+                                [0, -2 * inp.mu]])
+        self.en = -0.5 * self.en
 
     def __eta_ij(self):
         """
-        η_ij = (x_i*x_j)^((2ω-1)/2ω) * exp( -βe_ij + (β/2ω)(mu_i + mu_j) )
+        η_ij = (x_*x_j)^((2ω-1)/2ω) * exp( -βe_ij + (β/2ω)(mu_i + mu_j) )
         """
-        entro = np.power((self.x_i * self.x_i.T),
+        entro = np.power((self.x_ * self.x_.T),
                          ((2 * self.omega - 1) / (2 * self.omega)))
-        energy = np.exp(-self.beta * self.e_ij +
-                        (self.beta / (2 * self.omega)) * self.mu_ij)
+        energy = np.exp(-self.beta * self.en +
+                        (self.beta / (2 * self.omega)) * self.mu)
         return np.multiply(entro, energy)
 
     def __y_ij(self):
         """
         y_ij = η_ij * exp(β*λ/ω)
         """
-        eta_ij = self.__eta_ij()
-        eta_sum = np.sum(eta_ij)
+        eta_sum = self.__eta_ij()
+        eta_sum = np.sum(eta_sum)
         self.lam = -np.log(eta_sum) * self.omega / self.beta
-        return eta_ij * np.power(eta_sum, -1)
+        return eta_sum * np.power(eta_sum, -1)
 
     def __run(self):
         """
@@ -68,9 +77,9 @@ class pair(object):
         y_ij = self.__y_ij()
         self.count += 1
         print('lambda is: {}'.format(self.lam))
-        self.x_i = y_ij.sum(1)
+        self.x_ = y_ij.sum(1)
         print(y_ij)
-        print(self.x_i)
+        print(self.x_)
         print('\n')
         if np.absolute(self.lam - lam) > 1e-6:
             self.__run()

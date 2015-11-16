@@ -15,7 +15,7 @@ class tetrahedron(CVM):
         'z_',  # median value, dim is 2x2x2x2
         'en',  # interaction energy, dim is 2x2x2x2
         'mu',  # opposite chemical potential, dim is 2
-        'beta',  # beat = 1/kt
+        'beta',  # β = 1/kt
         'eta_sum',  # sum of η_ijkl
     )
 
