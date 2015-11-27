@@ -39,9 +39,11 @@ class pair(CVM):
         print(self.count)
         inp.output['x_'] = np.array(self.x_).reshape(2).tolist()
 
-    def __init():
-        self.x_ = inp.x_
-        self.beta = np.float64(pow(inp.k * inp.temp, -1))
+    def __init(self):
+        self.x_[0] = self.x_1
+        self.x_[1] = 1-self.x_1
+
+        en[1, 1] = en[0, 1] = 0.5 * (en[0, 0] + en[1, 1] - self.int_pair)
         self.lam = np.float64(0.0)
         self.eta_sum = zeros((inp.x_.size, inp.x_.size))
         self.en = np.matrix([[0., inp.en[0, 0]],
