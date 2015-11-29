@@ -15,7 +15,7 @@ def __eta_ijkl(self, i, j, k, l):
     Z = z_ijk * z_ikl * z_ijl * z_jkl
     """
     # exp
-    exp = np.exp(-self.beta * self.en[i, j, k, l] +
+    exp = np.exp(-self.beta * self.enT[i, j, k, l] +
                  (self.beta / 8) *
                  (self.mu[i] + self.mu[j] +
                   self.mu[k] + self.mu[l]))
@@ -45,8 +45,8 @@ def __z_ijkl(self):
     eta_1111 = self.__eta_ijkl(1, 1, 1, 1)
     self.eta_sum = eta_1111 + eta_1110 * 4 + \
         eta_1100 * 6 + eta_1000 * 4 + eta_0000
-    self.z_[0, 0, 0, 0] = eta_0000 / self.eta_sum
-    self.z_[1, 0, 0, 0] = eta_1000 / self.eta_sum
-    self.z_[1, 1, 0, 0] = eta_1100 / self.eta_sum
-    self.z_[1, 1, 1, 0] = eta_1110 / self.eta_sum
-    self.z_[1, 1, 1, 1] = eta_1111 / self.eta_sum
+    self.wt_[0, 0, 0, 0] = eta_0000 / self.eta_sum
+    self.wt_[1, 0, 0, 0] = eta_1000 / self.eta_sum
+    self.wt_[1, 1, 0, 0] = eta_1100 / self.eta_sum
+    self.wt_[1, 1, 1, 0] = eta_1110 / self.eta_sum
+    self.wt_[1, 1, 1, 1] = eta_1111 / self.eta_sum

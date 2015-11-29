@@ -81,4 +81,4 @@ class CVM(object):
         self.output['Meta']['DeltaMu'] = self.delta_mu.tolist()
 
     def run(self):
-        raise NameError('must implement the inherited abstract method')
+        raise NameError('must implement this inherited abstract method')
