@@ -113,18 +113,18 @@ class tetrahedron(CVM):
         """
         z_ijkl = η_ijkl * exp(β*λ/2)
         """
-        eta_1111 = self.__eta_ijkl(0, 0, 0, 0)
-        eta_2222 = self.__eta_ijkl(1, 1, 1, 1)
-        eta_2111 = self.__eta_ijkl(1, 0, 0, 0)
-        eta_2211 = self.__eta_ijkl(1, 1, 0, 0)
-        eta_2221 = self.__eta_ijkl(1, 1, 1, 0)
-        self.eta_sum = eta_2222 + eta_2221 * 4 + \
-            eta_2211 * 6 + eta_2111 * 4 + eta_1111
-        self.z_[0, 0, 0, 0] = eta_1111 / self.eta_sum
-        self.z_[1, 1, 1, 1] = eta_2222 / self.eta_sum
-        self.z_[1, 0, 0, 0] = eta_2111 / self.eta_sum
-        self.z_[1, 1, 0, 0] = eta_2211 / self.eta_sum
-        self.z_[1, 1, 1, 0] = eta_2221 / self.eta_sum
+        eta_0000 = self.__eta_ijkl(0, 0, 0, 0)
+        eta_1000 = self.__eta_ijkl(1, 0, 0, 0)
+        eta_1100 = self.__eta_ijkl(1, 1, 0, 0)
+        eta_1110 = self.__eta_ijkl(1, 1, 1, 0)
+        eta_1111 = self.__eta_ijkl(1, 1, 1, 1)
+        self.eta_sum = eta_1111 + eta_1110 * 4 + \
+            eta_1100 * 6 + eta_1000 * 4 + eta_0000
+        self.z_[0, 0, 0, 0] = eta_0000 / self.eta_sum
+        self.z_[1, 0, 0, 0] = eta_1000 / self.eta_sum
+        self.z_[1, 1, 0, 0] = eta_1100 / self.eta_sum
+        self.z_[1, 1, 1, 0] = eta_1110 / self.eta_sum
+        self.z_[1, 1, 1, 1] = eta_1111 / self.eta_sum
 
     def __run(self):
         """
