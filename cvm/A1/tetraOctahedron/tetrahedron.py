@@ -34,19 +34,44 @@ def __eta(self, i, j, k, l):
     return exp * np.power(X, 1 / 8) * np.power(Y, -1 / 2) * Z
 
 
-def wT(self):
+def wt(self):
     """
-    z_ijkl = η_ijkl * exp(β*λ/2)
+    wt_ijkl = η_ijkl * exp(β*λ/2)
     """
-    eta_0000 = __eta(0, 0, 0, 0)
-    eta_1000 = __eta(1, 0, 0, 0)
-    eta_1100 = __eta(1, 1, 0, 0)
-    eta_1110 = __eta(1, 1, 1, 0)
-    eta_1111 = __eta(1, 1, 1, 1)
-    self.eta_sum = eta_1111 + eta_1110 * 4 + \
-        eta_1100 * 6 + eta_1000 * 4 + eta_0000
-    self.wt_[0, 0, 0, 0] = eta_0000 / self.eta_sum
-    self.wt_[1, 0, 0, 0] = eta_1000 / self.eta_sum
-    self.wt_[1, 1, 0, 0] = eta_1100 / self.eta_sum
-    self.wt_[1, 1, 1, 0] = eta_1110 / self.eta_sum
-    self.wt_[1, 1, 1, 1] = eta_1111 / self.eta_sum
+    eta_sum = np.float64(0)
+    it = np.nditer(self.wt_, flags=['multi_index'])
+    while not it.finished:
+        i, j, k, l = it.multi_index
+        self.wt_[i, j, k, l] = __eta(self, i, j, k, l)
+        eta_sum += self.wt_[i, j, k, l]
+        it.iternext()
+
+    self.x_ = np.zeros((2), np.float64)
+    self.y_ = np.zeros((2, 2), np.float64)
+    self.z_ = np.zeros((2, 2, 2), np.float64)
+    it = np.nditer(self.wt_, flags=['multi_index'])
+    while not it.finished:
+        i, j, k, l = it.multi_index
+
+        # z_ijkl = η_ijkl * exp(β*λ/2)
+        self.wt_[i, j, k, l] /= eta_sum
+
+        # z_
+        self.z_[i, j, k] += self.wt_[i, j, k, l]
+
+        # y_
+        self.y_[i, j] += self.wt_[i, j, k, l]
+
+        # x_
+        self.x_[i] += self.wt_[i, j, k, l]
+        it.iternext()
+
+    print('Tetra eta_sum is: {}'.format(eta_sum))
+    print('Tetra x_[0] is: {}'.format(self.x_[0]))
+    # counts
+    self.count += 1
+
+    if np.absolute(self.eta_sum - eta_sum) > 1e-3:  # e-10 is needed
+        print('\n')
+        self.eta_sum = eta_sum
+        wt(self)

@@ -23,16 +23,18 @@
 
     Which sit will be chosen to export entropy term. Assume cube length as 1.
     */
-    "cluster": [[0.0, 0.0, 0.0],
-                [0.5, 0.5, 0.0],
-                [0.0, 0.5, 0.5],
-                [0.5, 0.0, 0.5]],
+    "cluster": [
+        [0.0, 0.0, 0.0],
+        [0.5, 0.5, 0.0],
+        [0.0, 0.5, 0.5],
+        [0.5, 0.0, 0.5]
+    ],
 
     /*
     elements concentration
     must be normalized
     */
-    "x_1": 0.05,
+    "x_1": 0.2,
 
     /*
     Interaction energy
@@ -41,7 +43,7 @@
         "pair": [
             -0.0550000,
             0.01
-            ],
+        ],
         "trip": [0.005],
         "tetra": [0.008]
     },
@@ -51,14 +53,14 @@
 
     Chemical potential can be setted as a single value or continuous as [star, end, num]
     */
-    "delta_mu": [-0.003, 0.003, 5],
+    "delta_mu": [0],
 
     /*
     Temperature (K)
 
     Temperature can be setted as a single value or continuous as [star, end, num]
     */
-    "temp": [100, 1000, 37],
+    "temp": [2500],
 
     /*
     Boltzmann constant

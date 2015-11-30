@@ -49,7 +49,7 @@ class CVM(object):
             )
 
         # Temperature
-        if len(inp['temp']) == 1:
+        if len(inp['temp']) == 0:
             raise NameError('must set temperature in input card')
         if len(inp['temp']) == 1:
             self.temp = np.array(inp['temp'], np.single)

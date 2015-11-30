@@ -36,21 +36,14 @@ class tetrahedron(CVM):
         self.__init()
 
     def __init(self):
-        self.x_[0] = self.x_1
-        self.x_[1] = 1 - self.x_1
-
-        self.y_[0, 0] = self.x_[0]**2
-        self.y_[0, 1] = self.y_[1, 0] = self.x_[0] * self.x_[1]
-        self.y_[1, 1] = self.x_[1]**2
-
         en = np.zeros((2, 2), np.float64)
-        en[0, 1] = en[0, 1] = 0.5 * (en[0, 0] + en[1, 1] - self.int_pair)
+        en[0, 1] = en[0, 1] = 0.5 * (en[0, 0] + en[1, 1] - self.int_pair[0])
         self.en[0, 0, 0, 0] = 0.0
         self.en[1, 0, 0, 0] = 1.5 * (en[0, 0] + en[0, 1])
         self.en[1, 1, 0, 0] = 0.5 * (en[0, 0] + 4 * en[0, 1] + en[1, 1])
-        self.en[1, 1, 1, 0] = 1.5 * (en[0, 1] + en[1, 1]) + self.int_trip
+        self.en[1, 1, 1, 0] = 1.5 * (en[0, 1] + en[1, 1]) + self.int_trip[0]
         self.en[1, 1, 1, 1] = \
-            3.0 * en[1, 1] + 4 * self.int_trip + self.int_tetra
+            3.0 * en[1, 1] + 4 * self.int_trip[0] + self.int_tetra[0]
 
         self.mu[0] = self.en[0, 0, 0, 0] - self.en[1, 1, 1, 1]
         self.mu[1] = -self.mu[0]
