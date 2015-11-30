@@ -4,6 +4,8 @@
 import numpy as np
 from cvm.utilities import CVM
 
+from .octahedron import wO
+from .tetrahedron import wT
 
 class tetraOctahedron(CVM):
 
@@ -49,17 +51,42 @@ class tetraOctahedron(CVM):
         self.y_[0, 1] = self.y_[1, 0] = self.x_[0] * self.x_[1]
         self.y_[1, 1] = self.x_[1]**2
 
-        en1 = np.zeros((2, 2), np.float64)
-        en1[0, 1] = en1[0, 1] = 0.5 * (en1[0, 0] + en1[1, 1] - self.int_pair)
-        self.enT[0, 0, 0, 0] = 0.0
-        self.enT[1, 0, 0, 0] = 1.5 * (en1[0, 0] + en1[0, 1])
-        self.enT[1, 1, 0, 0] = \
-            0.5 * (en1[0, 0] + 4 * en1[0, 1] + en1[1, 1])
-        self.enT[1, 1, 1, 0] = 1.5 * (en1[0, 1] + en1[1, 1]) + self.int_trip
-        self.enT[1, 1, 1, 1] = \
-            3.0 * en1[1, 1] + 4 * self.int_trip + self.int_tetra
+        # pure energy of 2body-1st
+        en = np.zeros((2, 2), np.float64)
+        en[0, 1] = en[0, 1] = 0.5 * (en[0, 0] + en[1, 1] - self.int_pair[0])
+        # en2 = np.zeros((2, 2), np.float64)
+        # en2[0, 1] = en2[0, 1] = \
+        #     0.5 * (en2[0, 0] + en2[1, 1] - self.int_pair[1])
 
-        self.mu[0] = self.enT[0, 0, 0, 0] - self.enT[1, 1, 1, 1]
+        # ε^tetrahedron
+        de31 = np.zeros((2, 2, 2), np.float64)  # 3body-1st interaction energy
+        de31[1, 1, 1] = self.int_trip[0]
+        de41 = np.zeros((2, 2, 2), np.float64)  # 4body-1st interaction energy
+        de41[1, 1, 1, 1] = self.int_tetra[0]
+        it = np.nditer(self.enT, flags=['multi_index'])
+        while not it.finished:
+            i, j, k, l = it.multi_index
+            self.enT[i, j, k, l] = \
+                0.5 * (en[i, j] + en[i, k] + en[i, l] +
+                       en[j, k] + en[l, j] + en[k, l]) +\
+                (de31[i, j, k] + de31[i, k, l] +
+                 de31[i, j, l] + de31[j, k, l]) +\
+                de41[i, j, k, l]
+
+        # ε^octahedron
+        de22 = np.zeros((2, 2), np.float64)  # 2body-2nd interaction energy
+        de22[1, 1] = self.int_pair[1]
+        it = np.nditer(self.enO, flags=['multi_index'])
+        while not it.finished:
+            i, j, k, l, m, n = it.multi_index
+            self.enO[i, j, k, l, m, n] = \
+                0.5 * (en[i, j] + en[i, l] + en[i, m] + en[i, n] +
+                       en[j, k] + en[j, m] + en[j, n] + en[k, l] +
+                       en[k, m] + en[k, n] + en[l, m] + en[l, n]) +\
+                (de22[i, k] + de22[j, l] + de22[n, m])  # interaction energy
+
+        self.mu[0] = self.enT[0, 0, 0, 0] + self.enO[0, 0, 0, 0, 0, 0] - \
+            self.enT[1, 1, 1, 1] - self.enO[1, 1, 1, 1, 1, 1]
         self.mu[1] = -self.mu[0]
 
     # implement the inherited abstract method run()

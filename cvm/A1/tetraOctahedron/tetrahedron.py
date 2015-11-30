@@ -4,7 +4,7 @@
 import numpy as np
 
 
-def __eta_ijkl(self, i, j, k, l):
+def __eta(self, i, j, k, l):
     """
     η_ijkl = exp[-β*e_ijkl + (β/8)(mu_i + mu_j + mu_k + mu_l)]
                 * X^(1/8)
@@ -34,15 +34,15 @@ def __eta_ijkl(self, i, j, k, l):
     return exp * np.power(X, 1 / 8) * np.power(Y, -1 / 2) * Z
 
 
-def __z_ijkl(self):
+def wT(self):
     """
     z_ijkl = η_ijkl * exp(β*λ/2)
     """
-    eta_0000 = self.__eta_ijkl(0, 0, 0, 0)
-    eta_1000 = self.__eta_ijkl(1, 0, 0, 0)
-    eta_1100 = self.__eta_ijkl(1, 1, 0, 0)
-    eta_1110 = self.__eta_ijkl(1, 1, 1, 0)
-    eta_1111 = self.__eta_ijkl(1, 1, 1, 1)
+    eta_0000 = __eta(0, 0, 0, 0)
+    eta_1000 = __eta(1, 0, 0, 0)
+    eta_1100 = __eta(1, 1, 0, 0)
+    eta_1110 = __eta(1, 1, 1, 0)
+    eta_1111 = __eta(1, 1, 1, 1)
     self.eta_sum = eta_1111 + eta_1110 * 4 + \
         eta_1100 * 6 + eta_1000 * 4 + eta_0000
     self.wt_[0, 0, 0, 0] = eta_0000 / self.eta_sum

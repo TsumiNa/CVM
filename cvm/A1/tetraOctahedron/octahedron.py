@@ -4,7 +4,7 @@
 import numpy as np
 
 
-def __eta_ijkl(self, i, j, k, l, m, n):
+def __eta(self, i, j, k, l, m, n):
     """
     η_ijkl = exp[-β*e_ijkl + (β/6)(mu_i + mu_j + mu_k + mu_l + mu_m + mu_n)]
                 * X^(1/6)
@@ -38,17 +38,17 @@ def __eta_ijkl(self, i, j, k, l, m, n):
     return exp * np.power(X, 1 / 8) * np.power(Y, -1 / 2) * Z
 
 
-def __z_ijkl(self):
+def wO(self):
     """
     z_ijkl = η_ijkl * exp(β*λ)
     """
-    eta_000000 = self.__eta_ijkl(0, 0, 0, 0, 0, 0)
-    eta_100000 = self.__eta_ijkl(1, 0, 0, 0, 0, 0)
-    eta_110000 = self.__eta_ijkl(1, 1, 0, 0, 0, 0)
-    eta_111000 = self.__eta_ijkl(1, 1, 1, 0, 0, 0)
-    eta_111100 = self.__eta_ijkl(1, 1, 1, 1, 0, 0)
-    eta_111110 = self.__eta_ijkl(1, 1, 1, 1, 1, 0)
-    eta_111111 = self.__eta_ijkl(1, 1, 1, 1, 1, 1)
+    eta_000000 = __eta(0, 0, 0, 0, 0, 0)
+    eta_100000 = __eta(1, 0, 0, 0, 0, 0)
+    eta_110000 = __eta(1, 1, 0, 0, 0, 0)
+    eta_111000 = __eta(1, 1, 1, 0, 0, 0)
+    eta_111100 = __eta(1, 1, 1, 1, 0, 0)
+    eta_111110 = __eta(1, 1, 1, 1, 1, 0)
+    eta_111111 = __eta(1, 1, 1, 1, 1, 1)
     self.eta_sum = eta_111111 + eta_111000 * 4 + \
         eta_110000 * 6 + eta_100000 * 4 + eta_000000
     self.wo_[0, 0, 0, 0, 0, 0] = eta_000000 / self.eta_sum
