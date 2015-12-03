@@ -41,11 +41,11 @@
     */
     "int_en": {
         "pair": [
-            -0.0550000,
-            0.01
+            -0.2060,
+            0.05
         ],
-        "trip": [0.005],
-        "tetra": [0.008]
+        "trip": [0.000],
+        "tetra": [0.000]
     },
 
     /*
@@ -60,10 +60,15 @@
 
     Temperature can be setted as a single value or continuous as [star, end, num]
     */
-    "temp": [2500],
+    "temp": [800, 2500, 20],
 
     /*
     Boltzmann constant
     */
-    "bzc": 8.6173324E-5
+    "bzc": 8.6173324E-5,
+
+    /*
+    Convergence condition
+     */
+    "condition": 1e-10
 }

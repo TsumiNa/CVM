@@ -21,6 +21,7 @@ class CVM(object):
         'temp',  # temperature
         'bzc',  # Boltzmann constant
         'x_1',  # elements concentration
+        'condition',  # convergence condition
         'delta_mu',  # opposite chemical potential
         'int_pair',  # pair interaction energy
         'int_trip',  # triple interaction energy
@@ -62,6 +63,9 @@ class CVM(object):
 
         # Boltzmann constant
         self.bzc = np.float32(inp['bzc'])
+
+        # convergence condition
+        self.condition = np.float32(inp['condition'])
 
         # Interation energies
         self.int_pair = np.float64(inp['int_en']['pair'])
