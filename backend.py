@@ -6,7 +6,7 @@ import numpy as np
 
 
 def draw(opt):
-    plt.figure(figsize=(8, 5), dpi=200)  # 800 * 500
+    plt.figure(figsize=(8, 5), dpi=150)  # 800 * 500
     # Y axis
     y_axis = opt['Meta']['Temperature']
 

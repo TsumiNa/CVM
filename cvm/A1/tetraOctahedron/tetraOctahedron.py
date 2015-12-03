@@ -15,6 +15,8 @@ class tetraOctahedron(CVM):
         'x_',  # point, dim is 2
         'y_',  # pair, dim is 2x2
         'z_',  # triangle, dim is 2x2x2
+        'zt_',  # triangle from T, dim is 2x2x2
+        'zo_',  # triangle from O, dim is 2x2x2
         'af_',  # perturbation from octahedron, dim is 2x2x2
         'enT',  # energy of tetrahedron, dim is 2x2x2x2
         'enO',  # energy of octahedron, dim is 2x2x2x2x2x2
@@ -33,7 +35,8 @@ class tetraOctahedron(CVM):
         self.x_ = np.zeros((2), np.float64)
         self.y_ = np.zeros((2, 2), np.float64)
         self.z_ = np.zeros((2, 2, 2), np.float64)
-        self.af_ = np.zeros((2, 2, 2), np.float64)
+        self.zt_ = np.zeros((2, 2, 2), np.float64)
+        self.zo_ = np.zeros((2, 2, 2), np.float64)
         self.enT = np.zeros((2, 2, 2, 2), np.float64)
         self.enO = np.zeros((2, 2, 2, 2, 2, 2), np.float64)
         self.beta = np.float64(0.0)
@@ -75,7 +78,7 @@ class tetraOctahedron(CVM):
         ########################
         # pure energy of 2body-1st
         en2 = np.zeros((2, 2), np.float64)
-        en2[0, 1] = en2[0, 1] = \
+        en2[0, 1] = en2[1, 0] = \
             0.5 * (en2[0, 0] + en2[1, 1] - self.int_pair[1])
 
         # energy ε
@@ -98,8 +101,9 @@ class tetraOctahedron(CVM):
         """
         self.count = 0
         self.checker = np.float64(1.0)
+        self.af_ = np.zeros((2, 2, 2), np.float64)
         self.main_condition = np.float64(1e-3)
-        self.sub_condition = np.float64(1e-1)
+        self.sub_condition = np.float64(1e-3)
 
         self.x_[0] = self.x_1
         self.x_[1] = 1 - self.x_1
@@ -115,9 +119,9 @@ class tetraOctahedron(CVM):
         self.__init()
         while self.checker > self.condition:
             while self.checker > self.main_condition:
+                # print('process run')
                 process(self)
             else:
-                print('next condition')
                 self.main_condition /= 10
                 self.sub_condition /= 10
 

@@ -50,28 +50,28 @@ def __eta_octa(self, i, j, k, l, m, n):
     return np.exp(-self.beta * self.enO[i, j, k, l, m, n] - af)
 
 
-def process(self):
+def _eta_TO(self):
     # counts
     self.count += 1
 
     # tetrahedron
-    zt_ = np.zeros((2, 2, 2), np.float64)
+    self.zt_ = np.zeros((2, 2, 2), np.float64)
     wt_ = np.zeros((2, 2, 2, 2), np.float64)
     it = np.nditer(wt_, flags=['multi_index'])
     while not it.finished:
         i, j, k, l = it.multi_index
         wt_[i, j, k, l] = __eta_tetra(self, i, j, k, l)
-        zt_[i, j, k] += wt_[i, j, k, l]
+        self.zt_[i, j, k] += wt_[i, j, k, l]
         it.iternext()
 
     # octahedron
-    zo_ = np.zeros((2, 2, 2), np.float64)
+    self.zo_ = np.zeros((2, 2, 2), np.float64)
     wo_ = np.zeros((2, 2, 2, 2, 2, 2), np.float64)
     it = np.nditer(wo_, flags=['multi_index'])
     while not it.finished:
         i, j, k, l, m, n = it.multi_index
         wo_[i, j, k, l, m, n] = __eta_octa(self, i, j, k, l, m, n)
-        zo_[i, j, k] += wo_[i, j, k, l, m, n]
+        self.zo_[i, j, k] += wo_[i, j, k, l, m, n]
         it.iternext()
 
     # alpha
@@ -80,43 +80,49 @@ def process(self):
     it = np.nditer(self.af_, flags=['multi_index'])
     while not it.finished:
         i, j, k = it.multi_index
-        daf[i, j, k] = 0.15 * np.log(zo_[i, j, k] / zt_[i, j, k])
+        daf[i, j, k] = 0.15 * np.log(self.zo_[i, j, k] / self.zt_[i, j, k])
         self.af_[i, j, k] += daf[i, j, k]
         sub_checker += np.absolute(daf[i, j, k])
         it.iternext()
 
+    return sub_checker
+
+
+def process(self):
     # check sub consistant
-    if sub_checker > self.sub_condition:
-        # print(sub_checker)
-        process(self)
-    else:
-        # get concentration
-        eta_sum = np.float64(0)
-        self.checker = np.float64(0)
-        self.x_ = np.zeros((2), np.float64)
-        self.y_ = np.zeros((2, 2), np.float64)
-        it = np.nditer(zt_, flags=['multi_index'])
-        while not it.finished:
-            i, j, k = it.multi_index
-            zt_[i, j, k] = (zo_[i, j, k] + 2 * zt_[i, j, k]) / 3
-            eta_sum += zt_[i, j, k]
-            it.iternext()
+    sub_checker = _eta_TO(self)
+    while sub_checker > self.sub_condition:
+        print('sub chker: {:04.4g},   sub condition: {:04.2g}.   chker: {:04.4g},   condition: {:04.2g}'.format(sub_checker, self.sub_condition, self.checker, self.condition))
+        sub_checker = _eta_TO(self)
 
-        it = np.nditer(self.z_, flags=['multi_index'])
-        while not it.finished:
-            i, j, k = it.multi_index
-            zt_[i, j, k] /= eta_sum
-            self.checker += np.absolute(self.z_[i, j, k] - zt_[i, j, k])
+    # get concentration
+    eta_sum = np.float64(0)
+    self.checker = np.float64(0)
+    self.x_ = np.zeros((2), np.float64)
+    self.y_ = np.zeros((2, 2), np.float64)
+    it = np.nditer(self.zt_, flags=['multi_index'])
+    while not it.finished:
+        i, j, k = it.multi_index
+        self.zt_[i, j, k] = (self.zo_[i, j, k] + 2 * self.zt_[i, j, k]) / 3
+        eta_sum += self.zt_[i, j, k]
+        it.iternext()
 
-            # z_
-            self.z_[i, j, k] = zt_[i, j, k]
+    it = np.nditer(self.z_, flags=['multi_index'])
+    while not it.finished:
+        i, j, k = it.multi_index
+        # print('self.zt_{} is: {}'.format(it.multi_index, self.zt_[i, j, k]))
+        self.zt_[i, j, k] /= eta_sum
+        self.checker += np.absolute(self.z_[i, j, k] - self.zt_[i, j, k])
 
-            # y_
-            self.y_[i, j] += self.z_[i, j, k]
+        # z_
+        self.z_[i, j, k] = self.zt_[i, j, k]
 
-            # x_
-            self.x_[i] += self.z_[i, j, k]
-            it.iternext()
+        # y_
+        self.y_[i, j] += self.z_[i, j, k]
+
+        # x_
+        self.x_[i] += self.z_[i, j, k]
+        it.iternext()
 
         # print('Tetra eta_sum is: {}'.format(eta_sum))
         # print('Tetra x_[0] is: {}'.format(self.x_[0]))
