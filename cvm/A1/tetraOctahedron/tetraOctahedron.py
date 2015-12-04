@@ -35,8 +35,6 @@ class tetraOctahedron(CVM):
         self.x_ = np.zeros((2), np.float64)
         self.y_ = np.zeros((2, 2), np.float64)
         self.z_ = np.zeros((2, 2, 2), np.float64)
-        self.zt_ = np.zeros((2, 2, 2), np.float64)
-        self.zo_ = np.zeros((2, 2, 2), np.float64)
         self.enT = np.zeros((2, 2, 2, 2), np.float64)
         self.enO = np.zeros((2, 2, 2, 2, 2, 2), np.float64)
         self.beta = np.float64(0.0)
@@ -92,7 +90,6 @@ class tetraOctahedron(CVM):
         # chemical potential
         self.mu[0] = (self.enT[0, 0, 0, 0] + self.enO[0, 0, 0, 0, 0, 0]) - \
             (self.enT[1, 1, 1, 1] + self.enO[1, 1, 1, 1, 1, 1])
-        self.mu[1] = -self.mu[0]
         # print('mu is: {}'.format(self.mu[0]))
 
     def __init(self):
@@ -103,10 +100,7 @@ class tetraOctahedron(CVM):
         self.checker = np.float64(1.0)
         self.af_ = np.zeros((2, 2, 2), np.float64)
         self.main_condition = np.float64(1e-3)
-        self.sub_condition = np.float64(1e-3)
-
-        self.x_[0] = self.x_1
-        self.x_[1] = 1 - self.x_1
+        self.sub_condition = np.float64(1e-1)
 
         it = np.nditer(self.z_, flags=['multi_index'])
         while not it.finished:
@@ -132,7 +126,10 @@ class tetraOctahedron(CVM):
         for dmu in np.nditer(self.delta_mu):
             data = []
             self.mu[0] += dmu
-            # print('mu = {:06.4f}:'.format(self.mu[0].item(0)))
+            self.mu[1] = -self.mu[0]
+            self.x_[0] = self.x_1
+            self.x_[1] = 1 - self.x_1
+            print(' mu = {:06.4f}:'.format(self.mu[0].item(0)))
 
             # delta mu iteration
             for temp in np.nditer(self.temp):
@@ -143,10 +140,10 @@ class tetraOctahedron(CVM):
 
                 # push result into data
                 data.append({'temp': temp.item(0), 'c': self.x_[0].item(0)})
-                print('    T = {:06.4f}K,  c = {:06.4f},  conut = {}'.
+                print('    T = {:06.3f}K,  c = {:06.6f},  conut = {}'.
                       format(temp.item(0), self.x_[0].item(0), self.count))
 
-            # print('\n')
+            print('\n')
             # save result to output
             self.output['Results'].append(
                 {'mu': self.mu[0].item(0), 'data': data})

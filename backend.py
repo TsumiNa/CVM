@@ -28,6 +28,11 @@ def draw(opt):
         plt.plot(x_axis[i], y_axis, '-', mew=1.5, mfc='w', ms=6, lw=1.5,
                  label=label[i])
 
+    y_exp = opt['Meta']['Experiment'][0]['temp']
+    x_exp = opt['Meta']['Experiment'][0]['c']
+    plt.plot(x_exp, y_exp, '--x', mew=1.5, mfc='w', ms=6, lw=1.5,
+             label='Experiment')
+
     # for preview
     plt.grid(axis='y')
     plt.ylabel(r'Temperature ($K$)')

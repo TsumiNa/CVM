@@ -83,6 +83,7 @@ class CVM(object):
         self.output['Meta']['Date'] = date_time_str
         self.output['Meta']['Temperature'] = self.temp.tolist()
         self.output['Meta']['DeltaMu'] = self.delta_mu.tolist()
+        self.output['Meta']['Experiment'] = inp['experiment']
 
     def run(self):
         raise NameError('must implement this inherited abstract method')

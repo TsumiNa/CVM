@@ -37,9 +37,9 @@ def __eta_tetra(self, i, j, k, l):
 
 def __eta_octa(self, i, j, k, l, m, n):
     """
-    η_ijklmn = exp[-β*e_ijklmn +
-                    af_ijm + af_ijn + af_jkm + af_jkn +
-                    af_klm + af_kln + af_ilm + af_iln]
+    η_ijklmn = exp[-β*e_ijklmn -
+                    (af_ijm + af_ijn + af_jkm + af_jkn +
+                    af_klm + af_kln + af_ilm + af_iln)]
     """
     # Alpha
     af = self.af_[i, j, m] + self.af_[i, j, n] + self.af_[j, k, m] +\
@@ -92,7 +92,7 @@ def process(self):
     # check sub consistant
     sub_checker = _eta_TO(self)
     while sub_checker > self.sub_condition:
-        print('sub chker: {:04.4g},   sub condition: {:04.2g}.   chker: {:04.4g},   condition: {:04.2g}'.format(sub_checker, self.sub_condition, self.checker, self.condition))
+        # print('sub chker: {:04.4g},   sub condition: {:04.2g}.   chker: {:04.4g},   condition: {:04.2g}'.format(sub_checker, self.sub_condition, self.checker, self.main_condition))
         sub_checker = _eta_TO(self)
 
     # get concentration

@@ -31,36 +31,14 @@
     ],
 
     /*
-    elements concentration
-    must be normalized
-    */
-    "x_1": 0.2,
-
-    /*
-    Interaction energy
-    */
-    "int_en": {
-        "pair": [
-            -0.2060,
-            0.05
-        ],
-        "trip": [0.000],
-        "tetra": [0.000]
-    },
-
-    /*
-    Chemical potential
-
-    Chemical potential can be setted as a single value or continuous as [star, end, num]
-    */
-    "delta_mu": [0],
-
-    /*
-    Temperature (K)
-
-    Temperature can be setted as a single value or continuous as [star, end, num]
-    */
-    "temp": [800, 2500, 20],
+    Experiment
+     */
+    "experiment": [
+        {
+            "temp": [863, 855.5, 848, 840.5, 833, 828, 823 ],
+            "c": [0.12, 0.115, 0.11, 0.105, 0.1, 0.095, 0.09]
+        }
+    ],
 
     /*
     Boltzmann constant
@@ -68,7 +46,36 @@
     "bzc": 8.6173324E-5,
 
     /*
+    elements concentration
+    must be normalized
+    */
+    "x_1": 0.1,
+
+    /*
     Convergence condition
      */
-    "condition": 1e-10
+    "condition": 1e-8,
+
+    /*
+    Interaction energy
+    */
+    "int_en": {
+        "pair": [-0.132, 0.0476, 0.00674, 0.02987, 0.01002, -0.00649, 0.00466, -0.00042],
+        "trip": [0.008],
+        "tetra": [0.02]
+    },
+
+    /*
+    Chemical potential
+
+    Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
+    */
+    "delta_mu": [0],
+
+    /*
+    Temperature (K)
+
+    Temperature can be setted as a single value or continuous as [highest, lowest, point]
+    */
+    "temp": [2700, 1500, 20]
 }

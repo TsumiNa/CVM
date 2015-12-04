@@ -36,8 +36,11 @@ class tetrahedron(CVM):
         self.__init()
 
     def __init(self):
+        self.x_[0] = self.x_1
+        self.x_[1] = 1 - self.x_1
+
         en = np.zeros((2, 2), np.float64)
-        en[0, 1] = en[0, 1] = 0.5 * (en[0, 0] + en[1, 1] - self.int_pair[0])
+        en[0, 1] = en[1, 0] = 0.5 * (en[0, 0] + en[1, 1] - self.int_pair[0])
         self.en[0, 0, 0, 0] = 0.0
         self.en[1, 0, 0, 0] = 1.5 * (en[0, 0] + en[0, 1])
         self.en[1, 1, 0, 0] = 0.5 * (en[0, 0] + 4 * en[0, 1] + en[1, 1])
@@ -45,8 +48,7 @@ class tetrahedron(CVM):
         self.en[1, 1, 1, 1] = \
             3.0 * en[1, 1] + 4 * self.int_trip[0] + self.int_tetra[0]
 
-        self.mu[0] = self.en[0, 0, 0, 0] - self.en[1, 1, 1, 1]
-        self.mu[1] = -self.mu[0]
+        self.mu[1] = self.en[0, 0, 0, 0] - self.en[1, 1, 1, 1]
 
     # implement the inherited abstract method run()
     def run(self):
@@ -54,14 +56,13 @@ class tetrahedron(CVM):
         # temperature iteration
         for dmu in np.nditer(self.delta_mu):
             data = []
-            self.mu[0] += dmu
+            self.mu[1] += dmu
+            self.mu[0] = -self.mu[1]
             # print('mu = {:06.4f}:'.format(self.mu[0].item(0)))
 
             # delta mu iteration
             for temp in np.nditer(self.temp):
                 self.beta = np.float64(pow(self.bzc * temp, -1))
-                self.x_[0] = self.x_1
-                self.x_[1] = 1 - self.x_1
 
                 self.y_[0, 0] = self.x_[0]**2
                 self.y_[0, 1] = self.y_[1, 0] = self.x_[0] * self.x_[1]
@@ -69,7 +70,7 @@ class tetrahedron(CVM):
 
                 self.__run()
                 data.append(
-                    {'temp': temp.item(0), 'c': self.x_[0].item(0)})
+                    {'temp': temp.item(0), 'c': self.x_[1].item(0)})
                 # print('    T = {:06.4f}K,  c = {:06.4f}'.format(
                 #     temp.item(0), self.x_[0].item(0)))
 
@@ -77,7 +78,7 @@ class tetrahedron(CVM):
             # save result to output
             self.output['Results'].append(
                 {'mu': self.mu[0].item(0), 'data': data})
-            self.mu[0] -= dmu
+            self.mu[1] -= dmu
 
     def __eta_ijkl(self, i, j, k, l):
         """
