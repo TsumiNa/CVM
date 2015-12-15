@@ -20,7 +20,8 @@ import datetime as dt
 import re as regex
 
 # from .A1 import tetrahedron as nim
-from .A1 import tetraOctahedron as nim
+# from .A1 import tetraOctahedron as nim
+from .A1 import tetraSquare as nim
 
 __version__ = '0.1.0'
 __all__ = [
