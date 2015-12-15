@@ -57,9 +57,18 @@ class tetraSquare(CVM):
         e4 = np.zeros((2, 2), np.float64)
         e4[0, 1] = e4[1, 0] = 0.5 * (e4[0, 0] + e4[1, 1] - self.int_pair[3])
 
-        #############################################
-        # tetrahedron
-        #############################################
+        # 2nd interaction energy
+        de22 = np.zeros((2, 2), np.float64)
+        de22[1, 1] = self.int_pair[1]
+
+        # 3rd interaction energy
+        de23 = np.zeros((2, 2), np.float64)
+        de23[1, 1] = self.int_pair[2]
+
+        # 4th interaction energy
+        de24 = np.zeros((2, 2), np.float64)
+        de24[1, 1] = self.int_pair[3]
+
         # 3body-1st interaction energy
         de31 = np.zeros((2, 2, 2), np.float64)
         de31[1, 1, 1] = self.int_trip[0]
@@ -81,8 +90,22 @@ class tetraSquare(CVM):
                 (1 / 16) * (e4[i, n] + e4[m, o]) +\
                 (de31[i, j, k] + de31[i, k, l] + de31[i, j, l] +
                  de31[j, k, l] + de31[j, k, m] + de31[j, l, o]) +\
-                 de41[i, j, k, l]
+                de41[i, j, k, l]
             # print('self.enTS{} is: {}'.format(it.multi_index, self.enTS[i, j, k, l, m, n, o]))
+            it.iternext()
+        # while not it.finished:
+        #     i, j, k, l, m, n, o = it.multi_index
+        #     self.enTS[i, j, k, l, m, n, o] = \
+        #         (1 / 2) * (e1[i, j] + e1[i, k] + e1[i, l] + e1[j, k] +
+        #                     e1[j, l] + e1[j, m] + e1[j, n] + e1[j, o] +
+        #                     e1[o, l] + e1[l, k] + e1[k, m]) +\
+        #         (de22[i, m] + de22[i, o] + de22[n, m] + de22[n, o]) +\
+        #         (de23[k, n] + de23[k, o] + de23[l, n] + de23[l, m]) +\
+        #         (de24[i, n] + de24[m, o]) +\
+        #         (de31[i, j, k] + de31[i, k, l] + de31[i, j, l] +
+        #          de31[j, k, l] + de31[j, k, m] + de31[j, l, o]) +\
+        #         de41[i, j, k, l]
+        #     # print('self.enTS{} is: {}'.format(it.multi_index, self.enTS[i, j, k, l, m, n, o]))
             it.iternext()
         # =============================================
 

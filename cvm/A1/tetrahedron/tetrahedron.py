@@ -36,9 +36,6 @@ class tetrahedron(CVM):
         self.__init()
 
     def __init(self):
-        self.x_[0] = self.x_1
-        self.x_[1] = 1 - self.x_1
-
         en = np.zeros((2, 2), np.float64)
         en[0, 1] = en[1, 0] = 0.5 * (en[0, 0] + en[1, 1] - self.int_pair[0])
         self.en[0, 0, 0, 0] = 0.0
@@ -48,7 +45,7 @@ class tetrahedron(CVM):
         self.en[1, 1, 1, 1] = \
             3.0 * en[1, 1] + 4 * self.int_trip[0] + self.int_tetra[0]
 
-        self.mu[1] = self.en[0, 0, 0, 0] - self.en[1, 1, 1, 1]
+        self.mu[0] = -(self.en[0, 0, 0, 0] - self.en[1, 1, 1, 1])
 
     # implement the inherited abstract method run()
     def run(self):
@@ -56,8 +53,10 @@ class tetrahedron(CVM):
         # temperature iteration
         for dmu in np.nditer(self.delta_mu):
             data = []
-            self.mu[1] += dmu
-            self.mu[0] = -self.mu[1]
+            self.mu[0] += dmu
+            self.mu[1] = -self.mu[0]
+            self.x_[1] = self.x_1
+            self.x_[0] = 1 - self.x_1
             # print('mu = {:06.4f}:'.format(self.mu[0].item(0)))
 
             # delta mu iteration
@@ -78,7 +77,7 @@ class tetrahedron(CVM):
             # save result to output
             self.output['Results'].append(
                 {'mu': self.mu[0].item(0), 'data': data})
-            self.mu[1] -= dmu
+            self.mu[0] -= dmu
 
     def __eta_ijkl(self, i, j, k, l):
         """
@@ -146,6 +145,8 @@ class tetrahedron(CVM):
         # x_
         self.x_[0] = self.y_[0, 0] + self.y_[0, 1]
         self.x_[1] = self.y_[1, 0] + self.y_[1, 1]
+        print('  x1: {:6.4g},  eta_sum:  {:6.4g}'
+              .format(self.x_[1], self.eta_sum))
 
         if np.absolute(self.eta_sum - eta_sum) > 1e-12:  # e-10 is needed
             self.__run()
