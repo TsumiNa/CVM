@@ -44,8 +44,8 @@ class tetraOctahedron(CVM):
         # configuration
         ###############################################
         # pure energy of 2body-1st
-        en = np.zeros((2, 2), np.float64)
-        en[0, 1] = en[1, 0] = 0.5 * (en[0, 0] + en[1, 1] - self.int_pair[0])
+        en1 = np.zeros((2, 2), np.float64)
+        en1[0, 1] = en1[1, 0] = 0.5 * (en1[0, 0] + en1[1, 1] - self.int_pair[0])
 
         #############################################
         # tetrahedron
@@ -63,8 +63,8 @@ class tetraOctahedron(CVM):
         while not it.finished:
             i, j, k, l = it.multi_index
             self.enT[i, j, k, l] = \
-                0.5 * (en[i, j] + en[i, k] + en[i, l] +
-                       en[j, k] + en[j, l] + en[l, k]) +\
+                0.5 * (en1[i, j] + en1[i, k] + en1[i, l] +
+                       en1[j, k] + en1[j, l] + en1[l, k]) +\
                 (de31[i, j, k] + de31[i, k, l] +
                  de31[i, j, l] + de31[j, k, l]) +\
                 de41[i, j, k, l]
@@ -100,7 +100,7 @@ class tetraOctahedron(CVM):
         self.checker = np.float64(1.0)
         self.af_ = np.zeros((2, 2, 2), np.float64)
         self.main_condition = np.float64(1e-3)
-        self.sub_condition = np.float64(1e-1)
+        self.sub_condition = np.float64(1e-2)
 
         it = np.nditer(self.z_, flags=['multi_index'])
         while not it.finished:
@@ -113,7 +113,6 @@ class tetraOctahedron(CVM):
         self.__init()
         while self.checker > self.condition:
             while self.checker > self.main_condition:
-                # print('process run')
                 process(self)
             else:
                 self.main_condition /= 10
@@ -127,8 +126,8 @@ class tetraOctahedron(CVM):
             data = []
             self.mu[0] += dmu
             self.mu[1] = -self.mu[0]
-            self.x_[0] = self.x_1
-            self.x_[1] = 1 - self.x_1
+            self.x_[1] = self.x_1
+            self.x_[0] = 1 - self.x_1
             print(' mu = {:06.4f}:'.format(self.mu[0].item(0)))
 
             # delta mu iteration
@@ -139,9 +138,9 @@ class tetraOctahedron(CVM):
                 self.__run()
 
                 # push result into data
-                data.append({'temp': temp.item(0), 'c': self.x_[0].item(0)})
+                data.append({'temp': temp.item(0), 'c': self.x_[1].item(0)})
                 print('    T = {:06.3f}K,  c = {:06.6f},  conut = {}'.
-                      format(temp.item(0), self.x_[0].item(0), self.count))
+                      format(temp.item(0), self.x_[1].item(0), self.count))
 
             print('\n')
             # save result to output

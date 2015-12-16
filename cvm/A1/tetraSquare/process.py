@@ -109,5 +109,5 @@ def process(self):
         self.m1_[i] += self.ts_[i, j, k, l, m, n, o]
         it.iternext()
 
-    print('  chker: {:6.4g},   condition: {:04.2g},   x1: {:6.4g},  eta_sum:  {:6.4g}'
+    print('  chker: {:0<8.4g},   condition: {:0<8.2g},   x1: {:0<8.4g},  eta_sum:  {:0<8.4g}'
           .format(self.checker, self.condition, self.m1_[1], eta_sum))

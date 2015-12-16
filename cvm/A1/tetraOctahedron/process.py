@@ -92,7 +92,6 @@ def process(self):
     # check sub consistant
     sub_checker = _eta_TO(self)
     while sub_checker > self.sub_condition:
-        # print('sub chker: {:04.4g},   sub condition: {:04.2g}.   chker: {:04.4g},   condition: {:04.2g}'.format(sub_checker, self.sub_condition, self.checker, self.main_condition))
         sub_checker = _eta_TO(self)
 
     # get concentration
