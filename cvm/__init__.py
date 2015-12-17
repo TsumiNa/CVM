@@ -20,8 +20,8 @@ import datetime as dt
 import re as regex
 
 # from .A1 import tetrahedron as nim
-from .A1 import tetraOctahedron as nim
-# from .A1 import tetraSquare as nim
+# from .A1 import tetraOctahedron as nim
+from .A1 import tetraSquare as nim
 
 __version__ = '0.1.0'
 __all__ = [
@@ -57,7 +57,7 @@ class CvmCalc(object):
 
     def __init__(self, inp=None, backend=None):
         """
-        keep None when you don't want to custom yourself.
+        keep None when you don't want to custom by yourself.
         """
         super(CvmCalc, self).__init__()
         cmd_folder = os.path.dirname(__file__)

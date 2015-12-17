@@ -71,7 +71,7 @@ def _eta_TO(self):
     while not it.finished:
         i, j, k, l, m, n = it.multi_index
         wo_[i, j, k, l, m, n] = __eta_octa(self, i, j, k, l, m, n)
-        self.zo_[i, j, k] += wo_[i, j, k, l, m, n]
+        self.zo_[i, j, m] += wo_[i, j, k, l, m, n]
         it.iternext()
 
     # alpha
@@ -80,7 +80,7 @@ def _eta_TO(self):
     it = np.nditer(self.af_, flags=['multi_index'])
     while not it.finished:
         i, j, k = it.multi_index
-        daf[i, j, k] = 0.15 * np.log(self.zo_[i, j, k] / self.zt_[i, j, k])
+        daf[i, j, k] = 0.16 * np.log(self.zo_[i, j, k] / self.zt_[i, j, k])
         self.af_[i, j, k] += daf[i, j, k]
         sub_checker += np.absolute(daf[i, j, k])
         it.iternext()
@@ -109,7 +109,6 @@ def process(self):
     it = np.nditer(self.z_, flags=['multi_index'])
     while not it.finished:
         i, j, k = it.multi_index
-        # print('self.zt_{} is: {}'.format(it.multi_index, self.zt_[i, j, k]))
         self.zt_[i, j, k] /= eta_sum
         self.checker += np.absolute(self.z_[i, j, k] - self.zt_[i, j, k])
 
@@ -123,6 +122,5 @@ def process(self):
         self.x_[i] += self.z_[i, j, k]
         it.iternext()
 
-        # print('Tetra eta_sum is: {}'.format(eta_sum))
-        # print('Tetra x_[0] is: {}'.format(self.x_[0]))
-        # print('Tetra x_[1] is: {}'.format(self.x_[1]))
+    # print('  sub chker: {:0<8.4g},   condition: {:4.2g},   x1: {:0<8.4g},  eta_sum:  {:0<8.4g}'
+    #       .format(sub_checker, self.sub_condition, self.x_[1], eta_sum))

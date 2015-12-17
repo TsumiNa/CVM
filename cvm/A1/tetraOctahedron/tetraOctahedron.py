@@ -45,7 +45,8 @@ class tetraOctahedron(CVM):
         ###############################################
         # pure energy of 2body-1st
         en1 = np.zeros((2, 2), np.float64)
-        en1[0, 1] = en1[1, 0] = 0.5 * (en1[0, 0] + en1[1, 1] - self.int_pair[0])
+        en1[0, 1] = en1[1, 0] = \
+            0.5 * (en1[0, 0] + en1[1, 1] - self.int_pair[0])
 
         #############################################
         # tetrahedron
