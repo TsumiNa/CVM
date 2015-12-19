@@ -12,10 +12,18 @@ class tetraSquare(CVM):
     """docstring for tetraSquare"""
 
     __slots__ = (
-        'm1_',  # point, dim is 2
+        'x_',  # point, dim is 2
         'm21_',  # pair-1st, dim is 2x2
         'm22_',  # pair-2nd, dim is 2x2
-        'm4_',  # 4body-1234, dim is 2x2x2x2
+        'm23_',  # pair-1st, dim is 2x2
+        'm24_',  # pair-2nd, dim is 2x2
+        'm31_',  # pair-2nd, dim is 2x2x2
+        'm32_',  # pair-2nd, dim is 2x2x2
+        'm34_',  # pair-2nd, dim is 2x2x2
+        'm41_',  # 4body-1234, dim is 2x2x2x2
+        'm42_',  # 4body-1234, dim is 2x2x2x2
+        'm45_',  # 4body-1234, dim is 2x2x2x2
+        'm46_',  # 4body-1234, dim is 2x2x2x2
         'm51_',  # 5body-12567, dim is 2x2x2x2x2
         'm52_',  # 5body-12345, dim is 2x2x2x2x2
         'ts_',  # 7-body, dim is 2x2x2x2x2x2x2
@@ -30,10 +38,18 @@ class tetraSquare(CVM):
         ####################
         # define var
         ####################
-        self.m1_ = np.zeros((2), np.float64)
+        self.x_ = np.zeros((2), np.float64)
         self.m21_ = np.zeros((2, 2), np.float64)
         self.m22_ = np.zeros((2, 2), np.float64)
-        self.m4_ = np.zeros((2, 2, 2, 2), np.float64)
+        self.m23_ = np.zeros((2, 2), np.float64)
+        self.m24_ = np.zeros((2, 2), np.float64)
+        self.m31_ = np.zeros((2, 2, 2), np.float64)
+        self.m32_ = np.zeros((2, 2, 2), np.float64)
+        self.m34_ = np.zeros((2, 2, 2), np.float64)
+        self.m41_ = np.zeros((2, 2, 2, 2), np.float64)
+        self.m42_ = np.zeros((2, 2, 2, 2), np.float64)
+        self.m45_ = np.zeros((2, 2, 2, 2), np.float64)
+        self.m46_ = np.zeros((2, 2, 2, 2), np.float64)
         self.m51_ = np.zeros((2, 2, 2, 2, 2), np.float64)
         self.m52_ = np.zeros((2, 2, 2, 2, 2), np.float64)
         self.ts_ = np.zeros((2, 2, 2, 2, 2, 2, 2), np.float64)
@@ -125,15 +141,15 @@ class tetraSquare(CVM):
         while not it.finished:
             i, j, k, l, m = it.multi_index
             self.m51_[i, j, k, l, m] =\
-                (1 / 9) * (self.m1_[i] * self.m1_[j] * self.m1_[k] *
-                           self.m1_[l] * self.m1_[m])
+                (1 / 9) * (self.x_[i] * self.x_[j] * self.x_[k] *
+                           self.x_[l] * self.x_[m])
             self.m52_[i, j, k, l, m] =\
-                (8 / 9) * (self.m1_[i] * self.m1_[j] * self.m1_[k] *
-                           self.m1_[l] * self.m1_[m])
+                (8 / 9) * (self.x_[i] * self.x_[j] * self.x_[k] *
+                           self.x_[l] * self.x_[m])
             self.m4_[i, j, k, l] =\
-                self.m1_[i] * self.m1_[j] * self.m1_[k] * self.m1_[l]
-            self.m21_[i, j] = (2 / 3) * (self.m1_[i] * self.m1_[j])
-            self.m22_[i, j] = (1 / 3) * (self.m1_[i] * self.m1_[j])
+                self.x_[i] * self.x_[j] * self.x_[k] * self.x_[l]
+            self.m21_[i, j] = (2 / 3) * (self.x_[i] * self.x_[j])
+            self.m22_[i, j] = (1 / 3) * (self.x_[i] * self.x_[j])
             it.iternext()
 
     def __run(self):
@@ -149,8 +165,8 @@ class tetraSquare(CVM):
             data = []
             self.mu[0] += dmu
             self.mu[1] = -self.mu[0]
-            self.m1_[1] = self.x_1
-            self.m1_[0] = 1 - self.x_1
+            self.x_[1] = self.x_1
+            self.x_[0] = 1 - self.x_1
             print(' mu = {:06.4f}:'.format(self.mu[0].item(0)))
 
             # delta mu iteration
@@ -161,9 +177,9 @@ class tetraSquare(CVM):
                 self.__run()
 
                 # push result into data
-                data.append({'temp': temp.item(0), 'c': self.m1_[1].item(0)})
+                data.append({'temp': temp.item(0), 'c': self.x_[1].item(0)})
                 print('    T = {:06.3f}K,  c = {:06.6f},  conut = {}'.
-                      format(temp.item(0), self.m1_[1].item(0), self.count))
+                      format(temp.item(0), self.x_[1].item(0), self.count))
 
             print('\n')
             # save result to output
