@@ -15,17 +15,19 @@ class tetraSquare(CVM):
         'x_',  # point, dim is 2
         'm21_',  # pair-1st, dim is 2x2
         'm22_',  # pair-2nd, dim is 2x2
-        'm23_',  # pair-1st, dim is 2x2
-        'm24_',  # pair-2nd, dim is 2x2
-        'm31_',  # pair-2nd, dim is 2x2x2
-        'm32_',  # pair-2nd, dim is 2x2x2
-        'm34_',  # pair-2nd, dim is 2x2x2
+        'm23_',  # pair-3rd, dim is 2x2
+        # 'm24_',  # pair-2nd, dim is 2x2
+        # 'm31_',  # pair-2nd, dim is 2x2x2
+        'm32_',  # 3body-135, dim is 2x2x2
+        'm34_',  # 3body-236, dim is 2x2x2
+        'm36_',  # 3body-367, dim is 2x2x2
         'm41_',  # 4body-1234, dim is 2x2x2x2
-        'm42_',  # 4body-1234, dim is 2x2x2x2
-        'm45_',  # 4body-1234, dim is 2x2x2x2
-        'm46_',  # 4body-1234, dim is 2x2x2x2
+        'm42_',  # 4body-1235, dim is 2x2x2x2
+        # 'm45_',  # 4body-1234, dim is 2x2x2x2
+        # 'm46_',  # 4body-1234, dim is 2x2x2x2
         'm51_',  # 5body-12567, dim is 2x2x2x2x2
         'm52_',  # 5body-12345, dim is 2x2x2x2x2
+        'm61_',  # 6body-123567, dim is 2x2x2x2x2x2
         'ts_',  # 7-body, dim is 2x2x2x2x2x2x2
         'enTS',  # energy of tetrahedron, dim is 2x2x2x2
         'mu',  # opposite chemical potential, dim is 2
@@ -39,22 +41,38 @@ class tetraSquare(CVM):
         # define var
         ####################
         self.x_ = np.zeros((2), np.float64)
+
+        # pair
         self.m21_ = np.zeros((2, 2), np.float64)
         self.m22_ = np.zeros((2, 2), np.float64)
         self.m23_ = np.zeros((2, 2), np.float64)
-        self.m24_ = np.zeros((2, 2), np.float64)
-        self.m31_ = np.zeros((2, 2, 2), np.float64)
+
+        # 3-body
         self.m32_ = np.zeros((2, 2, 2), np.float64)
         self.m34_ = np.zeros((2, 2, 2), np.float64)
+        self.m36_ = np.zeros((2, 2, 2), np.float64)
+
+        # 4-body
         self.m41_ = np.zeros((2, 2, 2, 2), np.float64)
         self.m42_ = np.zeros((2, 2, 2, 2), np.float64)
-        self.m45_ = np.zeros((2, 2, 2, 2), np.float64)
-        self.m46_ = np.zeros((2, 2, 2, 2), np.float64)
+
+        # 5-body
         self.m51_ = np.zeros((2, 2, 2, 2, 2), np.float64)
         self.m52_ = np.zeros((2, 2, 2, 2, 2), np.float64)
+
+        # 6-body
+        self.m61_ = np.zeros((2, 2, 2, 2, 2, 2), np.float64)
+
+        # tetrahedron-square
         self.ts_ = np.zeros((2, 2, 2, 2, 2, 2, 2), np.float64)
+
+        # energy
         self.enTS = np.zeros((2, 2, 2, 2, 2, 2, 2), np.float64)
+
+        # beta
         self.beta = np.float64(0.0)
+
+        # mu
         self.mu = np.zeros((2), np.float64)
 
         ###############################################
