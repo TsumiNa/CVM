@@ -91,7 +91,7 @@ def process(self):
         i, j, k, l, m, n, o = it.multi_index
         ts_[i, j, k, l, m, n, o] = __eta_ts(self, i, j, k, l, m, n, o)
         eta_sum += ts_[i, j, k, l, m, n, o]
-        # print('  ts_{}: {:0<8.4f}'.format(it.multi_index, ts_[i, j, k, l, m, n, o]))
+        print('  ts_{}: {:0<8.4f}'.format(it.multi_index, ts_[i, j, k, l, m, n, o]))
         it.iternext()
 
     # normalization
