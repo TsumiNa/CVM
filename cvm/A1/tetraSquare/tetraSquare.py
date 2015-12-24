@@ -16,15 +16,8 @@ class tetraSquare(CVM):
         'm21_',  # pair-1st, dim is 2x2
         'm22_',  # pair-2nd, dim is 2x2
         'm23_',  # pair-3rd, dim is 2x2
-        # 'm24_',  # pair-2nd, dim is 2x2
-        # 'm31_',  # pair-2nd, dim is 2x2x2
-        'm32_',  # 3body-135, dim is 2x2x2
-        'm34_',  # 3body-236, dim is 2x2x2
-        'm36_',  # 3body-367, dim is 2x2x2
         'm41_',  # 4body-1234, dim is 2x2x2x2
         'm42_',  # 4body-1235, dim is 2x2x2x2
-        # 'm45_',  # 4body-1234, dim is 2x2x2x2
-        # 'm46_',  # 4body-1234, dim is 2x2x2x2
         'm51_',  # 5body-12567, dim is 2x2x2x2x2
         'm52_',  # 5body-12345, dim is 2x2x2x2x2
         'm61_',  # 6body-123567, dim is 2x2x2x2x2x2
@@ -46,11 +39,6 @@ class tetraSquare(CVM):
         self.m21_ = np.zeros((2, 2), np.float64)
         self.m22_ = np.zeros((2, 2), np.float64)
         self.m23_ = np.zeros((2, 2), np.float64)
-
-        # 3-body
-        self.m32_ = np.zeros((2, 2, 2), np.float64)
-        self.m34_ = np.zeros((2, 2, 2), np.float64)
-        self.m36_ = np.zeros((2, 2, 2), np.float64)
 
         # 4-body
         self.m41_ = np.zeros((2, 2, 2, 2), np.float64)
@@ -112,11 +100,11 @@ class tetraSquare(CVM):
         de41[1, 1, 1, 1] = self.int_tetra[0]
 
         # energy ε
-        it = np.nditer(self.enTS, flags=['multi_index'])
+        # it = np.nditer(self.enTS, flags=['multi_index'])
         # while not it.finished:
         #     i, j, k, l, m, n, o = it.multi_index
         #     self.enTS[i, j, k, l, m, n, o] = \
-        #         (1 / 44) * (e1[i, j] + e1[i, k] + e1[i, l] + e1[j, k] +
+        #         (1 / 2) * (e1[i, j] + e1[i, k] + e1[i, l] + e1[j, k] +
         #                     e1[j, l] + e1[j, m] + e1[j, n] + e1[j, o] +
         #                     e1[o, l] + e1[l, k] + e1[k, m]) +\
         #         (1 / 32) * (e2[i, m] + e2[i, o] + e2[n, m] + e2[n, o]) +\
@@ -127,20 +115,21 @@ class tetraSquare(CVM):
         #         de41[i, j, k, l]
         #     # print('self.enTS{} is: {}'.format(it.multi_index, self.enTS[i, j, k, l, m, n, o]))
         #     it.iternext()
-        while not it.finished:
-            i, j, k, l, m, n, o = it.multi_index
-            self.enTS[i, j, k, l, m, n, o] = \
-                (1 / 44) * (e1[i, j] + e1[i, k] + e1[i, l] + e1[j, k] +
-                            e1[j, l] + e1[j, m] + e1[j, n] + e1[j, o] +
-                            e1[o, l] + e1[l, k] + e1[k, m]) +\
-                (1 / 32) * (de22[i, m] + de22[i, o] + de22[n, m] + de22[n, o]) +\
-                (1 / 32) * (de23[k, n] + de23[k, o] + de23[l, n] + de23[l, m]) +\
-                (1 / 16) * (de24[i, n] + de24[m, o]) +\
-                (1 / 8) * (de31[i, j, k] + de31[i, k, l] + de31[i, j, l] +
-                           de31[j, k, l] + de31[j, k, m] + de31[j, l, o]) +\
-                (1 / 4) * de41[i, j, k, l]
-            # print('self.enTS{} is: {}'.format(it.multi_index, self.enTS[i, j, k, l, m, n, o]))
-            it.iternext()
+
+        # while not it.finished:
+        #     i, j, k, l, m, n, o = it.multi_index
+        #     self.enTS[i, j, k, l, m, n, o] = \
+        #         (1 / 44) * (e1[i, j] + e1[i, k] + e1[i, l] + e1[j, k] +
+        #                     e1[j, l] + e1[j, m] + e1[j, n] + e1[j, o] +
+        #                     e1[o, l] + e1[l, k] + e1[k, m]) +\
+        #         (1 / 32) * (de22[i, m] + de22[i, o] + de22[n, m] + de22[n, o]) +\
+        #         (1 / 32) * (de23[k, n] + de23[k, o] + de23[l, n] + de23[l, m]) +\
+        #         (1 / 16) * (de24[i, n] + de24[m, o]) +\
+        #         (1 / 8) * (de31[i, j, k] + de31[i, k, l] + de31[i, j, l] +
+        #                    de31[j, k, l] + de31[j, k, m] + de31[j, l, o]) +\
+        #         (1 / 4) * de41[i, j, k, l]
+        #     # print('self.enTS{} is: {}'.format(it.multi_index, self.enTS[i, j, k, l, m, n, o]))
+        #     it.iternext()
         # =============================================
 
         # chemical potential
@@ -155,19 +144,25 @@ class tetraSquare(CVM):
         self.count = 0
         self.checker = np.float64(1.0)
 
-        it = np.nditer(self.m51_, flags=['multi_index'])
+        it = np.nditer(self.ts_, flags=['multi_index'])
         while not it.finished:
-            i, j, k, l, m = it.multi_index
+            i, j, k, l, m, n, o = it.multi_index
+            self.m61_[i, j, k, l, m, n] =\
+                (self.x_[i] * self.x_[j] * self.x_[k] *
+                 self.x_[l] * self.x_[m] * self.x_[n])
             self.m51_[i, j, k, l, m] =\
                 (1 / 9) * (self.x_[i] * self.x_[j] * self.x_[k] *
                            self.x_[l] * self.x_[m])
             self.m52_[i, j, k, l, m] =\
                 (8 / 9) * (self.x_[i] * self.x_[j] * self.x_[k] *
                            self.x_[l] * self.x_[m])
-            self.m4_[i, j, k, l] =\
-                self.x_[i] * self.x_[j] * self.x_[k] * self.x_[l]
-            self.m21_[i, j] = (2 / 3) * (self.x_[i] * self.x_[j])
-            self.m22_[i, j] = (1 / 3) * (self.x_[i] * self.x_[j])
+            self.m41_[i, j, k, l] =\
+                (1 / 7) * self.x_[i] * self.x_[j] * self.x_[k] * self.x_[l]
+            self.m42_[i, j, k, l] =\
+                (6 / 7) * self.x_[i] * self.x_[j] * self.x_[k] * self.x_[l]
+            self.m21_[i, j] = (2 / 7) * (self.x_[i] * self.x_[j])
+            self.m22_[i, j] = (1 / 7) * (self.x_[i] * self.x_[j])
+            self.m23_[i, j] = (4 / 7) * (self.x_[i] * self.x_[j])
             it.iternext()
 
     def __run(self):
@@ -196,7 +191,7 @@ class tetraSquare(CVM):
 
                 # push result into data
                 data.append({'temp': temp.item(0), 'c': self.x_[1].item(0)})
-                print('    T = {:06.3f}K,  c = {:06.6f},  conut = {}'.
+                print('    T = {:06.3f}K,  c = {:06.6f},  count = {}'.
                       format(temp.item(0), self.x_[1].item(0), self.count))
 
             print('\n')

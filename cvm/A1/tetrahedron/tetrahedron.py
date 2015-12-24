@@ -104,7 +104,7 @@ class tetrahedron(CVM):
                 # calculate
                 self.__run()
                 data.append({'temp': temp.item(0), 'c': self.x_[1].item(0)})
-                print('    T = {:06.3f}K,  c = {:06.6f},  conut = {}'.
+                print('    T = {:06.3f}K,  c = {:06.6f},  count = {}'.
                       format(temp.item(0), self.x_[1].item(0), self.count))
 
             print('\n')
