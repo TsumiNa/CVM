@@ -122,5 +122,5 @@ def process(self):
         self.x_[i] += self.z_[i, j, k]
         it.iternext()
 
-    # print('  sub chker: {:0<8.4g},   condition: {:4.2g},   x1: {:0<8.4g},  eta_sum:  {:0<8.4g}'
-    #       .format(sub_checker, self.sub_condition, self.x_[1], eta_sum))
+    print('  sub chker: {:0<8.4g},   condition: {:4.2g},   x1: {:0<8.4g},  eta_sum:  {:0<8.4g}'
+          .format(sub_checker, self.sub_condition, self.x_[1], eta_sum))

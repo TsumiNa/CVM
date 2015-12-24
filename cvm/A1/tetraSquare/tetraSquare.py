@@ -151,18 +151,16 @@ class tetraSquare(CVM):
                 (self.x_[i] * self.x_[j] * self.x_[k] *
                  self.x_[l] * self.x_[m] * self.x_[n])
             self.m51_[i, j, k, l, m] =\
-                (1 / 9) * (self.x_[i] * self.x_[j] * self.x_[k] *
-                           self.x_[l] * self.x_[m])
+                self.x_[i] * self.x_[j] * self.x_[k] * self.x_[l] * self.x_[m]
             self.m52_[i, j, k, l, m] =\
-                (8 / 9) * (self.x_[i] * self.x_[j] * self.x_[k] *
-                           self.x_[l] * self.x_[m])
+                self.x_[i] * self.x_[j] * self.x_[k] * self.x_[l] * self.x_[m]
             self.m41_[i, j, k, l] =\
-                (1 / 7) * self.x_[i] * self.x_[j] * self.x_[k] * self.x_[l]
+                self.x_[i] * self.x_[j] * self.x_[k] * self.x_[l]
             self.m42_[i, j, k, l] =\
-                (6 / 7) * self.x_[i] * self.x_[j] * self.x_[k] * self.x_[l]
-            self.m21_[i, j] = (2 / 7) * (self.x_[i] * self.x_[j])
-            self.m22_[i, j] = (1 / 7) * (self.x_[i] * self.x_[j])
-            self.m23_[i, j] = (4 / 7) * (self.x_[i] * self.x_[j])
+                self.x_[i] * self.x_[j] * self.x_[k] * self.x_[l]
+            self.m21_[i, j] = self.x_[i] * self.x_[j]
+            self.m22_[i, j] = self.x_[i] * self.x_[j]
+            self.m23_[i, j] = self.x_[i] * self.x_[j]
             it.iternext()
 
     def __run(self):

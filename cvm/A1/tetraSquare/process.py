@@ -91,6 +91,7 @@ def process(self):
         i, j, k, l, m, n, o = it.multi_index
         ts_[i, j, k, l, m, n, o] = __eta_ts(self, i, j, k, l, m, n, o)
         eta_sum += ts_[i, j, k, l, m, n, o]
+        # print('  ts_{}: {:0<8.4f}'.format(it.multi_index, ts_[i, j, k, l, m, n, o]))
         it.iternext()
 
     # normalization
@@ -118,11 +119,11 @@ def process(self):
         i, j, k, l, m, n, o = it.multi_index
         # print('self.zt_{} is: {}'.format(it.multi_index, self.zt_[i, j, k]))
         ts_[i, j, k, l, m, n, o] /= eta_sum
-        delta = (self.ts_[i, j, k, l, m, n, o] - ts_[i, j, k, l, m, n, o])
+        delta = (ts_[i, j, k, l, m, n, o] - self.ts_[i, j, k, l, m, n, o])
         self.checker += np.absolute(delta)
 
         # ts_
-        self.ts_[i, j, k, l, m, n, o] = ts_[i, j, k, l, m, n, o]
+        self.ts_[i, j, k, l, m, n, o] += delta
 
         # m61_
         self.m61_[i, j, k, m, n, o] += self.ts_[i, j, k, l, m, n, o]
