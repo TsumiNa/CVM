@@ -12,15 +12,15 @@ class tetraSquare(CVM):
     """docstring for tetraSquare"""
 
     __slots__ = (
-        'x_',  # point, dim is 2
+        'm61_',  # 6body-123567, dim is 2x2x2x2x2x2
+        'm51_',  # 5body-12567, dim is 2x2x2x2x2
+        'm52_',  # 5body-12345, dim is 2x2x2x2x2
+        'm41_',  # 4body-1234, dim is 2x2x2x2
+        'm42_',  # 4body-1235, dim is 2x2x2x2
         'm21_',  # pair-1st, dim is 2x2
         'm22_',  # pair-2nd, dim is 2x2
         'm23_',  # pair-3rd, dim is 2x2
-        'm41_',  # 4body-1234, dim is 2x2x2x2
-        'm42_',  # 4body-1235, dim is 2x2x2x2
-        'm51_',  # 5body-12567, dim is 2x2x2x2x2
-        'm52_',  # 5body-12345, dim is 2x2x2x2x2
-        'm61_',  # 6body-123567, dim is 2x2x2x2x2x2
+        'x_',  # point, dim is 2
         'ts_',  # 7-body, dim is 2x2x2x2x2x2x2
         'enTS',  # energy of tetrahedron, dim is 2x2x2x2
         'mu',  # opposite chemical potential, dim is 2
@@ -147,20 +147,35 @@ class tetraSquare(CVM):
         it = np.nditer(self.ts_, flags=['multi_index'])
         while not it.finished:
             i, j, k, l, m, n, o = it.multi_index
-            self.m61_[i, j, k, l, m, n] =\
-                (self.x_[i] * self.x_[j] * self.x_[k] *
-                 self.x_[l] * self.x_[m] * self.x_[n])
-            self.m51_[i, j, k, l, m] =\
-                self.x_[i] * self.x_[j] * self.x_[k] * self.x_[l] * self.x_[m]
-            self.m52_[i, j, k, l, m] =\
-                self.x_[i] * self.x_[j] * self.x_[k] * self.x_[l] * self.x_[m]
-            self.m41_[i, j, k, l] =\
-                self.x_[i] * self.x_[j] * self.x_[k] * self.x_[l]
-            self.m42_[i, j, k, l] =\
-                self.x_[i] * self.x_[j] * self.x_[k] * self.x_[l]
-            self.m21_[i, j] = self.x_[i] * self.x_[j]
-            self.m22_[i, j] = self.x_[i] * self.x_[j]
-            self.m23_[i, j] = self.x_[i] * self.x_[j]
+
+            # ts_
+            self.ts_[i, j, k, l, m, n, o] =\
+                self.x_[i] * self.x_[j] * self.x_[k] * \
+                self.x_[l] * self.x_[m] * self.x_[n] * self.x_[o]
+
+            # m61_
+            self.m61_[i, j, k, m, n, o] += self.ts_[i, j, k, l, m, n, o]
+
+            # m51_
+            self.m51_[i, j, m, n, o] += self.ts_[i, j, k, l, m, n, o]
+
+            # m52_
+            self.m52_[i, j, l, k, m] += self.ts_[i, j, k, l, m, n, o]
+
+            # m41_
+            self.m41_[i, j, k, l] += self.ts_[i, j, k, l, m, n, o]
+
+            # m42_
+            self.m42_[i, j, k, m] += self.ts_[i, j, k, l, m, n, o]
+
+            # m21_
+            self.m21_[i, j] += self.ts_[i, j, k, l, m, n, o]
+
+            # m22_
+            self.m22_[i, m] += self.ts_[i, j, k, l, m, n, o]
+
+            # m23_
+            self.m23_[k, n] += self.ts_[i, j, k, l, m, n, o]
             it.iternext()
 
     def __run(self):

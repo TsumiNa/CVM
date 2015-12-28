@@ -49,7 +49,7 @@
     elements concentration
     must be normalized
     */
-    "x_1": 0.4,
+    "x_1": 0.7,
 
     /*
     Convergence condition

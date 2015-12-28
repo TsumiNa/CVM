@@ -37,19 +37,19 @@ def __eta_ts(self, i, j, k, l, m, n, o):
                   self.mu[m] + self.mu[n] + self.mu[o]))
 
     # M61
-    M61 = self.m61_[i, j, k, m, n, o] * self.m61_[i, j, l, m, n, o]
+    M61 = self.m61_[i, j, k, m, n, o] * self.m61_[o, j, l, i, m, n]
 
     # M51
     M51 = self.m51_[i, j, m, n, o]
 
     # M52
-    M52 = self.m52_[i, j, k, l, m] * self.m52_[i, j, k, l, o]
+    M52 = self.m52_[i, j, l, k, m] * self.m52_[i, l, k, j, o]
 
     # M41
     M41 = self.m41_[i, j, k, l]
 
     # M42
-    M42 = self.m42_[i, j, k, m] * self.m42_[i, j, l, o]
+    M42 = self.m42_[i, j, k, m] * self.m42_[o, j, l, i]
 
     # M21
     M21 = self.m21_[i, j] * self.m21_[i, k] * self.m21_[i, l] * \
@@ -91,7 +91,7 @@ def process(self):
         i, j, k, l, m, n, o = it.multi_index
         ts_[i, j, k, l, m, n, o] = __eta_ts(self, i, j, k, l, m, n, o)
         eta_sum += ts_[i, j, k, l, m, n, o]
-        print('  ts_{}: {:0<8.4f}'.format(it.multi_index, ts_[i, j, k, l, m, n, o]))
+        # print('  ts_{}: {:0<8.4f}'.format(it.multi_index, ts_[i, j, k, l, m, n, o]))
         it.iternext()
 
     # normalization
@@ -123,7 +123,8 @@ def process(self):
         self.checker += np.absolute(delta)
 
         # ts_
-        self.ts_[i, j, k, l, m, n, o] += delta
+        self.ts_[i, j, k, l, m, n, o] = \
+            (ts_[i, j, k, l, m, n, o] + 5 * self.ts_[i, j, k, l, m, n, o]) / 6
 
         # m61_
         self.m61_[i, j, k, m, n, o] += self.ts_[i, j, k, l, m, n, o]
@@ -132,7 +133,7 @@ def process(self):
         self.m51_[i, j, m, n, o] += self.ts_[i, j, k, l, m, n, o]
 
         # m52_
-        self.m52_[i, j, k, l, m] += self.ts_[i, j, k, l, m, n, o]
+        self.m52_[i, j, l, k, m] += self.ts_[i, j, k, l, m, n, o]
 
         # m41_
         self.m41_[i, j, k, l] += self.ts_[i, j, k, l, m, n, o]
@@ -153,5 +154,5 @@ def process(self):
         self.x_[i] += self.ts_[i, j, k, l, m, n, o]
         it.iternext()
 
-    print('  chker: {:0<8.4f},   condition: {:0<8.2g},   x1: {:0<8.4g},  eta_sum:  {:0<8.4g}'
+    print('  chker: {:0<8.4g},   condition: {:0<8.2g},   x1: {:0<8.4g},  eta_sum:  {:0<8.4g}'
           .format(self.checker, self.condition, self.x_[1], eta_sum))
