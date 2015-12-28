@@ -43,13 +43,13 @@ def __eta_ts(self, i, j, k, l, m, n, o):
     M51 = self.m51_[i, j, m, n, o]
 
     # M52
-    M52 = self.m52_[i, j, l, k, m] * self.m52_[i, l, k, j, o]
+    M52 = self.m52_[i, j, l, k, m] * self.m52_[i, j, k, l, o]
 
     # M41
     M41 = self.m41_[i, j, k, l]
 
     # M42
-    M42 = self.m42_[i, j, k, m] * self.m42_[o, j, l, i]
+    M42 = self.m42_[i, j, k, m] * self.m42_[i, j, l, o]
 
     # M21
     M21 = self.m21_[i, j] * self.m21_[i, k] * self.m21_[i, l] * \
@@ -67,16 +67,16 @@ def __eta_ts(self, i, j, k, l, m, n, o):
     X = self.x_[i] * self.x_[j] * self.x_[k] * self.x_[l] *\
         self.x_[m] * self.x_[n] * self.x_[o]
 
-    return exp * \
-        np.power(M61, 1 / 2) * \
-        np.power(M51, -1 / 8) * \
-        np.power(M52, 1 / 2) * \
-        np.power(M41, -1 / 12) * \
-        np.power(M42, -1 / 4) * \
-        np.power(M21, -3 / 44) * \
-        np.power(M22, -1 / 32) * \
-        np.power(M23, 1 / 8) * \
-        np.power(X, -1 / 21)
+    return (exp *
+            np.power(M61, 1 / 2) *
+            np.power(M51, -1 / 8) *
+            np.power(M52, 1 / 2) *
+            np.power(M41, -1 / 12) *
+            np.power(M42, -1 / 4) *
+            np.power(M21, -3 / 44) *
+            np.power(M22, -1 / 32) *
+            np.power(M23, 1 / 8) *
+            np.power(X, -1 / 21))
 
 
 def process(self):

@@ -180,9 +180,9 @@ class tetraSquare(CVM):
 
     def __run(self):
         self.__init()
-        # while self.checker > self.condition:
-        #     process(self)
-        process(self)
+        while self.checker > self.condition:
+            process(self)
+        # process(self)
 
     # implement the inherited abstract method run()
     def run(self):
