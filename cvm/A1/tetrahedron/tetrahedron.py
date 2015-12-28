@@ -82,7 +82,6 @@ class tetrahedron(CVM):
     def __run(self):
         self.__init()
         while self.checker > self.condition:
-            # print('process run')
             process(self)
 
     # implement the inherited abstract method run()

@@ -91,7 +91,7 @@ def process(self):
         i, j, k, l, m, n, o = it.multi_index
         ts_[i, j, k, l, m, n, o] = __eta_ts(self, i, j, k, l, m, n, o)
         eta_sum += ts_[i, j, k, l, m, n, o]
-        # print('  ts_{}: {:0<8.4f}'.format(it.multi_index, ts_[i, j, k, l, m, n, o]))
+        # print('  ts_{}: {:0<.8f}'.format(it.multi_index, ts_[i, j, k, l, m, n, o]))
         it.iternext()
 
     # normalization
@@ -102,6 +102,7 @@ def process(self):
     self.m21_ = np.zeros((2, 2), np.float64)
     self.m22_ = np.zeros((2, 2), np.float64)
     self.m23_ = np.zeros((2, 2), np.float64)
+    m23_ = np.zeros((2, 2), np.float64)
 
     # 4-body
     self.m41_ = np.zeros((2, 2, 2, 2), np.float64)
@@ -113,6 +114,7 @@ def process(self):
 
     # 6-body
     self.m61_ = np.zeros((2, 2, 2, 2, 2, 2), np.float64)
+    m61_ = np.zeros((2, 2, 2, 2, 2, 2), np.float64)
 
     it = np.nditer(ts_, flags=['multi_index'])
     while not it.finished:
@@ -123,11 +125,12 @@ def process(self):
         self.checker += np.absolute(delta)
 
         # ts_
-        self.ts_[i, j, k, l, m, n, o] = \
-            (ts_[i, j, k, l, m, n, o] + 5 * self.ts_[i, j, k, l, m, n, o]) / 6
+        self.ts_[i, j, k, l, m, n, o] = ts_[i, j, k, l, m, n, o]
+            # (2 * ts_[i, j, k, l, m, n, o] + self.ts_[i, j, k, l, m, n, o]) / 3
 
         # m61_
         self.m61_[i, j, k, m, n, o] += self.ts_[i, j, k, l, m, n, o]
+        m61_[o, j, l, i, m, n] += self.ts_[i, j, k, l, m, n, o]
 
         # m51_
         self.m51_[i, j, m, n, o] += self.ts_[i, j, k, l, m, n, o]
@@ -149,10 +152,20 @@ def process(self):
 
         # m23_
         self.m23_[k, n] += self.ts_[i, j, k, l, m, n, o]
+        m23_[l, m] += self.ts_[i, j, k, l, m, n, o]
 
         # x_
         self.x_[i] += self.ts_[i, j, k, l, m, n, o]
         it.iternext()
 
-    print('  chker: {:0<8.4g},   condition: {:0<8.2g},   x1: {:0<8.4g},  eta_sum:  {:0<8.4g}'
-          .format(self.checker, self.condition, self.x_[1], eta_sum))
+    # print('  chker: {:0<8.4g},   condition: {:0<8.2g},   x1: {:0<8.4g},  eta_sum:  {:0<8.4g}'
+    #       .format(self.checker, self.condition, self.x_[1], eta_sum))
+
+    it = np.nditer(self.m23_, flags=['multi_index'])
+    while not it.finished:
+        i, j = it.multi_index
+        print('  self.m23_{}:  {:0<8.8f}'
+              .format(it.multi_index, self.m23_[i, j]))
+        print('  m23_{}:       {:0<8.8f} \n'
+              .format(it.multi_index, m23_[i, j]))
+        it.iternext()

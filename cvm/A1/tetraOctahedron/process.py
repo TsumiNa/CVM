@@ -80,7 +80,7 @@ def _eta_TO(self):
     it = np.nditer(self.af_, flags=['multi_index'])
     while not it.finished:
         i, j, k = it.multi_index
-        daf[i, j, k] = 0.16 * np.log(self.zo_[i, j, k] / self.zt_[i, j, k])
+        daf[i, j, k] = 0.15 * np.log(self.zo_[i, j, k] / self.zt_[i, j, k])
         self.af_[i, j, k] += daf[i, j, k]
         sub_checker += np.absolute(daf[i, j, k])
         it.iternext()
@@ -122,5 +122,5 @@ def process(self):
         self.x_[i] += self.z_[i, j, k]
         it.iternext()
 
-    print('  sub chker: {:0<8.4g},   condition: {:4.2g},   x1: {:0<8.4g},  eta_sum:  {:0<8.4g}'
-          .format(sub_checker, self.sub_condition, self.x_[1], eta_sum))
+    # print('  sub chker: {:0<8.4g},   condition: {:4.2g},   x1: {:0<8.4g},  eta_sum:  {:0<8.4g}'
+    #       .format(sub_checker, self.sub_condition, self.x_[1], eta_sum))
