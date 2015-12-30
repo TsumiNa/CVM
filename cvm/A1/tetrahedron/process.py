@@ -9,7 +9,7 @@ def __eta_tetra(self, i, j, k, l):
     η_ijkl = exp[-β*e_ijkl + (β/8)(mu_i + mu_j + mu_k + mu_l)]
                 * X^(-5/8)
                 * Y^(1/2)
-    X = x_ * x_j * x_k * x_l
+    X = x_i * x_j * x_k * x_l
     Y = y_ij * y_ik * y_il * y_jk * y_jl * y_kl
     """
     # exp

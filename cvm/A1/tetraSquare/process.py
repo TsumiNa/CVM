@@ -37,7 +37,7 @@ def __eta_ts(self, i, j, k, l, m, n, o):
                   self.mu[m] + self.mu[n] + self.mu[o]))
 
     # M61
-    M61 = self.m61_[i, j, k, m, n, o] * self.m61_[o, j, l, i, m, n]
+    M61 = self.m61_[i, j, k, m, n, o] * self.m61_[i, j, l, m, n, o]
 
     # M51
     M51 = self.m51_[i, j, m, n, o]
