@@ -5,12 +5,12 @@ import sys
 import numpy as np
 
 
-class process(object):
+class Process(object):
 
-    __slots__ = ('data')
+    __slots__ = 'data'
 
     def __init__(self, data):
-        super(process, self).__init__()
+        super(Process, self).__init__()
         self.__check(data)
         self.data = data
         self.__run()

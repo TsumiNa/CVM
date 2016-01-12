@@ -31,9 +31,7 @@ class CVM(object):
     def __init__(self, inp):
         super(CVM, self).__init__()
         self.count = 0
-        self.output = {}
-        self.output['Meta'] = {}
-        self.output['Results'] = []
+        self.output = {'Meta': {}, 'Results': []}
 
         ##################
         # init
