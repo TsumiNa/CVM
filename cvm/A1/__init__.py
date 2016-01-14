@@ -5,6 +5,7 @@ from .tetrahedron import tetrahedron
 from .tetraOctahedron import tetraOctahedron
 from .tetraSquare import tetraSquare
 from .doubleTetrahedron import doubleTetrahedron
+from .quadrupleTetrahedron import quadrupleTetrahedron
 from .pair import pair
 
 __all__ = [
@@ -12,5 +13,6 @@ __all__ = [
     'pair',
     'tetraOctahedron',
     'tetraSquare',
-    'doubleTetrahedron'
+    'doubleTetrahedron',
+    'quadrupleTetrahedron'
 ]
