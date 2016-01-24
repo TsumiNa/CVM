@@ -77,5 +77,5 @@
 
     Temperature can be setted as a single value or continuous as [highest, lowest, point]
     */
-    "temp": [1000, 200, 20]
+    "temp": [1000]
 }

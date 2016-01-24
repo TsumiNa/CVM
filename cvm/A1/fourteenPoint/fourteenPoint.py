@@ -14,8 +14,9 @@ class fourteenPoint(CVM):
     __slots__ = (
         'm61_',  # DT, dim is 2x2x2x2x2x2
         'm51_',  # Square, dim is 2x2x2x2x2
+        'm41_',  # Square, dim is 2x2x2x2
+        'm31_',  # Square, dim is 2x2x2
         'm21_',  # pair-1st, dim is 2x2
-        'm22_',  # pair-2nd, dim is 2x2
         'x_',  # point, dim is 2
         'fp_',  # 7-body, dim is 2x2x2x2x2x2x2x2x2x2x2x2x2x2
         'enFP',  # energy, dim is 2x2x2x2x2x2x2x2x2x2x2x2x2x2
@@ -33,15 +34,20 @@ class fourteenPoint(CVM):
         self.fp_ = np.zeros((2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2),
                             np.float64)
 
-        # 4-body
+        # DT
         self.m61_ = np.zeros((2, 2, 2, 2, 2, 2), np.float64)
 
-        # 3-body
+        # Square
         self.m51_ = np.zeros((2, 2, 2, 2, 2), np.float64)
 
         # pair
+        self.m41_ = np.zeros((2, 2, 2, 2), np.float64)
+
+        # 3-body
+        self.m31_ = np.zeros((2, 2, 2), np.float64)
+
+        # 1st-pair
         self.m21_ = np.zeros((2, 2), np.float64)
-        self.m22_ = np.zeros((2, 2), np.float64)
 
         # point
         self.x_ = np.zeros((2), np.float64)
@@ -80,21 +86,23 @@ class fourteenPoint(CVM):
         de41[1, 1, 1, 1] = self.int_tetra[0]
 
         # energy ε
-        it = np.nditer(self.enFP, flags=['multi_index'])
-        while not it.finished:
-            i, j, k, l, m, n = it.multi_index
-            self.enFP[i, j, k, l, m, n] = \
-                (1 / 2) * (e1[i, j] + e1[i, k] + e1[i, l] + e1[j, k] +
-                           e1[j, l] + e1[k, l] + e1[k, m] + e1[k, n] +
-                           e1[l, m] + e1[l, n] + e1[m, n]) + \
-                (1 / 4) * (de22[i, m] + de22[j, n]) + \
-                (1 / 1) * (de23[i, n] + de23[j, m]) + \
-                (1 / 3) * (de31[i, j, k] + de31[i, k, l] +
-                           de31[k, l, i] + de31[k, l, j] +
-                           de31[m, n, k] + de31[m, n, l] +
-                           de31[k, l, n] + de31[k, l, m]) + \
-                (1 / 3) * de41[i, j, k, l]
-            it.iternext()
+        # it = np.nditer(self.enFP, flags=['multi_index'])
+        # while not it.finished:
+        #     p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14 = \
+        #         it.multi_index
+        #     self.enFP[p1, p2, p3, p4, p5, p6, p7, p8,
+        #               p9, p10, p11, p12, p13, p14] = \
+        #         (1 / 2) * (e1[p1, p2] + e1[p1, p3] + e1[p1, p4] + e1[p2, p3] +
+        #                    e1[p2, p4] + e1[p3, p4] + e1[p3, p5] + e1[p3, p6] +
+        #                    e1[p4, p5] + e1[p4, p6] + e1[p5, p6]) + \
+        #         (1 / 4) * (de22[p1, p5] + de22[p2, p6]) + \
+        #         (1 / 1) * (de23[p1, p6] + de23[p2, p5]) + \
+        #         (1 / 3) * (de31[p1, p2, p3] + de31[p1, p3, p4] +
+        #                    de31[p3, p4, p1] + de31[p3, p4, p2] +
+        #                    de31[p5, p6, p3] + de31[p5, p6, p4] +
+        #                    de31[p3, p4, p6] + de31[p3, p4, p5]) + \
+        #         (1 / 3) * de41[p1, p2, p3, p4]
+        #     it.iternext()
 
         # chemical potential
         self.mu[0] = (self.enFP[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] -
@@ -121,11 +129,18 @@ class fourteenPoint(CVM):
                 self.x_[p1] * self.x_[p2] * self.x_[p3] * \
                 self.x_[p4] * self.x_[p5]
 
+            # m41_
+            self.m41_[p1, p2, p3, p4] = \
+                self.x_[p1] * self.x_[p2] * \
+                self.x_[p4] * self.x_[p5]
+
+            # m31_
+            self.m31_[p1, p2, p3] = \
+                self.x_[p1] * self.x_[p2] * self.x_[p3]
+
             # m21_
             self.m21_[p1, p2] = self.x_[p1] * self.x_[p2]
 
-            # m22_
-            self.m22_[p1, p2] = self.x_[p1] * self.x_[p2]
             it.iternext()
 
     def __run(self):
