@@ -29,7 +29,7 @@ def __eta_dt(self, i, j, k, l, m, n):
                   self.mu[l] + self.mu[m] + self.mu[n]))
 
     # M41
-    M41 = self.m41_[i, j, k, l] * self.m41_[m, n, k, l]
+    M41 = self.m41_[i, j, k, l] * self.m41_[n, m, k, l]
 
     # M31
     M31 = self.m31_[i, m, k] * self.m31_[i, m, l] * \
@@ -119,12 +119,3 @@ def process(self):
 
     # print('  chker: {:0<8.6f},   condition: {:0<8.2g},   x1: {:0<8.4f},  eta_sum:  {:0<8.4f}'
     #       .format(self.checker, self.condition, self.x_[1], eta_sum))
-
-    # it = np.nditer(self.m22_, flags=['multi_index'])
-    # while not it.finished:
-    #     i, j = it.multi_index
-    #     print('  self.m22_{}:  {:0<8.8f}'
-    #           .format(it.multi_index, self.m22_[i, j]))
-    #     print('  m22_{}:       {:0<8.8f} \n'
-    #           .format(it.multi_index, m22_[i, j]))
-    #     it.iternext()

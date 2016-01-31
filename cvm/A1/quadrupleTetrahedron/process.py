@@ -17,15 +17,18 @@ def __eta_qt(self, i, j, k, l, m, n, o, p, q):
                 * m22^(1/12)
                 * x^(-4/27)
     -------------------------------------------------------------------------
-    m61 = qojnki * qojplm * npjokl * npjqmi
+    m61 = ijkqno * kjlnop * ljmopq * mjipqn
     m51 = ijklm
-    m41 = jqni * jnok * jopl * jpqm
+    m41 = ijqn * kjno * ljop * mjpq
     m42 = nopq
-    m31 = ikj * ikn * klj * klo * lmj * lmp * mij *
-          miq * npo * npj * npq *qon * qoj * qop
+    m31 = [ ijk * kjl * ljm * mji ] *
+          [ ink * kol * lpm * mqi ] *
+          [ qno * qjo * qpo ] *
+          [ nop * njp * nqp ]
     m21 = ji * jk * jl * jm * jn * jo * jp * jq * iq * in *
           kn * ko * lo * lp * mp * mq * nq * no * pq * po
-    m22 = ik * im * lk * lm * np * oq
+    m22 = [ ik * kl * lm * mi ] *
+          [ np * oq ]
     x = i * j * k * l * m * n * o * p * q
     """
     # exp
@@ -36,25 +39,26 @@ def __eta_qt(self, i, j, k, l, m, n, o, p, q):
                   self.mu[o] + self.mu[p] + self.mu[q]))
 
     # m61
-    m61 = self.m61_[q, o, j, i, k, n] * self.m61_[q, o, j, l, m, p] * \
-        self.m61_[n, p, j, k, l, o] * self.m61_[n, p, j, m, i, q]
+    m61 = self.m61_[i, j, k, q, n, o] * self.m61_[k, j, l, n, o, p] * \
+        self.m61_[l, j, m, o, p, q] * self.m61_[m, j, i, p, q, n]
 
     # m51
     m51 = self.m51_[i, j, k, l, m]
 
     # m41
-    m41 = self.m41_[i, j, n, p] * self.m41_[k, j, n, o] * \
-        self.m41_[l, j, o, p] * self.m41_[m, j, q, p]
+    m41 = self.m41_[i, j, q, n] * self.m41_[k, j, n, o] * \
+        self.m41_[l, j, o, p] * self.m41_[m, j, p, q]
 
     # m42
     m42 = self.m42_[n, o, p, q]
 
     # m31
-    m31 = self.m31_[i, k, j] * self.m31_[i, k, n] * self.m31_[k, l, j] * \
-        self.m31_[k, l, o] * self.m31_[l, m, j] * self.m31_[l, m, p] * \
-        self.m31_[m, i, j] * self.m31_[m, i, q] * self.m31_[n, p, o] * \
-        self.m31_[n, p, j] * self.m31_[n, p, q] * self.m31_[q, o, n] * \
-        self.m31_[q, o, j] * self.m31_[q, o, p]
+    m31 = (self.m311_[i, j, k] * self.m311_[k, j, l] *
+           self.m311_[l, j, m] * self.m311_[m, j, i]) * \
+        (self.m312_[i, n, k] * self.m312_[k, o, l] *
+         self.m312_[l, p, m] * self.m312_[m, q, i]) * \
+        (self.m313_[q, n, o] * self.m313_[q, j, o] * self.m313_[q, p, o]) *\
+        (self.m314_[n, o, p] * self.m314_[n, j, p] * self.m314_[n, q, p])
 
     # m21
     m21 = self.m21_[j, i] * self.m21_[j, k] * self.m21_[j, l] * \
@@ -66,8 +70,9 @@ def __eta_qt(self, i, j, k, l, m, n, o, p, q):
         self.m21_[p, q] * self.m21_[p, o]
 
     # m22
-    m22 = self.m22_[i, k] * self.m22_[i, m] * self.m22_[l, k] * \
-        self.m22_[l, m] * self.m22_[n, p] * self.m22_[o, q]
+    m22 = (self.m221_[i, k] * self.m221_[k, l] *
+           self.m221_[l, m] * self.m221_[m, i]) * \
+        (self.m222_[n, p] * self.m222_[o, q])
 
     # x
     x = self.x_[i] * self.x_[j] * self.x_[k] * \
@@ -119,11 +124,17 @@ def process(self):
     self.m42_ = np.zeros((2, 2, 2, 2), np.float64)
 
     # 3-body
-    self.m31_ = np.zeros((2, 2, 2), np.float64)
+    self.m311_ = np.zeros((2, 2, 2), np.float64)
+    self.m312_ = np.zeros((2, 2, 2), np.float64)
+    self.m313_ = np.zeros((2, 2, 2), np.float64)
+    self.m314_ = np.zeros((2, 2, 2), np.float64)
 
-    # pair
+    # pair-1st
     self.m21_ = np.zeros((2, 2), np.float64)
-    self.m22_ = np.zeros((2, 2), np.float64)
+
+    # pair-2nd
+    self.m221_ = np.zeros((2, 2), np.float64)
+    self.m222_ = np.zeros((2, 2), np.float64)
 
     # point
     self.x_ = np.zeros((2), np.float64)
@@ -138,8 +149,7 @@ def process(self):
         self.checker += np.absolute(delta)
 
         # qt_
-        self.qt_[i, j, k, l, m, n, o, p, q] = \
-            (qt_[i, j, k, l, m, n, o, p, q] + 3 * self.qt_[i, j, k, l, m, n, o, p, q]) / 4
+        self.qt_[i, j, k, l, m, n, o, p, q] = qt_[i, j, k, l, m, n, o, p, q]
 
         # m61_
         self.m61_[q, o, j, i, k, n] += self.qt_[i, j, k, l, m, n, o, p, q]
@@ -154,13 +164,17 @@ def process(self):
         self.m42_[n, o, p, q] += self.qt_[i, j, k, l, m, n, o, p, q]
 
         # m31_
-        self.m31_[i, k, j] += self.qt_[i, j, k, l, m, n, o, p, q]
+        self.m311_[i, j, k] += self.qt_[i, j, k, l, m, n, o, p, q]
+        self.m312_[i, n, k] += self.qt_[i, j, k, l, m, n, o, p, q]
+        self.m313_[q, n, o] += self.qt_[i, j, k, l, m, n, o, p, q]
+        self.m314_[n, o, p] += self.qt_[i, j, k, l, m, n, o, p, q]
 
         # m21_
         self.m21_[j, i] += self.qt_[i, j, k, l, m, n, o, p, q]
 
         # m22_
-        self.m22_[i, k] += self.qt_[i, j, k, l, m, n, o, p, q]
+        self.m221_[i, k] += self.qt_[i, j, k, l, m, n, o, p, q]
+        self.m222_[n, p] += self.qt_[i, j, k, l, m, n, o, p, q]
 
         # x_
         self.x_[i] += self.qt_[i, j, k, l, m, n, o, p, q]

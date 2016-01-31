@@ -60,9 +60,9 @@
     Interaction energy
     */
     "int_en": {
-        "pair": [-0.00, 0.00, -0.0000, 0.000],
-        "trip": [0.000],
-        "tetra": [0.000]
+        "pair": [-0.048, 0.01, 0.007, 0.0002],
+        "trip": [0.005],
+        "tetra": [0.008]
     },
 
     /*
@@ -75,7 +75,7 @@
     /*
     Temperature (K)
 
-    Temperature can be setted as a single value or continuous as [highest, lowest, point]
+    Temperature can be setted as a single value or continuous as [highest, lowest, steps]
     */
     "temp": [1000]
 }

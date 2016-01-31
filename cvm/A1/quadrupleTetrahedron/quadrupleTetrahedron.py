@@ -12,13 +12,17 @@ class quadrupleTetrahedron(CVM):
     """docstring for quadrupleTetrahedron"""
 
     __slots__ = (
-        'm61_',  # 4body-1234, dim is 2x2x2x2x2x2
-        'm51_',  # 4body-1234, dim is 2x2x2x2x2
-        'm41_',  # 4body-1234, dim is 2x2x2x2
-        'm42_',  # 4body-1234, dim is 2x2x2x2
-        'm31_',  # 3body-126, dim is 2x2x2
+        'm61_',  # 4body-DT, dim is 2x2x2x2x2x2
+        'm51_',  # 4body-Square, dim is 2x2x2x2x2
+        'm41_',  # 4body-T, dim is 2x2x2x2
+        'm42_',  # 4body-1st-Square, dim is 2x2x2x2
+        'm311_',  # 3body-ijk, dim is 2x2x2
+        'm312_',  # 3body-ink, dim is 2x2x2
+        'm313_',  # 3body-njp, dim is 2x2x2
+        'm314_',  # 3body-qjo, dim is 2x2x2
         'm21_',  # pair-1st, dim is 2x2
-        'm22_',  # pair-2nd, dim is 2x2
+        'm221_',  # pair-ik, dim is [2x2]^2
+        'm222_',  # pair-np, dim is [2x2]^2
         'x_',  # point, dim is 2
         'qt_',  # 7-body, dim is 2x2x2x2x2x2x2x2x2
         'enQT',  # energy of tetrahedron, dim is 2x2x2x2x2x2x2x2x2
@@ -48,11 +52,17 @@ class quadrupleTetrahedron(CVM):
         self.m42_ = np.zeros((2, 2, 2, 2), np.float64)
 
         # 3-body
-        self.m31_ = np.zeros((2, 2, 2), np.float64)
+        self.m311_ = np.zeros((2, 2, 2), np.float64)
+        self.m312_ = np.zeros((2, 2, 2), np.float64)
+        self.m313_ = np.zeros((2, 2, 2), np.float64)
+        self.m314_ = np.zeros((2, 2, 2), np.float64)
 
-        # pair
+        # pair-1st
         self.m21_ = np.zeros((2, 2), np.float64)
-        self.m22_ = np.zeros((2, 2), np.float64)
+
+        # pair-2nd
+        self.m221_ = np.zeros((2, 2), np.float64)
+        self.m222_ = np.zeros((2, 2), np.float64)
 
         # point
         self.x_ = np.zeros((2), np.float64)
@@ -128,7 +138,7 @@ class quadrupleTetrahedron(CVM):
                 self.x_[o] * self.x_[p] * self.x_[q]
 
             # m61_
-            self.m61_[q, o, j, n, i, k] += self.qt_[i, j, k, l, m, n, o, p, q]
+            self.m61_[q, o, j, i, k, n] += self.qt_[i, j, k, l, m, n, o, p, q]
 
             # m51_
             self.m51_[i, j, k, l, m] += self.qt_[i, j, k, l, m, n, o, p, q]
@@ -140,13 +150,18 @@ class quadrupleTetrahedron(CVM):
             self.m42_[n, o, p, q] += self.qt_[i, j, k, l, m, n, o, p, q]
 
             # m31_
-            self.m31_[i, k, j] += self.qt_[i, j, k, l, m, n, o, p, q]
+            self.m311_[i, j, k] += self.qt_[i, j, k, l, m, n, o, p, q]
+            self.m312_[i, n, k] += self.qt_[i, j, k, l, m, n, o, p, q]
+            self.m313_[q, n, o] += self.qt_[i, j, k, l, m, n, o, p, q]
+            self.m314_[n, o, p] += self.qt_[i, j, k, l, m, n, o, p, q]
 
             # m21_
             self.m21_[j, i] += self.qt_[i, j, k, l, m, n, o, p, q]
 
             # m22_
-            self.m22_[i, k] += self.qt_[i, j, k, l, m, n, o, p, q]
+            self.m221_[i, k] += self.qt_[i, j, k, l, m, n, o, p, q]
+            self.m222_[n, p] += self.qt_[i, j, k, l, m, n, o, p, q]
+
             it.iternext()
 
     def __run(self):
