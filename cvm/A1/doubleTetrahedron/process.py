@@ -117,5 +117,5 @@ def process(self):
         self.x_[i] += self.dt_[i, j, k, l, m, n]
         it.iternext()
 
-    # print('  chker: {:0<8.6f},   condition: {:0<8.2g},   x1: {:0<8.4f},  eta_sum:  {:0<8.4f}'
-    #       .format(self.checker, self.condition, self.x_[1], eta_sum))
+    print('  chker: {:0<8.6f},   condition: {:0<8.2g},   x1: {:0<8.4f},  eta_sum:  {:0<8.4f}'
+          .format(self.checker, self.condition, self.x_[1], eta_sum))
