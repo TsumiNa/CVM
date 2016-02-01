@@ -182,9 +182,11 @@ class quadrupleTetrahedron(CVM):
 
     def __run(self):
         self.__init()
-        # while self.checker > self.condition:
-            # process(self)
-        process(self)
+        while self.checker > self.condition:
+            process(self)
+        # while i < 40:
+        #     process(self)
+        #     i += 1
 
     # implement the inherited abstract method run()
     def run(self):

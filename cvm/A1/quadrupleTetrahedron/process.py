@@ -123,7 +123,6 @@ def process(self):
 
     # 4-body
     self.m41_ = np.zeros((2, 2, 2, 2), np.float64)
-    m41_ = np.zeros((2, 2, 2, 2), np.float64)
 
     # 4-body
     self.m42_ = np.zeros((2, 2, 2, 2), np.float64)
@@ -136,7 +135,6 @@ def process(self):
 
     # pair-1st
     self.m211_ = np.zeros((2, 2), np.float64)
-    # m211_ = np.zeros((2, 2), np.float64)
     self.m212_ = np.zeros((2, 2), np.float64)
     self.m213_ = np.zeros((2, 2), np.float64)
     self.m214_ = np.zeros((2, 2), np.float64)
@@ -161,7 +159,8 @@ def process(self):
         self.checker += np.absolute(delta)
 
         # qt_
-        self.qt_[i, j, k, l, m, n, o, p, q] = qt_[i, j, k, l, m, n, o, p, q]
+        self.qt_[i, j, k, l, m, n, o, p, q] = \
+            (self.qt_[i, j, k, l, m, n, o, p, q] + 9 * qt_[i, j, k, l, m, n, o, p, q])/10
 
         # m61_
         self.m61_[i, j, k, l, m, n] += self.qt_[i, j, k, l, m, n, o, p, q]
@@ -171,7 +170,6 @@ def process(self):
 
         # m41_
         self.m41_[i, j, k, l] += self.qt_[i, j, k, l, m, n, o, p, q]
-        m41_[m, j, n, k] += self.qt_[i, j, k, l, m, n, o, p, q]
 
         # m42_
         self.m42_[k, n, p, l] += self.qt_[i, j, k, l, m, n, o, p, q]
@@ -184,7 +182,6 @@ def process(self):
 
         # m21_
         self.m211_[i, j] += self.qt_[i, j, k, l, m, n, o, p, q]
-        # m211_[m, j] += self.qt_[i, j, k, l, m, n, o, p, q]
         self.m212_[i, k] += self.qt_[i, j, k, l, m, n, o, p, q]
         self.m213_[i, l] += self.qt_[i, j, k, l, m, n, o, p, q]
         self.m214_[k, j] += self.qt_[i, j, k, l, m, n, o, p, q]
@@ -203,11 +200,11 @@ def process(self):
     print('  chker: {:0<8.6f},   condition: {:0<8.2g},   x1: {:0<8.4f},  eta_sum:  {:0<8.4f}'
           .format(self.checker, self.condition, self.x1_[1], eta_sum))
 
-    it = np.nditer(self.m41_, flags=['multi_index'])
+    it = np.nditer(self.m211_, flags=['multi_index'])
     while not it.finished:
-        i, j, k, l = it.multi_index
-        print('  self.m41_{}:  {:0<8.8f}'
-              .format(it.multi_index, self.m41_[i, j, k, l]))
-        print('  m41_{}:       {:0<8.8f} \n'
-              .format(it.multi_index, m41_[i, j, k, l]))
+        i, j = it.multi_index
+        print('  self.m211_{}:  {:0<8.8f}'
+              .format(it.multi_index, self.m211_[i, j]))
+        print('  self.m212_{}:       {:0<8.8f} \n'
+              .format(it.multi_index, self.m212_[i, j]))
         it.iternext()
