@@ -60,7 +60,6 @@ class tetrahedron(CVM):
                 (de31[i, j, k] + de31[i, k, l] +
                  de31[i, j, l] + de31[j, k, l]) + \
                 de41[i, j, k, l]
-            # print('self.enTS{} is: {}'.format(it.multi_index, self.enTS[i, j, k, l, m, n, o]))
             it.iternext()
 
         # chemical potential

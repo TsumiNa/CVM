@@ -4,7 +4,7 @@
 import numpy as np
 
 
-def __eta(self, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14):
+def __eta(self, i, j, k, l, m, n, o, p, q, r, s, t, u, v):
     """
     η_p{1..14} = exp[-β*e_p{1..14} +
                     (β/14)(Σmu_p{1..14})]
@@ -17,80 +17,79 @@ def __eta(self, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14):
     """
     # exp
     exp = np.exp(-self.beta *
-                 self.enFP[p1, p2, p3, p4, p5, p6, p7, p8,
-                           p9, p10, p11, p12, p13, p14] +
+                 self.enFP[i, j, k, l, m, n, o, p, q, r, s, t, u, v] +
                  (self.beta / 14) *
-                 (self.mu[p1] + self.mu[p2] + self.mu[p3] +
-                  self.mu[p4] + self.mu[p5] + self.mu[p6] +
-                  self.mu[p7] + self.mu[p8] + self.mu[p9] +
-                  self.mu[p10] + self.mu[p11] + self.mu[p12] +
-                  self.mu[p13] + self.mu[p14]))
+                 (self.mu[i] + self.mu[j] + self.mu[k] +
+                  self.mu[l] + self.mu[m] + self.mu[n] +
+                  self.mu[o] + self.mu[p] + self.mu[q] +
+                  self.mu[r] + self.mu[s] + self.mu[t] +
+                  self.mu[u] + self.mu[v]))
 
     # m61
-    m61 = self.m61_[p3, p1, p2, p6, p7, p9] * \
-        self.m61_[p4, p5, p2, p8, p7, p9] * \
-        self.m61_[p13, p14, p11, p8, p7, p9] * \
-        self.m61_[p10, p12, p11, p6, p7, p9] * \
-        self.m61_[p1, p5, p2, p9, p6, p8] * \
-        self.m61_[p3, p4, p2, p7, p6, p8] * \
-        self.m61_[p12, p13, p11, p7, p6, p8] * \
-        self.m61_[p10, p14, p11, p9, p6, p8] * \
-        self.m61_[p1, p10, p9, p6, p2, p11] * \
-        self.m61_[p3, p12, p6, p7, p2, p11] * \
-        self.m61_[p4, p13, p7, p8, p2, p11] * \
-        self.m61_[p5, p14, p8, p9, p2, p11]
+    m61 = self.m61_[i, j, n, q, r, s] * \
+        self.m61_[m, j, q, p, v, s] * \
+        self.m61_[l, j, p, o, u, s] * \
+        self.m61_[k, j, o, n, t, s] * \
+        self.m61_[r, q, n, s, t, o] * \
+        self.m61_[v, q, s, p, u, o] * \
+        self.m61_[m, q, p, j, l, o] * \
+        self.m61_[i, q, j, n, k, o] * \
+        self.m61_[r, n, s, q, v, p] * \
+        self.m61_[i, n, q, j, m, p] * \
+        self.m61_[k, n, j, o, l, p] * \
+        self.m61_[t, n, o, s, u, p]
 
     # m51
-    m51 = self.m51_[p1, p3, p4, p5, p2] * self.m51_[p10, p12, p13, p14, p11] *\
-        self.m51_[p1, p3, p12, p10, p6] * self.m51_[p5, p4, p13, p14, p8] * \
-        self.m51_[p1, p5, p14, p10, p9] * self.m51_[p3, p4, p13, p12, p7]
+    m51 = self.m51_[i, j, k, l, m] * self.m51_[t, s, r, v, u] *\
+        self.m51_[r, q, i, m, v] * self.m51_[k, o, t, u, l] * \
+        self.m51_[r, n, t, k, i] * self.m51_[u, p, v, m, l]
 
     # m41
-    m41 = self.m41_[p1, p2, p6, p9] * self.m41_[p3, p2, p7, p6] * \
-        self.m41_[p4, p2, p8, p7] * self.m41_[p5, p2, p9, p8] * \
-        self.m41_[p10, p11, p6, p9] * self.m41_[p12, p11, p7, p6] * \
-        self.m41_[p13, p11, p8, p7] * self.m41_[p14, p11, p9, p8]
+    m41 = self.m41_[i, j, n, q] * self.m41_[l, j, p, o] * \
+        self.m41_[r, n, s, q] * self.m41_[v, s, p, q] * \
+        self.m41_[t, s, n, o] * self.m41_[k, j, o, n] * \
+        self.m41_[m, j, q, p] * self.m41_[u, s, o, p]
 
     # m31
-    m31 = self.m31_[p1, p2, p3] * self.m31_[p1, p6, p3] * \
-        self.m31_[p3, p2, p4] * self.m31_[p3, p7, p4] * \
-        self.m31_[p4, p2, p5] * self.m31_[p4, p8, p5] * \
-        self.m31_[p5, p2, p1] * self.m31_[p5, p9, p1] * \
-        self.m31_[p1, p6, p10] * self.m31_[p1, p9, p10] * \
-        self.m31_[p3, p6, p12] * self.m31_[p3, p7, p12] * \
-        self.m31_[p4, p7, p13] * self.m31_[p4, p8, p13] * \
-        self.m31_[p5, p8, p14] * self.m31_[p5, p9, p14] * \
-        self.m31_[p10, p11, p12] * self.m31_[p10, p6, p12] * \
-        self.m31_[p12, p11, p13] * self.m31_[p12, p7, p13] * \
-        self.m31_[p13, p11, p14] * self.m31_[p13, p8, p14] * \
-        self.m31_[p14, p11, p10] * self.m31_[p14, p9, p10] * \
-        self.m31_[p11, p6, p2] * self.m31_[p11, p7, p2] * \
-        self.m31_[p11, p8, p2] * self.m31_[p11, p9, p2] * \
-        self.m31_[p6, p2, p8] * self.m31_[p6, p7, p8] * \
-        self.m31_[p6, p11, p8] * self.m31_[p6, p9, p8] * \
-        self.m31_[p7, p11, p9] * self.m31_[p7, p8, p9] * \
-        self.m31_[p7, p2, p9] * self.m31_[p7, p6, p9]
+    m31 = self.m31_[i, j, k] * self.m31_[t, s, r] * \
+        self.m31_[l, o, k] * self.m31_[i, q, m] * \
+        self.m31_[r, n, t] * self.m31_[u, p, v] * \
+        self.m31_[m, j, i] * self.m31_[u, s, t] * \
+        self.m31_[u, o, l] * self.m31_[r, q, i] * \
+        self.m31_[i, n, r] * self.m31_[l, p, u] * \
+        self.m31_[l, j, m] * self.m31_[v, s, u] * \
+        self.m31_[t, o, u] * self.m31_[v, q, r] * \
+        self.m31_[k, n, i] * self.m31_[m, p, l] * \
+        self.m31_[k, j, l] * self.m31_[r, s, v] * \
+        self.m31_[k, o, t] * self.m31_[m, q, v] * \
+        self.m31_[t, n, k] * self.m31_[v, p, m] * \
+        self.m31_[s, n, j] * self.m31_[s, p, j] * \
+        self.m31_[o, n, q] * self.m31_[o, p, q] * \
+        self.m31_[p, j, n] * self.m31_[p, s, n] * \
+        self.m31_[s, o, j] * self.m31_[s, q, j] * \
+        self.m31_[o, j, q] * self.m31_[o, s, q] * \
+        self.m31_[p, o, n] * self.m31_[p, q, n]
 
     # m21
-    m21 = self.m21_[p1, p2] * self.m21_[p1, p6] * self.m21_[p1, p9] * \
-        self.m21_[p3, p2] * self.m21_[p3, p6] * self.m21_[p3, p7] * \
-        self.m21_[p4, p2] * self.m21_[p4, p7] * self.m21_[p4, p8] * \
-        self.m21_[p5, p2] * self.m21_[p5, p8] * self.m21_[p5, p9] * \
-        self.m21_[p10, p6] * self.m21_[p10, p9] * self.m21_[p10, p11] * \
-        self.m21_[p12, p6] * self.m21_[p12, p7] * self.m21_[p12, p11] * \
-        self.m21_[p13, p7] * self.m21_[p13, p8] * self.m21_[p13, p11] * \
-        self.m21_[p14, p8] * self.m21_[p14, p9] * self.m21_[p14, p11] * \
-        self.m21_[p2, p6] * self.m21_[p2, p9] * self.m21_[p6, p9] * \
-        self.m21_[p2, p7] * self.m21_[p2, p8] * self.m21_[p7, p8] * \
-        self.m21_[p11, p6] * self.m21_[p11, p7] * self.m21_[p6, p7] * \
-        self.m21_[p11, p8] * self.m21_[p11, p9] * self.m21_[p8, p9]
+    m21 = self.m21_[r, s] * self.m21_[u, s] * self.m21_[t, o] * \
+        self.m21_[l, o] * self.m21_[v, p] * self.m21_[u, p] * \
+        self.m21_[v, s] * self.m21_[t, s] * self.m21_[u, o] * \
+        self.m21_[k, o] * self.m21_[m, p] * self.m21_[l, p] * \
+        self.m21_[i, j] * self.m21_[k, j] * self.m21_[r, q] * \
+        self.m21_[v, q] * self.m21_[r, n] * self.m21_[t, n] * \
+        self.m21_[l, j] * self.m21_[m, j] * self.m21_[m, q] * \
+        self.m21_[i, q] * self.m21_[k, n] * self.m21_[i, n] * \
+        self.m21_[n, o] * self.m21_[o, p] * self.m21_[n, s] * \
+        self.m21_[s, p] * self.m21_[q, s] * self.m21_[s, o] * \
+        self.m21_[p, q] * self.m21_[q, n] * self.m21_[p, j] * \
+        self.m21_[j, n] * self.m21_[o, j] * self.m21_[j, q]
 
     # x
-    x = self.x_[p1] * self.x_[p2] * self.x_[p3] * \
-        self.x_[p4] * self.x_[p5] * self.x_[p6] * \
-        self.x_[p7] * self.x_[p8] * self.x_[p9] * \
-        self.x_[p10] * self.x_[p11] * self.x_[p12] * \
-        self.x_[p13] * self.x_[p14]
+    x = self.x_[i] * self.x_[j] * self.x_[k] * \
+        self.x_[l] * self.x_[m] * self.x_[n] * \
+        self.x_[o] * self.x_[p] * self.x_[q] * \
+        self.x_[r] * self.x_[s] * self.x_[t] * \
+        self.x_[u] * self.x_[v]
 
     return (exp *
             np.power(m61, 1 / 2) *
@@ -110,15 +109,13 @@ def process(self):
     fp_ = np.zeros((2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2), np.float64)
     it = np.nditer(fp_, flags=['multi_index'])
     while not it.finished:
-        p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14 = \
+        i, j, k, l, m, n, o, p, q, r, s, t, u, v = \
             it.multi_index
 
-        fp_[p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14] = \
-            __eta(self, p1, p2, p3, p4, p5, p6, p7, p8,
-                  p9, p10, p11, p12, p13, p14)
+        fp_[i, j, k, l, m, n, o, p, q, r, s, t, u, v] = \
+            __eta(self, i, j, k, l, m, n, o, p, q, r, s, t, u, v)
 
-        eta_sum += fp_[p1, p2, p3, p4, p5, p6, p7, p8,
-                       p9, p10, p11, p12, p13, p14]
+        eta_sum += fp_[i, j, k, l, m, n, o, p, q, r, s, t, u, v]
         it.iternext()
 
     ############################
@@ -146,45 +143,42 @@ def process(self):
 
     it = np.nditer(fp_, flags=['multi_index'])
     while not it.finished:
-        p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14 = \
+        i, j, k, l, m, n, o, p, q, r, s, t, u, v = \
             it.multi_index
 
-        fp_[p1, p2, p3, p4, p5, p6, p7, p8,
-            p9, p10, p11, p12, p13, p14] /= eta_sum
+        fp_[i, j, k, l, m, n, o, p, q, r, s, t, u, v] /= eta_sum
 
         self.checker += \
-            np.absolute(fp_[p1, p2, p3, p4, p5, p6, p7, p8,
-                            p9, p10, p11, p12, p13, p14] -
-                        self.fp_[p1, p2, p3, p4, p5, p6, p7, p8,
-                                 p9, p10, p11, p12, p13, p14])
+            np.absolute(fp_[i, j, k, l, m, n, o, p, q, r, s, t, u, v] -
+                        self.fp_[i, j, k, l, m, n, o, p, q, r, s, t, u, v])
 
         # fp_
-        self.fp_[p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14] =\
-            fp_[p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14]
+        self.fp_[i, j, k, l, m, n, o, p, q, r, s, t, u, v] =\
+            fp_[i, j, k, l, m, n, o, p, q, r, s, t, u, v]
 
         # m61_
-        self.m61_[p3, p1, p2, p6, p7, p9] += \
-            fp_[p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14]
+        self.m61_[i, j, n, q, r, s] += \
+            fp_[i, j, k, l, m, n, o, p, q, r, s, t, u, v]
 
         # m51_
-        self.m51_[p1, p3, p4, p5, p2] += \
-            fp_[p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14]
+        self.m51_[i, j, k, l, m] += \
+            fp_[i, j, k, l, m, n, o, p, q, r, s, t, u, v]
 
         # m41_
-        self.m41_[p1, p2, p6, p9] += \
-            fp_[p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14]
+        self.m41_[i, j, n, q] += \
+            fp_[i, j, k, l, m, n, o, p, q, r, s, t, u, v]
 
         # m31_
-        self.m31_[p1, p2, p3] += \
-            fp_[p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14]
+        self.m31_[i, j, k] += \
+            fp_[i, j, k, l, m, n, o, p, q, r, s, t, u, v]
 
         # m21_
-        self.m21_[p1, p2] += \
-            fp_[p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14]
+        self.m21_[r, s] += \
+            fp_[i, j, k, l, m, n, o, p, q, r, s, t, u, v]
 
         # x_
-        self.x_[p1] += \
-            fp_[p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14]
+        self.x_[i] += \
+            fp_[i, j, k, l, m, n, o, p, q, r, s, t, u, v]
         it.iternext()
 
     print('  chker: {:0<8.6f},   condition: {:0<8.2g},   x1: {:0<8.4f},  eta_sum:  {:0<8.4f}'

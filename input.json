@@ -49,7 +49,7 @@
     elements concentration
     must be normalized
     */
-    "x_1": 0.4,
+    "x_1": 0.3,
 
     /*
     Convergence condition
@@ -60,9 +60,9 @@
     Interaction energy
     */
     "int_en": {
-        "pair": [-0.048, 0.01, 0.007, 0.0002],
-        "trip": [0.005],
-        "tetra": [0.008]
+        "pair": [-0.00, 0.00,  0.000, 0.0000],
+        "trip": [0.000],
+        "tetra": [0.000]
     },
 
     /*
@@ -70,7 +70,7 @@
 
     Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
     */
-    "delta_mu": [0],
+    "delta_mu": [-0.00],
 
     /*
     Temperature (K)

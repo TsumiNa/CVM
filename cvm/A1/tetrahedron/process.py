@@ -64,3 +64,10 @@ def process(self):
 
     print('  chker: {:0<8.4g},   condition: {:0<8.2g},   x1: {:0<8.4g},  eta_sum:  {:0<8.4g}'
           .format(self.checker, self.condition, self.x_[1], eta_sum))
+
+    it = np.nditer(self.t_, flags=['multi_index'])
+    while not it.finished:
+        i, j, k, l = it.multi_index
+        print('  self.t_{}:  {:0<8.8f}'
+              .format(it.multi_index, self.t_[i, j, k, l]))
+        it.iternext()

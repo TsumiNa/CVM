@@ -53,35 +53,35 @@ def __eta_qt(self, i, j, k, l, m, n, o, p, q):
     m42 = self.m42_[k, n, p, l]
 
     # m31
-    m31 = (self.m311_[i, j, m] * self.m311_[m, j, o] *
-           self.m311_[o, j, q] * self.m311_[q, j, i]) * \
-        (self.m312_[i, k, m] * self.m312_[m, n, o] *
-         self.m312_[o, p, q] * self.m312_[q, l, i]) * \
-        (self.m313_[k, j, p] * self.m313_[n, j, l]) * \
-        (self.m314_[k, n, p] * self.m314_[n, p, l] *
-         self.m314_[p, l, k] * self.m314_[l, k, n])
+    m31 = (self.m31_[i, j, m] * self.m31_[m, j, o] *
+           self.m31_[o, j, q] * self.m31_[q, j, i]) * \
+        (self.m31_[i, k, m] * self.m31_[m, n, o] *
+         self.m31_[o, p, q] * self.m31_[q, l, i]) * \
+        (self.m31_[l, j, n] * self.m31_[k, j, p]) * \
+        (self.m31_[k, n, p] * self.m31_[n, p, l] *
+         self.m31_[p, l, k] * self.m31_[l, k, n])
 
     # m21
-    m21 = (self.m211_[i, j] * self.m211_[m, j] *
-           self.m211_[o, j] * self.m211_[q, j]) * \
-        (self.m212_[i, k] * self.m212_[m, n] *
-         self.m212_[o, p] * self.m212_[q, l]) * \
-        (self.m213_[i, l] * self.m213_[m, k] *
-         self.m213_[o, n] * self.m213_[q, p]) * \
-        (self.m214_[k, j] * self.m214_[n, j] *
-         self.m214_[p, j] * self.m214_[l, j]) * \
-        (self.m215_[l, k] * self.m215_[k, n] *
-         self.m215_[n, p] * self.m215_[p, l])
+    m21 = (self.m21_[i, j] * self.m21_[m, j] *
+           self.m21_[o, j] * self.m21_[q, j]) * \
+        (self.m21_[i, k] * self.m21_[m, n] *
+         self.m21_[o, p] * self.m21_[q, l]) * \
+        (self.m21_[i, l] * self.m21_[m, k] *
+         self.m21_[o, n] * self.m21_[q, p]) * \
+        (self.m21_[k, j] * self.m21_[n, j] *
+         self.m21_[p, j] * self.m21_[l, j]) * \
+        (self.m21_[l, k] * self.m21_[k, n] *
+         self.m21_[n, p] * self.m21_[p, l])
 
     # m22
-    m22 = (self.m221_[i, m] * self.m221_[m, o] *
-           self.m221_[o, q] * self.m221_[q, i]) * \
-        (self.m222_[k, p] * self.m222_[n, l])
+    m22 = (self.m22_[i, m] * self.m22_[m, o] *
+           self.m22_[o, q] * self.m22_[q, i]) * \
+        (self.m22_[l, n] * self.m22_[k, p])
 
     # x
-    x = self.x1_[i] * self.x1_[m] * self.x1_[o] * self.x1_[q] * \
-        self.x2_[j] * \
-        self.x3_[k] * self.x3_[n] * self.x3_[p] * self.x3_[l]
+    x = self.x_[i] * self.x_[m] * self.x_[o] * self.x_[q] * \
+        self.x_[j] * \
+        self.x_[k] * self.x_[n] * self.x_[p] * self.x_[l]
 
     return (exp *
             np.power(m61, 3 / 4) *
@@ -128,26 +128,16 @@ def process(self):
     self.m42_ = np.zeros((2, 2, 2, 2), np.float64)
 
     # 3-body
-    self.m311_ = np.zeros((2, 2, 2), np.float64)
-    self.m312_ = np.zeros((2, 2, 2), np.float64)
-    self.m313_ = np.zeros((2, 2, 2), np.float64)
-    self.m314_ = np.zeros((2, 2, 2), np.float64)
+    self.m31_ = np.zeros((2, 2, 2), np.float64)
 
     # pair-1st
-    self.m211_ = np.zeros((2, 2), np.float64)
-    self.m212_ = np.zeros((2, 2), np.float64)
-    self.m213_ = np.zeros((2, 2), np.float64)
-    self.m214_ = np.zeros((2, 2), np.float64)
-    self.m215_ = np.zeros((2, 2), np.float64)
+    self.m21_ = np.zeros((2, 2), np.float64)
 
     # pair-2nd
-    self.m221_ = np.zeros((2, 2), np.float64)
-    self.m222_ = np.zeros((2, 2), np.float64)
+    self.m22_ = np.zeros((2, 2), np.float64)
 
     # point
-    self.x1_ = np.zeros((2), np.float64)
-    self.x2_ = np.zeros((2), np.float64)
-    self.x3_ = np.zeros((2), np.float64)
+    self.x_ = np.zeros((2), np.float64)
 
     it = np.nditer(qt_, flags=['multi_index'])
     while not it.finished:
@@ -160,7 +150,7 @@ def process(self):
 
         # qt_
         self.qt_[i, j, k, l, m, n, o, p, q] = \
-            (self.qt_[i, j, k, l, m, n, o, p, q] + 9 * qt_[i, j, k, l, m, n, o, p, q])/10
+            qt_[i, j, k, l, m, n, o, p, q]
 
         # m61_
         self.m61_[i, j, k, l, m, n] += self.qt_[i, j, k, l, m, n, o, p, q]
@@ -175,36 +165,24 @@ def process(self):
         self.m42_[k, n, p, l] += self.qt_[i, j, k, l, m, n, o, p, q]
 
         # m31_
-        self.m311_[i, j, m] += self.qt_[i, j, k, l, m, n, o, p, q]
-        self.m312_[i, k, m] += self.qt_[i, j, k, l, m, n, o, p, q]
-        self.m313_[k, j, p] += self.qt_[i, j, k, l, m, n, o, p, q]
-        self.m314_[k, n, p] += self.qt_[i, j, k, l, m, n, o, p, q]
+        self.m31_[i, k, m] += self.qt_[i, j, k, l, m, n, o, p, q]
 
         # m21_
-        self.m211_[i, j] += self.qt_[i, j, k, l, m, n, o, p, q]
-        self.m212_[i, k] += self.qt_[i, j, k, l, m, n, o, p, q]
-        self.m213_[i, l] += self.qt_[i, j, k, l, m, n, o, p, q]
-        self.m214_[k, j] += self.qt_[i, j, k, l, m, n, o, p, q]
-        self.m215_[l, k] += self.qt_[i, j, k, l, m, n, o, p, q]
+        self.m21_[i, j] += self.qt_[i, j, k, l, m, n, o, p, q]
 
         # m22_
-        self.m221_[i, m] += self.qt_[i, j, k, l, m, n, o, p, q]
-        self.m222_[k, p] += self.qt_[i, j, k, l, m, n, o, p, q]
+        self.m22_[k, p] += self.qt_[i, j, k, l, m, n, o, p, q]
 
         # x_
-        self.x1_[i] += self.qt_[i, j, k, l, m, n, o, p, q]
-        self.x2_[j] += self.qt_[i, j, k, l, m, n, o, p, q]
-        self.x3_[k] += self.qt_[i, j, k, l, m, n, o, p, q]
+        self.x_[i] += self.qt_[i, j, k, l, m, n, o, p, q]
         it.iternext()
 
     print('  chker: {:0<8.6f},   condition: {:0<8.2g},   x1: {:0<8.4f},  eta_sum:  {:0<8.4f}'
-          .format(self.checker, self.condition, self.x1_[1], eta_sum))
+          .format(self.checker, self.condition, self.x_[1], eta_sum))
 
-    it = np.nditer(self.m211_, flags=['multi_index'])
+    it = np.nditer(self.m21_, flags=['multi_index'])
     while not it.finished:
         i, j = it.multi_index
-        print('  self.m211_{}:  {:0<8.8f}'
-              .format(it.multi_index, self.m211_[i, j]))
-        print('  self.m212_{}:       {:0<8.8f} \n'
-              .format(it.multi_index, self.m212_[i, j]))
+        print('  self.m21_{}:  {:0<8.8f}'
+              .format(it.multi_index, self.m21_[i, j]))
         it.iternext()

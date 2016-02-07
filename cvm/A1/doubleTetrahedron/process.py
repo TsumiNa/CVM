@@ -119,3 +119,10 @@ def process(self):
 
     print('  chker: {:0<8.6f},   condition: {:0<8.2g},   x1: {:0<8.4f},  eta_sum:  {:0<8.4f}'
           .format(self.checker, self.condition, self.x_[1], eta_sum))
+
+    it = np.nditer(self.m41_, flags=['multi_index'])
+    while not it.finished:
+        i, j, k, l = it.multi_index
+        print('  self.m41_{}:  {:0<8.8f}'
+              .format(it.multi_index, self.m41_[i, j, k, l]))
+        it.iternext()

@@ -88,20 +88,19 @@ class fourteenPoint(CVM):
         # energy ε
         # it = np.nditer(self.enFP, flags=['multi_index'])
         # while not it.finished:
-        #     p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14 = \
+        #     i, j, k, l, m, n, o, p, q, r, s, t, u, v = \
         #         it.multi_index
-        #     self.enFP[p1, p2, p3, p4, p5, p6, p7, p8,
-        #               p9, p10, p11, p12, p13, p14] = \
-        #         (1 / 2) * (e1[p1, p2] + e1[p1, p3] + e1[p1, p4] + e1[p2, p3] +
-        #                    e1[p2, p4] + e1[p3, p4] + e1[p3, p5] + e1[p3, p6] +
-        #                    e1[p4, p5] + e1[p4, p6] + e1[p5, p6]) + \
-        #         (1 / 4) * (de22[p1, p5] + de22[p2, p6]) + \
-        #         (1 / 1) * (de23[p1, p6] + de23[p2, p5]) + \
-        #         (1 / 3) * (de31[p1, p2, p3] + de31[p1, p3, p4] +
-        #                    de31[p3, p4, p1] + de31[p3, p4, p2] +
-        #                    de31[p5, p6, p3] + de31[p5, p6, p4] +
-        #                    de31[p3, p4, p6] + de31[p3, p4, p5]) + \
-        #         (1 / 3) * de41[p1, p2, p3, p4]
+        #     self.enFP[i, j, k, l, m, n, o, p, q, r, s, t, u, v] = \
+        #         (1 / 2) * (e1[i, j] + e1[i, k] + e1[i, l] + e1[j, k] +
+        #                    e1[j, l] + e1[k, l] + e1[k, m] + e1[k, n] +
+        #                    e1[l, m] + e1[l, n] + e1[m, n]) + \
+        #         (1 / 4) * (de22[i, m] + de22[j, n]) + \
+        #         (1 / 1) * (de23[i, n] + de23[j, m]) + \
+        #         (1 / 3) * (de31[i, j, k] + de31[i, k, l] +
+        #                    de31[k, l, i] + de31[k, l, j] +
+        #                    de31[m, n, k] + de31[m, n, l] +
+        #                    de31[k, l, n] + de31[k, l, m]) + \
+        #         (1 / 3) * de41[i, j, k, l]
         #     it.iternext()
 
         # chemical potential
@@ -117,29 +116,29 @@ class fourteenPoint(CVM):
 
         it = np.nditer(self.m61_, flags=['multi_index'])
         while not it.finished:
-            p1, p2, p3, p4, p5, p6 = it.multi_index
+            i, j, k, l, m, n = it.multi_index
 
             # m61_
-            self.m61_[p1, p2, p3, p4, p5, p6] = \
-                self.x_[p1] * self.x_[p2] * self.x_[p3] * \
-                self.x_[p4] * self.x_[p5] * self.x_[p6]
+            self.m61_[i, j, k, l, m, n] = \
+                self.x_[i] * self.x_[j] * self.x_[k] * \
+                self.x_[l] * self.x_[m] * self.x_[n]
 
             # m51_
-            self.m51_[p1, p2, p3, p4, p5] = \
-                self.x_[p1] * self.x_[p2] * self.x_[p3] * \
-                self.x_[p4] * self.x_[p5]
+            self.m51_[i, j, k, l, m] = \
+                self.x_[i] * self.x_[j] * self.x_[k] * \
+                self.x_[l] * self.x_[m]
 
             # m41_
-            self.m41_[p1, p2, p3, p4] = \
-                self.x_[p1] * self.x_[p2] * \
-                self.x_[p4] * self.x_[p5]
+            self.m41_[i, j, k, l] = \
+                self.x_[i] * self.x_[j] * \
+                self.x_[l] * self.x_[m]
 
             # m31_
-            self.m31_[p1, p2, p3] = \
-                self.x_[p1] * self.x_[p2] * self.x_[p3]
+            self.m31_[i, j, k] = \
+                self.x_[i] * self.x_[j] * self.x_[k]
 
             # m21_
-            self.m21_[p1, p2] = self.x_[p1] * self.x_[p2]
+            self.m21_[i, j] = self.x_[i] * self.x_[j]
 
             it.iternext()
 
