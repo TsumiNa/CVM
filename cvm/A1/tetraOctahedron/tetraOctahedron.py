@@ -40,6 +40,14 @@ class tetraOctahedron(CVM):
         self.beta = np.float64(0.0)
         self.mu = np.zeros((2), np.float64)
 
+    def __init(self):
+        """
+        initialize x_, y_, z_
+        """
+        # use transfer
+        # transfer to 2nd
+        # self.pair_int_decorator(2, 4)
+
         ###############################################
         # configuration
         ###############################################
@@ -91,12 +99,8 @@ class tetraOctahedron(CVM):
         # chemical potential
         self.mu[0] = (self.enT[0, 0, 0, 0] + self.enO[0, 0, 0, 0, 0, 0]) - \
             (self.enT[1, 1, 1, 1] + self.enO[1, 1, 1, 1, 1, 1])
-        # print('mu is: {}'.format(self.mu[0]))
+        self.mu[1] = -self.mu[0]
 
-    def __init(self):
-        """
-        initialize x_, y_, z_
-        """
         self.count = 0
         self.checker = np.float64(1.0)
         self.af_ = np.zeros((2, 2, 2), np.float64)
@@ -125,11 +129,14 @@ class tetraOctahedron(CVM):
         # temperature iteration
         for dmu in np.nditer(self.delta_mu):
             data = []
-            self.mu[0] += dmu
-            self.mu[1] = -self.mu[0]
+            # self.mu[0] += dmu
+            # self.mu[1] = -self.mu[0]
+            self.int_pair[0] += dmu
             self.x_[1] = self.x_1
             self.x_[0] = 1 - self.x_1
             print(' mu = {:06.4f}:'.format(self.mu[0].item(0)))
+            print(' 1st_int = {:06.4f}:'.format(self.int_pair[0]))
+            print(' 2nd_int = {:06.4f}:'.format(self.int_pair[1]))
 
             # delta mu iteration
             for temp in np.nditer(self.temp):
@@ -145,6 +152,8 @@ class tetraOctahedron(CVM):
 
             print('\n')
             # save result to output
+            # self.output['Results'].append(
+            #     {'mu': self.mu[0].item(0), 'data': data})
             self.output['Results'].append(
-                {'mu': self.mu[0].item(0), 'data': data})
-            self.mu[0] -= dmu
+                {'1st_int': self.int_pair[0], 'data': data})
+            self.int_pair[0] -= dmu

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 
+import sys
 import numpy as np
 import datetime as dt
 
@@ -32,6 +33,13 @@ class CVM(object):
         super(CVM, self).__init__()
         self.count = 0
         self.output = {'Meta': {}, 'Results': []}
+
+        ##################
+        # check input
+        ##################
+        if 'int_en' not in inp:
+            print('Need interaction energy')
+            sys.exit(0)
 
         ##################
         # init
@@ -85,3 +93,40 @@ class CVM(object):
 
     def run(self):
         raise NameError('must implement this inherited abstract method')
+
+    def pair_int_decorator(self, transfer_to=1, cut=0):
+        """
+        2nd parameter refer to the neighbour that transfer to
+        """
+        # coordination number
+        _coord_num = np.array([12,      # 1st
+                               6,       # 2nd
+                               24,      # 3rd
+                               12,      # 4th
+                               24,      # 5th
+                               8,       # 6th
+                               48,      # 7th
+                               6,       # 8th
+                               24,      # 9th
+                               12,      # 10th
+                               24,      # 11th
+                               24,      # 12th
+                               48,      # 13th
+                               48,      # 14th
+                               12,      # 15th
+                               24,      # 16th
+                               24,      # 17th
+                               6,       # 17th
+                               48,      # 18th
+                               24,      # 19th
+                               48])     # 20th
+
+        # calculation pair interaction
+        _int = np.float64(0.0)
+        _range = range(transfer_to - 1, len(self.int_pair) - cut)
+        for index in _range:
+            _int += _coord_num[index] * self.int_pair[index] /\
+                _coord_num[transfer_to - 1]
+            print('pair interaction with %sth approximation is %s' %
+                  (index + 1, _int))
+        self.int_pair[transfer_to - 1] = _int

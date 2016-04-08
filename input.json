@@ -35,8 +35,8 @@
      */
     "experiment": [
         {
-            "temp": [863, 855.5, 848, 840.5, 833, 828, 823 ],
-            "c": [0.12, 0.115, 0.11, 0.105, 0.1, 0.095, 0.09]
+            "temp": [1409, 1295, 1150, 1041, 910 ],
+            "c": [0.08, 0.06, 0.04, 0.03, 0.02]
         }
     ],
 
@@ -49,7 +49,7 @@
     elements concentration
     must be normalized
     */
-    "x_1": 0.3,
+    "x_1": 0.1,
 
     /*
     Convergence condition
@@ -60,9 +60,9 @@
     Interaction energy
     */
     "int_en": {
-        "pair": [-0.00, 0.00, -0.0000, 0.000],
-        "trip": [0.000],
-        "tetra": [0.000]
+        "pair": [-0.122086488, 0.025311871, 0.004675864, 0.029767323, 0.007683808, -0.003356249, -3.33339E-05, -0.000265311, 0.014275216, 0.000905866, 0.001211586],
+        "trip": [0.01197572],
+        "tetra": [0.008499196]
     },
 
     /*
@@ -70,12 +70,12 @@
 
     Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
     */
-    "delta_mu": [0],
+    "delta_mu": [0.002, -0.002, 5],
 
     /*
     Temperature (K)
 
     Temperature can be setted as a single value or continuous as [highest, lowest, point]
     */
-    "temp": [1000]
+    "temp": [1700, 500, 40]
 }
