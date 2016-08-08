@@ -49,7 +49,7 @@
     elements concentration
     must be normalized
     */
-    "x_1": 0.1,
+    "x_1": 0.2,
 
     /*
     Convergence condition
@@ -60,9 +60,9 @@
     Interaction energy
     */
     "int_en": {
-        "pair": [-0.122086488, 0.025311871, 0.004675864, 0.029767323, 0.007683808, -0.003356249, -3.33339E-05, -0.000265311, 0.014275216, 0.000905866, 0.001211586],
-        "trip": [0.01197572],
-        "tetra": [0.008499196]
+        "pair": [-0.096000, 0.000000, 0.004675864, 0.029767323, 0.007683808, -0.003356249, -3.33339E-05, -0.000265311, 0.014275216, 0.000905866, 0.001211586],
+        "trip": [0.002000],
+        "tetra": [0]
     },
 
     /*
@@ -70,12 +70,12 @@
 
     Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
     */
-    "delta_mu": [0.002, -0.002, 5],
+    "delta_mu": [0.0],
 
     /*
     Temperature (K)
 
-    Temperature can be setted as a single value or continuous as [highest, lowest, point]
+    Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
     */
-    "temp": [1700, 500, 40]
+    "temp": [1000, 500, 20]
 }

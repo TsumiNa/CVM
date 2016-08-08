@@ -109,5 +109,5 @@ class tetrahedron(CVM):
             print('\n')
             # save result to output
             self.output['Results'].append(
-                {'mu': self.mu[0].item(0), 'data': data})
+                {'mu': self.mu[0].item(0), 'data': data, '1st_int': self.int_pair[0]})
             self.mu[0] -= dmu

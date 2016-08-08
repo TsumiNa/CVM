@@ -46,7 +46,7 @@ class tetraOctahedron(CVM):
         """
         # use transfer
         # transfer to 2nd
-        # self.pair_int_decorator(2, 4)
+        # self.pair_int_decorator(2, 8)
 
         ###############################################
         # configuration

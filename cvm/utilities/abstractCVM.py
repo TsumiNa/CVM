@@ -60,12 +60,17 @@ class CVM(object):
             raise NameError('must set temperature in input card')
         if len(inp['temp']) == 1:
             self.temp = np.array(inp['temp'], np.single)
-        else:
+        elif len(inp['temp']) == 3:
             self.temp = np.linspace(
                 inp['temp'][0],
                 inp['temp'][1],
                 inp['temp'][2]
             )
+        elif len(inp['temp']) == 4:
+            pass
+        else:
+            print(len(inp['temp']))
+            raise NameError('wrong temperature set')
 
         # Boltzmann constant
         self.bzc = np.float32(inp['bzc'])
