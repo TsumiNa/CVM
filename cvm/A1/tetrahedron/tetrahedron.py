@@ -35,6 +35,10 @@ class tetrahedron(CVM):
         self.mu = np.zeros((2), np.float64)
         self.eta_sum = np.float64(0.0)
 
+        # use transfer
+        # transfer to 2nd
+        self.pair_int_decorator(1, 8)
+
         ###############################################
         # configuration
         ###############################################
@@ -69,7 +73,7 @@ class tetrahedron(CVM):
     def __init(self):
         """
         initialize
-        """
+        """        
         self.count = 0
         self.checker = np.float64(1.0)
 
