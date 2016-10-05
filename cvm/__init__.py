@@ -132,5 +132,6 @@ class CvmCalc(object):
         print(cls.arg_dict)
         print('Done')
 
+
 if __name__ == '__main__':
     CvmCalc()

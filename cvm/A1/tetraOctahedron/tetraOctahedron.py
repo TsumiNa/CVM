@@ -40,32 +40,29 @@ class tetraOctahedron(CVM):
         self.beta = np.float64(0.0)
         self.mu = np.zeros((2), np.float64)
 
-    def __init(self):
-        """
-        initialize x_, y_, z_
-        """
-        # use transfer
-        # transfer to 2nd
-        # self.pair_int_decorator(2, 0)
-
+    def __init__en(self, sample):
         ###############################################
         # configuration
         ###############################################
+        # use transfer
+        # transfer to 2nd
+        sample.effctive_en(1, 8, 3)
+
         # pure energy of 2body-1st
         en1 = np.zeros((2, 2), np.float64)
         en1[0, 1] = en1[1, 0] = \
-            0.5 * (en1[0, 0] + en1[1, 1] - self.int_pair[0])
+            0.5 * (en1[0, 0] + en1[1, 1] - sample.int_pair[0])
 
         #############################################
         # tetrahedron
         #############################################
         # 3body-1st interaction energy
         de31 = np.zeros((2, 2, 2), np.float64)
-        de31[1, 1, 1] = self.int_trip[0]
+        de31[1, 1, 1] = sample.int_trip[0]
 
         # 4body-1st interaction energy
         de41 = np.zeros((2, 2, 2, 2), np.float64)
-        de41[1, 1, 1, 1] = self.int_tetra[0]
+        de41[1, 1, 1, 1] = sample.int_tetra[0]
 
         # energy ε
         it = np.nditer(self.enT, flags=['multi_index'])
@@ -86,7 +83,7 @@ class tetraOctahedron(CVM):
         # pure energy of 2body-1st
         en2 = np.zeros((2, 2), np.float64)
         en2[0, 1] = en2[1, 0] = \
-            0.5 * (en2[0, 0] + en2[1, 1] - self.int_pair[1])
+            0.5 * (en2[0, 0] + en2[1, 1] - sample.int_pair[1])
 
         # energy ε
         it = np.nditer(self.enO, flags=['multi_index'])
@@ -101,6 +98,8 @@ class tetraOctahedron(CVM):
             (self.enT[1, 1, 1, 1] + self.enO[1, 1, 1, 1, 1, 1])
         self.mu[1] = -self.mu[0]
 
+    def __reset__probability(self):
+
         self.count = 0
         self.checker = np.float64(1.0)
         self.af_ = np.zeros((2, 2, 2), np.float64)
@@ -114,46 +113,37 @@ class tetraOctahedron(CVM):
             self.y_[i, j] = self.x_[i] * self.x_[j]
             it.iternext()
 
-    def __run(self):
-        self.__init()
-        while self.checker > self.condition:
-            while self.checker > self.main_condition:
-                process(self)
-            else:
-                self.main_condition /= 10
-                self.sub_condition /= 10
-
     # implement the inherited abstract method run()
     def run(self):
 
         # temperature iteration
-        for dmu in np.nditer(self.delta_mu):
-            data = []
-            # self.mu[0] += dmu
-            # self.mu[1] = -self.mu[0]
-            self.int_pair[0] += dmu
-            self.x_[1] = self.x_1
-            self.x_[0] = 1 - self.x_1
+        for sample in self.series:
+            sample.res['temp'] = sample.temp.tolist()
+            self.x_[1] = sample.x_1
+            self.x_[0] = 1 - sample.x_1
+            self.__init__en(sample)
             print(' mu = {:06.4f}:'.format(self.mu[0].item(0)))
-            print(' 1st_int = {:06.4f}:'.format(self.int_pair[0]))
-            print(' 2nd_int = {:06.4f}:'.format(self.int_pair[1]))
+            print(' 1st_int = {:06.4f}:'.format(sample.int_pair[0]))
+            print(' 2nd_int = {:06.4f}:'.format(sample.int_pair[1]))
 
             # delta mu iteration
-            for temp in np.nditer(self.temp):
+            for temp in np.nditer(sample.temp):
                 self.beta = np.float64(pow(self.bzc * temp, -1))
 
                 # calculate w
-                self.__run()
+                self.__reset__probability()
+                while self.checker > sample.condition:
+                    while self.checker > self.main_condition:
+                        process(self)
+                    else:
+                        self.main_condition /= 10
+                        self.sub_condition /= 10
 
-                # push result into data
-                data.append({'temp': temp.item(0), 'c': self.x_[1].item(0)})
+                # push result into res
+                sample.res['c'].append(self.x_[1].item(0))
                 print('    T = {:06.3f}K,  c = {:06.6f},  count = {}'.
                       format(temp.item(0), self.x_[1].item(0), self.count))
 
             print('\n')
             # save result to output
-            # self.output['Results'].append(
-            #     {'mu': self.mu[0].item(0), 'data': data})
-            self.output['Results'].append(
-                {'1st_int': self.int_pair[0], 'data': data})
-            self.int_pair[0] -= dmu
+            self.output['Results'].append(sample.res)
