@@ -3,10 +3,11 @@
 
 from .sample import Sample
 import numpy as np
+import threading
 import datetime as dt
 
 
-class CVM(object):
+class CVM(threading.Thread):
 
     """
     Abstract CVM class
@@ -28,23 +29,23 @@ class CVM(object):
         self.count = 0
         self.series = []
         self.output = {
-            'Meta': {},
-            'Results': [],
-            'Experiment': {}
+            'meta': {},
+            'results': [],
+            'experiment': {}
         }
 
         ##################
         # init output
         ##################
         # experiment
-        self.output['Experiment'] = inp['experiment']
+        self.output['experiment'] = inp['experiment']
 
         # Meta
         date_time_str = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.output['Meta']['Name'] = inp['name']
-        self.output['Meta']['Description'] = inp['description']
-        self.output['Meta']['Structure'] = inp['structure']
-        self.output['Meta']['Date'] = date_time_str
+        self.output['meta']['name'] = inp['name']
+        self.output['meta']['description'] = inp['description']
+        self.output['meta']['structure'] = inp['structure']
+        self.output['meta']['date'] = date_time_str
 
         # Boltzmann constant
         self.bzc = np.float32(inp['bzc'])

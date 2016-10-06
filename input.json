@@ -45,6 +45,14 @@
     */
     "bzc": 8.6173324E-5,
 
+    /*
+    what method(s) will be used for this calculation
+    */
+    "methods": ["T", "TO"],
+
+    /*
+    data for calculation
+    */
     "series": [
         {
             /*
@@ -82,7 +90,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1600, 40]
+            "temp": [500, 1920, 50]
         },
         {
             /*
@@ -121,7 +129,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 900, 30]
+            "temp": [500, 1065, 30]
         }
     ]
 }

@@ -119,6 +119,7 @@ class tetraOctahedron(CVM):
         # temperature iteration
         for sample in self.series:
             sample.res['temp'] = sample.temp.tolist()
+            sample.res['label'] = sample.res['label'] + '(TO)'
             self.x_[1] = sample.x_1
             self.x_[0] = 1 - sample.x_1
             self.__init__en(sample)
@@ -146,4 +147,4 @@ class tetraOctahedron(CVM):
 
             print('\n')
             # save result to output
-            self.output['Results'].append(sample.res)
+            self.output['results'].append(sample.res)
