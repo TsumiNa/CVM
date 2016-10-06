@@ -11,7 +11,7 @@ The simplest way to run a calculation can do something like this:
 ```bash
 $ python -m cvm -inp <your input> -backend <some post process>
 ```
-`-inp` is necessary for a calculation.you can see the `input.json` this dir.
+`-inp` is necessary for a calculation. you can see the `input.json` this dir.
 `-backend` is optional arguments to do some post process with results. also see `backend.py` under this dir.
 
 All the calculated results will be stored in `log` dir by the created date.
