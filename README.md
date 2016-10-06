@@ -8,7 +8,7 @@ calculated solubility limit.
 ## Usage ##
 cvm is a python module which can run in a python3 environment.
 The simplest way to run a calculation can do something like this:
-```py
+```bash
 $ python -m cvm -inp <your input> -backend <your postprcess>
 ```
 `-inp` is necessary for a calculation.you can see the `input.json` this dir.
