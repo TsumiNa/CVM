@@ -48,7 +48,7 @@
     /*
     what method(s) will be used for this calculation
     */
-    "methods": ["T", "TO"],
+    "methods": ["T"],
 
     /*
     data for calculation
@@ -90,7 +90,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1920, 50]
+            "temp": [500, 1950, 50]
         },
         {
             /*
@@ -129,7 +129,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1065, 30]
+            "temp": [500, 1150, 30]
         }
     ]
 }
