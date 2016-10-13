@@ -90,7 +90,45 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1600, 50]
+            "temp": [500, 1900, 50]
+        },
+        {
+            /*
+            A label for a calculation sample
+            */
+            "label": "T = 1400K",
+
+            /*
+            elements concentration
+            must be normalized
+            */
+            "x_1": 0.01,
+
+            /*
+            Convergence condition
+             */
+            "condition": 1e-7,
+
+            /*
+            Interaction energy
+            */
+            "int_pair": [-0.158424613, 0.011412596, 0.001874865, 0.030246964, 0.004404573, -0.001990378, 0.002628893, 0.001575948, 0.010120054, 0.001303698, 0.000912126],
+            "int_trip": [0.013228548],
+            "int_tetra": [0.007254286],
+
+            /*
+            Chemical potential
+
+            Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
+            */
+            "delta_mu": [0.0],
+
+            /*
+            Temperature (K)
+
+            Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
+            */
+            "temp": [500, 1770, 40]
         },
         {
             /*
@@ -128,7 +166,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1300, 40]
+            "temp": [500, 1600, 40]
         },
         {
             /*
@@ -167,7 +205,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1000, 30]
+            "temp": [500, 1160, 30]
         }
     ]
 }

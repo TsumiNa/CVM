@@ -11,7 +11,8 @@ def percent(x, pos=0):
 
 
 def process(opt):
-    fig, ax = plt.subplots(figsize=(8, 5), dpi=150)  # 800 * 500
+    fig, ax = plt.subplots(figsize=(8, 4.5), dpi=150)  # 800 * 500
+    plt.subplots_adjust(top=0.96, bottom=0.11, left=0.10, right=0.97)
 
     # draw experiment
     y_exp = opt['experiment'][0]['temp']
@@ -34,6 +35,6 @@ def process(opt):
     ax.grid(axis='y')
     ax.set_ylabel(r'Temperature ($K$)')
     ax.set_xlabel(r'Concentration of Ru ($\%$)')
-    ax.legend(loc='lower right')
-    plt.savefig(opt['meta']['name'], dpi=200)  # 200 dpi
+    ax.legend(loc='lower right', markerscale=0.8, fontsize=12)
+    plt.savefig(opt['meta']['name'] + '.eps', dpi=200)  # 200 dpi
     plt.show()
