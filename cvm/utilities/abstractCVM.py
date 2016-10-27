@@ -42,7 +42,7 @@ class CVM(threading.Thread):
 
         # Meta
         date_time_str = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.output['meta']['name'] = inp['name']
+        self.output['meta']['name'] = inp['name'].lower()
         self.output['meta']['description'] = inp['description']
         self.output['meta']['structure'] = inp['structure']
         self.output['meta']['date'] = date_time_str

@@ -25,16 +25,17 @@ def process(opt):
         # plt.xlim(xmin=0.5, xmax=12.5)
         # plt.axhline(y=0, color='k', ls='-', lw=1.0)
         # label[i] = 'int= ' + '{:07.4}'.format(opt['Results'][i]['1st_int'])
-        ax.plot(res['c'], res['temp'], '-', mew=1.5, mfc='w', ms=6, lw=1.5,
+        ax.plot(res['c'], res['temp'], 'o-', ms=4, lw=1.5,
                 label=res['label'])
 
     # set formater
     ax.xaxis.set_major_formatter(FuncFormatter(percent))
+    ax.set_xlim(0, 0.12)
 
     # for preview
     ax.grid(axis='y')
     ax.set_ylabel(r'Temperature ($K$)')
     ax.set_xlabel(r'Concentration of Ru ($\%$)')
-    ax.legend(loc='lower right', markerscale=0.8, fontsize=12)
+    ax.legend(loc='lower right', markerscale=1.2, fontsize=13)
     plt.savefig(opt['meta']['name'] + '.eps', dpi=200)  # 200 dpi
     plt.show()

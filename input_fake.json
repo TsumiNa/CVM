@@ -2,7 +2,7 @@
     /*
     name will also be used as output file(s) name like "name.json".   
     */
-    "name": "Pd_Rh_cvmt",
+    "name": "Pd_Ru_Fake",
 
     /*
     descripton your calculation. it's optional
@@ -128,7 +128,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1465, 40]
+            "temp": [500, 1477, 40]
         },
         {
             /*
@@ -166,7 +166,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1345, 40]
+            "temp": [500, 1348, 40]
         },
         {
             /*
@@ -205,7 +205,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1065, 30]
+            "temp": [500, 1078.25, 50]
         }
     ]
 }
