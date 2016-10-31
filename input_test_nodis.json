@@ -1,0 +1,211 @@
+{
+    /*
+    name will also be used as output file(s) name like "name.json".   
+    */
+    "name": "Pd_Ru_test",
+
+    /*
+    descripton your calculation. it's optional
+    */
+    "description": "PdRu solubility limit calculation with tetrahedron approximation",
+
+
+    /*
+    Crystal structure
+
+    Please use Strukturbericht symbol method. For example: Cu => A1; W => A2
+    */
+    "structure": "A1",
+
+
+    /*
+    Cluster
+
+    Which sit will be chosen to export entropy term. Assume cube length as 1.
+    */
+    "cluster": [
+        [0.0, 0.0, 0.0],
+        [0.5, 0.5, 0.0],
+        [0.0, 0.5, 0.5],
+        [0.5, 0.0, 0.5]
+    ],
+
+    /*
+    Experiment
+     */
+    "experiment": [
+        {
+            "temp": [1856, 1409, 1295, 1150, 1041, 910 ],
+            "c": [0.172, 0.08, 0.06, 0.04, 0.03, 0.02]
+        }
+    ],
+
+    /*
+    Boltzmann constant
+    */
+    "bzc": 8.6173324E-5,
+
+    /*
+    what method(s) will be used for this calculation
+    */
+    "methods": ["T"],
+
+    /*
+    data for calculation
+    */
+    "series": [
+        {
+            /*
+            A label for a calculation sample
+            */
+            "label": "T = 800K (3+4)",
+
+            /*
+            elements concentration
+            must be normalized
+            */
+            "x_1": 0.01,
+
+            /*
+            Convergence condition
+             */
+            "condition": 1e-7,
+
+            /*
+            Interaction energy
+            */
+            "int_pair": [-0.12302313, 0.026852342, 0.004438451, 0.031264398, 0.007519461, -0.00283706, 0.003530679, -0.000448172, 0.014907355, 0.001397849, 0.001059068],
+            "int_trip": [0.013228548],
+            "int_tetra": [0.007254286],
+
+            /*
+            Chemical potential
+
+            Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
+            */
+            "delta_mu": [0.0],
+
+            /*
+            Temperature (K)
+
+            Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
+            */
+            "temp": [500, 1130, 30]
+        },
+        {
+            /*
+            A label for a calculation sample
+            */
+            "label": "T = 800K (4)",
+
+            /*
+            elements concentration
+            must be normalized
+            */
+            "x_1": 0.01,
+
+            /*
+            Convergence condition
+             */
+            "condition": 1e-7,
+
+            /*
+            Interaction energy
+            */
+            "int_pair": [-0.12302313, 0.026852342, 0.004438451, 0.031264398, 0.007519461, -0.00283706, 0.003530679, -0.000448172, 0.014907355, 0.001397849, 0.001059068],
+            "int_trip": [0],
+            "int_tetra": [0.007254286],
+
+            /*
+            Chemical potential
+
+            Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
+            */
+            "delta_mu": [0.0],
+
+            /*
+            Temperature (K)
+
+            Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
+            */
+            "temp": [500, 1700, 30]
+        },
+        {
+            /*
+            A label for a calculation sample
+            */
+            "label": "T = 800K (3)",
+
+            /*
+            elements concentration
+            must be normalized
+            */
+            "x_1": 0.01,
+
+            /*
+            Convergence condition
+             */
+            "condition": 1e-7,
+
+            /*
+            Interaction energy
+            */
+            "int_pair": [-0.12302313, 0.026852342, 0.004438451, 0.031264398, 0.007519461, -0.00283706, 0.003530679, -0.000448172, 0.014907355, 0.001397849, 0.001059068],
+            "int_trip": [0.013228548],
+            "int_tetra": [0],
+
+            /*
+            Chemical potential
+
+            Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
+            */
+            "delta_mu": [0.0],
+
+            /*
+            Temperature (K)
+
+            Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
+            */
+            "temp": [500, 1200, 30]
+        },
+        {
+            /*
+            A label for a calculation sample
+            */
+            "label": "T = 800K",
+
+            /*
+            Impurity concentration
+            must be normalized
+            */
+            "x_1": 0.01,
+
+            /*
+            Convergence condition
+             */
+            "condition": 1e-7,
+
+            /*
+            Interaction energy
+            */
+            "int_pair": [-0.12302313, 0.026852342, 0.004438451, 0.031264398, 0.007519461, -0.00283706, 0.003530679, -0.000448172, 0.014907355, 0.001397849, 0.001059068],
+            "int_trip": [0],
+            "int_tetra": [0],
+
+
+            /*
+            Chemical potential
+
+            Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
+            */
+            "delta_mu": [0.0],
+
+            /*
+            Temperature (K)
+
+            Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
+            */
+            "temp": [500, 1700, 30]
+        }
+    ]
+}
