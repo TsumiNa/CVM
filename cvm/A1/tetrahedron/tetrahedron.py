@@ -20,6 +20,7 @@ class tetrahedron(CVM):
         'beta',  # β = 1/kt
         'checker',  # absolute of t_out and t_in
         'eta_sum',  # sum of η_ijkl
+        'multi_calcu',  # if is a multiple calculation
     )
 
     def __init__(self, inp):
@@ -27,6 +28,7 @@ class tetrahedron(CVM):
         ####################
         # define var
         ####################
+        self.multi_calcu = True if len(inp['methods']) > 1 else False
         self.x_ = np.zeros((2), np.float64)
         self.y_ = np.zeros((2, 2), np.float64)
         self.t_ = np.zeros((2, 2, 2, 2), np.float64)
@@ -91,7 +93,8 @@ class tetrahedron(CVM):
         # temperature iteration
         for sample in self.series:
             sample.res['temp'] = sample.temp.tolist()
-            sample.res['label'] = sample.res['label'] + '(T)'
+            if self.multi_calcu:
+                sample.res['label'] = sample.res['label'] + '(T)'
             self.x_[1] = sample.x_1
             self.x_[0] = 1 - sample.x_1
             self.__init__en(sample)

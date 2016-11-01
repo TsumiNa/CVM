@@ -25,6 +25,7 @@ class tetraOctahedron(CVM):
         'checker',  # absolute of z_out and z_in
         'main_condition',  # Convergence condition
         'sub_condition',  # Convergence condition
+        'multi_calcu',  # if is a multiple calculation
     )
 
     def __init__(self, inp):
@@ -32,6 +33,7 @@ class tetraOctahedron(CVM):
         ####################
         # define var
         ####################
+        self.multi_calcu = True if len(inp['methods']) > 1 else False
         self.x_ = np.zeros((2), np.float64)
         self.y_ = np.zeros((2, 2), np.float64)
         self.z_ = np.zeros((2, 2, 2), np.float64)
@@ -119,7 +121,8 @@ class tetraOctahedron(CVM):
         # temperature iteration
         for sample in self.series:
             sample.res['temp'] = sample.temp.tolist()
-            sample.res['label'] = sample.res['label'] + '(TO)'
+            if self.multi_calcu:
+                sample.res['label'] = sample.res['label'] + '(T)'
             self.x_[1] = sample.x_1
             self.x_[0] = 1 - sample.x_1
             self.__init__en(sample)

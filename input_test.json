@@ -58,7 +58,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "T = 800K (3+4)",
+            "label": "CVMT8 (3+4 with distortion)",
 
             /*
             elements concentration
@@ -75,8 +75,8 @@
             Interaction energy
             */
             "int_pair": [-0.156330696, 0.026852342, 0.004438451, 0.031264398, 0.007519461, -0.00283706, 0.003530679, -0.000448172, 0.014907355, 0.001397849, 0.001059068],
-            "int_trip": [0.013228548],
-            "int_tetra": [0.007254286],
+            "int_trip": [0.01220091],
+            "int_tetra": [0.008326279],
 
             /*
             Chemical potential
@@ -90,13 +90,13 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1130, 30]
+            "temp": [400, 1170, 30]
         },
         {
             /*
             A label for a calculation sample
             */
-            "label": "T = 800K (4)",
+            "label": "CVMT8 (with distortion)",
 
             /*
             elements concentration
@@ -114,7 +114,7 @@
             */
             "int_pair": [-0.156330696, 0.026852342, 0.004438451, 0.031264398, 0.007519461, -0.00283706, 0.003530679, -0.000448172, 0.014907355, 0.001397849, 0.001059068],
             "int_trip": [0],
-            "int_tetra": [0.007254286],
+            "int_tetra": [0],
 
             /*
             Chemical potential
@@ -128,13 +128,13 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1700, 30]
+            "temp": [400, 1850, 30]
         },
         {
             /*
             A label for a calculation sample
             */
-            "label": "T = 800K (3)",
+            "label": "CVMT8",
 
             /*
             elements concentration
@@ -150,49 +150,10 @@
             /*
             Interaction energy
             */
-            "int_pair": [-0.156330696, 0.026852342, 0.004438451, 0.031264398, 0.007519461, -0.00283706, 0.003530679, -0.000448172, 0.014907355, 0.001397849, 0.001059068],
-            "int_trip": [0.013228548],
-            "int_tetra": [0],
-
-            /*
-            Chemical potential
-
-            Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
-            */
-            "delta_mu": [0.0],
-
-            /*
-            Temperature (K)
-
-            Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
-            */
-            "temp": [500, 1200, 30]
-        },
-        {
-            /*
-            A label for a calculation sample
-            */
-            "label": "T = 800K",
-
-            /*
-            Impurity concentration
-            must be normalized
-            */
-            "x_1": 0.01,
-
-            /*
-            Convergence condition
-             */
-            "condition": 1e-7,
-
-            /*
-            Interaction energy
-            */
-            "int_pair": [-0.156330696, 0.026852342, 0.004438451, 0.031264398, 0.007519461, -0.00283706, 0.003530679, -0.000448172, 0.014907355, 0.001397849, 0.001059068],
+            "int_pair": [-0.12302313, 0.026852342, 0.004438451, 0.031264398, 0.007519461, -0.00283706, 0.003530679, -0.000448172, 0.014907355, 0.001397849, 0.001059068],
             "int_trip": [0],
             "int_tetra": [0],
 
-
             /*
             Chemical potential
 
@@ -205,7 +166,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1700, 30]
+            "temp": [200, 1100, 30]
         }
     ]
 }
