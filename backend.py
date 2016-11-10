@@ -17,7 +17,7 @@ def process(opt):
     # draw experiment
     y_exp = opt['experiment'][0]['temp']
     x_exp = opt['experiment'][0]['c']
-    ax.plot(x_exp, y_exp, '--x', mew=1.5, mfc='w', ms=6, lw=1.5,
+    ax.plot(x_exp, y_exp, 'x--', mew=3, mfc='w', ms=6, lw=1.5,
             label='Experiment')
 
     # draw results
@@ -34,8 +34,14 @@ def process(opt):
 
     # for preview
     ax.grid(axis='y')
-    ax.set_ylabel(r'Temperature ($K$)')
-    ax.set_xlabel(r'Concentration of Ru ($\%$)')
+    ax.set_ylabel('Temperature ($K$)')
+    ax.set_xlabel('Concentration of ' + opt['meta']['impurity'].capitalize() + '($\%$)')
     ax.legend(loc='lower right', markerscale=1.2, fontsize=13)
-    plt.savefig(opt['meta']['name'] + '.eps', dpi=200)  # 200 dpi
+    fig_name = "_".join((
+        opt['meta']['prefix'],
+        opt['meta']['host'],
+        opt['meta']['impurity'],
+        opt['meta']['suffix']
+    )).lstrip('_') + '.eps'
+    plt.savefig(fig_name, dpi=300)  # 300 dpi
     plt.show()

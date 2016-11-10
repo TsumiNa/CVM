@@ -42,7 +42,10 @@ class CVM(threading.Thread):
 
         # Meta
         date_time_str = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.output['meta']['name'] = inp['name'].lower()
+        self.output['meta']['host'] = inp['host'].lower()
+        self.output['meta']['impurity'] = inp['impurity'].lower()
+        self.output['meta']['suffix'] = inp['suffix'].lower()
+        self.output['meta']['prefix'] = inp['prefix'].lower()
         self.output['meta']['description'] = inp['description']
         self.output['meta']['structure'] = inp['structure']
         self.output['meta']['date'] = date_time_str
