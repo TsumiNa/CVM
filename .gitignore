@@ -1,6 +1,7 @@
 .spyderproject
 __pycache__/
-output.json
+.idea/
 /log
 *.png
-.idea/
+*.jpg
+*.eps

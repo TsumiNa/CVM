@@ -17,6 +17,7 @@ import sys
 import os
 import tempfile
 import datetime as dt
+import argparse
 import re as regex
 
 from .A1 import tetrahedron as T
@@ -51,25 +52,23 @@ class CvmCalc(object):
     __slots__ = (
         'backend',
         'workerpool',
-        'arg_dict',  # argvs will be reformatted as {'option': 'value'}
+        'args',  # argvs will be reformatted as {'option': 'value'}
         'method_dict',  # store calculation methods as {'name': method}
     )
 
-    def __init__(self, inp=None, backend=None):
+    def __init__(self, **kwargs):
         """
         keep None when you don't want to custom by yourself.
         """
         super(CvmCalc, self).__init__()
         self.workerpool = []
-        self.arg_dict = {}
-        self.method_dict = {}
-
-        # init method
-        self.method_dict['T'] = T
-        self.method_dict['DT'] = DT
-        self.method_dict['TO'] = TO
-        self.method_dict['TS'] = TS
-        self.method_dict['QT'] = QT
+        self.method_dict = dict(
+            T=T,
+            DT=DT,
+            TO=TO,
+            TS=TS,
+            QT=QT,
+        )
 
         # parse flags
         cwd = os.getcwd() + '/'
@@ -77,23 +76,19 @@ class CvmCalc(object):
         if cmd_folder not in sys.path:
             sys.path.append(cmd_folder)
 
-        self.__initArg()
+        self.args = kwargs
 
-        if 'backend' not in self.arg_dict:
-            self.backend = None if backend is None else backend
+        if not self.args['backend']:
+            self.backend = None
         else:
-            backend_path = cwd + self.arg_dict['backend'][0]
-            backend_path = backend_path[:-3]
             try:
-                self.backend = __import__(self.arg_dict['backend'][0][:-3])
+                self.backend = __import__(self.args['backend'][:-3])
             except ImportError as e:
                 raise e
-        if inp is not None:
-            self.__run(inp)
+        if 'inp' in self.args:
+            self.__run(self.args['inp'])
         else:
-            if 'inp' not in self.arg_dict:
-                raise NameError('need a INPCARD!')
-            with open(cwd + self.arg_dict['inp'][0]) as f:
+            with open(cwd + self.args['inp_card']) as f:
                 _content = f.read()
                 _content = pattern.sub('', _content)
             f = tempfile.TemporaryFile(mode='w+t')
@@ -129,36 +124,9 @@ class CvmCalc(object):
         if self.backend is not None:
             self.backend.process(worker.output)
 
-        if 'opt' in self.arg_dict:
-            if self.arg_dict['opt'][0] == 'json':
-                with open(log_path + '.json', 'w') as f:
-                    json.dump(worker.output, f, indent=2)
-                return
-        with open(log_path + '.yaml', 'w') as f:
-            yaml.dump(worker.output, f, default_flow_style=False, indent=3)
-
-    def __initArg(self):
-        if len(sys.argv) > 1:
-
-            _key = ''
-            _value = []  # temp key, val pair
-            for _temp in sys.argv[1:]:
-                if bool('-' in _temp):
-                    if _key is not '':
-                        self.arg_dict[_key] = _value
-                        _value = []
-                    _key = _temp.lstrip('-')
-                else:
-                    _value.append(_temp)
-
-            if _key is not '':
-                self.arg_dict[_key] = _value
-            else:
-                self._useage()
-            del _value
-            del _key
-
-    @classmethod
-    def check(cls):
-        print(cls.arg_dict)
-        print('Done')
+        if self.args['output_json']:
+            with open(log_path + '.json', 'w') as f:
+                json.dump(worker.output, f, indent=2)
+        else:
+            with open(log_path + '.yaml', 'w') as f:
+                yaml.dump(worker.output, f, default_flow_style=False, indent=3)
