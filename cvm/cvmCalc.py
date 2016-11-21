@@ -17,7 +17,6 @@ import sys
 import os
 import tempfile
 import datetime as dt
-import argparse
 import re as regex
 
 from .A1 import tetrahedron as T
