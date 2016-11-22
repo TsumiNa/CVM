@@ -45,8 +45,8 @@ class Sample(object):
             8,
             48,
             6,
-            24,  # 9th-a
-            12,  # 9th-b
+            12,  # 9th-a
+            24,  # 9th-b
             4,
             24,
             24,
