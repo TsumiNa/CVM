@@ -20,6 +20,12 @@ def process(opt):
     ax.plot(x_exp, y_exp, 'x--', mew=3, mfc='w', ms=6, lw=1.5,
             label='Experiment')
 
+    # theory
+    # ax.plot(
+    #     [0.0083, 0.019, 0.027, 0.035, .056], [800, 1200, 1400, 1600, 2050],
+    #     'kx--', mew=3, mfc='w', ms=6, lw=1.5, label='Theory'
+    # )
+
     # draw results
     for res in opt['results']:
         # plt.xlim(xmin=0.5, xmax=12.5)
@@ -34,6 +40,7 @@ def process(opt):
 
     # for preview
     ax.grid(axis='y')
+    # ax.set_ylim(400, 2000)
     ax.set_ylabel('Temperature ($K$)')
     ax.set_xlabel('Concentration of ' + opt['meta']['impurity'].capitalize() + '($\%$)')
     ax.legend(loc='lower right', markerscale=1.2, fontsize=13)

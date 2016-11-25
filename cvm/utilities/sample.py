@@ -18,6 +18,7 @@ class Sample(object):
         'int_tetra',  # interaction energy
         'mu',  # Chemical potential
         'temp',  # Temperature (K)
+        'transfer',
         'res',  # result
     )
 
@@ -44,8 +45,8 @@ class Sample(object):
             8,
             48,
             6,
-            24,  # 9th-a
-            12,  # 9th-b
+            12,  # 9th-a
+            24,  # 9th-b
             4,
             24,
             24,
@@ -65,7 +66,7 @@ class Sample(object):
 
         # prepare range
         length = len(self.int_pair)
-        if start > length or end > length or start >= end:
+        if start > length or end > length or start > end:
             raise IndexError('index error')
         if end == 0:
             _range = range(start - 1, length)

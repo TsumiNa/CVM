@@ -90,6 +90,10 @@ class CVM(threading.Thread):
             # convergence condition
             sample.condition = np.float32(item['condition'])
 
+            # transter
+            if 'transfer' in item:
+                sample.transfer = item['transfer']
+
             # Interation energies
             sample.int_pair = np.float64(item['int_pair'])
             sample.int_trip = np.float64(item['int_trip'])
@@ -101,4 +105,4 @@ class CVM(threading.Thread):
             self.series.append(sample)
 
     def run(self):
-        raise NameError('must implement this inherited abstract method')
+        raise NotImplementedError('must implement this inherited abstract method')
