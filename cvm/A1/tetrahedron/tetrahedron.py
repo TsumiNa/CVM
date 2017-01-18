@@ -43,7 +43,7 @@ class tetrahedron(CVM):
         ###############################################
         # use transfer
         # transfer to 2nd
-        if  hasattr(sample, 'transfer'):
+        if hasattr(sample, 'transfer'):
             sample.effctive_en(
                 sample.transfer[0],
                 sample.transfer[1],
