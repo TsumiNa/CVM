@@ -1,5 +1,7 @@
 import numpy as np
-from scipy.optimize import curve_fit
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit, minimize_scalar
+from scipy.interpolate import UnivariateSpline
 
 
 # lattice constan to atomic distance
@@ -30,11 +32,11 @@ def thermal_vibration_parameters(xdata, ydata, M):
                 + c2 * np.exp(-2 * lmd * (r - r0))
 
         # morse parameters
-        popt, _ = curve_fit(
+        popt, err = curve_fit(
             morse_mod,
             xs,
             ys,
-            bounds=([0, 0, 1, 2], [0.5, 0.5, 2, 3])
+            bounds=([0, 0, 1, 2], [1, 1, 2, 3])
         )
 
         return popt[0], popt[1], popt[2], popt[3],\
@@ -76,6 +78,7 @@ def thermal_vibration_parameters(xdata, ydata, M):
         x0=x0,
         gamma_0=gamma_0,
         equilibrium_lattice_constant=ad2lc(r0),
+        morse=morse_potential,
         bulk_moduli=B_0,
         debye_temperature_0=debye_temp_0,
         debye_temperature_func=debye_temp_func,
@@ -86,11 +89,20 @@ def thermal_vibration_parameters(xdata, ydata, M):
 
 if __name__ == '__main__':
     xdata = np.array([7, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8])
-    ydata = np.array([0.05415, 0.031306, 0.015456, 0.005597, 0.000804, 0.00027,
-                      0.003292, 0.00926, 0.017645, 0.027993, 0.039938])
+    # ydata = np.array([-10093.5962, -10093.60762, -10093.61555, -10093.62048,
+    #                   -10093.62287, -10093.62314, -10093.62163, -10093.61865,
+    #                   -10093.61445, -10093.60928, -10093.60331])
+
+    ydata = np.array([-10093.5971, -10093.60855, -10093.61655, -10093.62146, -10093.62388, -10093.62418, -10093.6227, -10093.61974, -10093.61557, -10093.61042, -10093.60447 ])
+
+    ydata_func = UnivariateSpline(xdata, ydata)
+    ydata_min = minimize_scalar(ydata_func, bounds=(7, 8), method='bounded')
+    ydata_min_x = ydata_min.x
+    ydata_min_y = float(ydata_min.fun)
+
     M_pd = 106.4
     xs = lc2ad(xdata)
-    ys = ydata / 2
+    ys = ydata - ydata_min_y
 
     ret = thermal_vibration_parameters(xs, ys, M_pd)
 
@@ -101,6 +113,7 @@ if __name__ == '__main__':
     x0 = ret['x0']
     gamma_0 = ret['gamma_0']
     bulk_moduli = ret['bulk_moduli']
+    morse = ret['morse']
 
     debye_temp_0 = ret['debye_temperature_0']
     debye_300K = ret['debye_func_0'](1)
@@ -112,3 +125,14 @@ if __name__ == '__main__':
     print("Bulk Modulus: {:f} Kbar".format(au2Kbar(bulk_moduli)))
     print("Debye temperature: {:f} K".format(debye_temp_0))
     print("Debye at 300K: {:f}".format(debye_300K))
+
+    xdata_morse = np.linspace(7, 8, 50)
+    ydata_morse = [morse(lc2ad(r)) + ydata_min_y for r in xdata_morse]
+    plt.plot(xdata_morse, ydata_morse, '^', label='morse')
+    plt.plot(xdata_morse, ydata_func(xdata_morse), 'o', label='polynomial')
+    plt.plot(xdata, ydata, 'x--')
+
+    print("minimum at: {:f}".format(ydata_min_x))
+    print("minimum is: {:f}".format(ydata_min_y))
+
+    plt.show()
