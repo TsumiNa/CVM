@@ -104,5 +104,8 @@ class CVM(threading.Thread):
 
             self.series.append(sample)
 
+    def __pre_int(self, ):
+        pass
+
     def run(self):
         raise NotImplementedError('must implement this inherited abstract method')
