@@ -2,6 +2,9 @@
 # -*- coding:utf-8 -*-
 
 from .sample import Sample
+from .function_tool import thermal_vibration_parameters
+from scipy.interpolate import UnivariateSpline
+from scipy.optimize import minimize_scalar
 import numpy as np
 import threading
 import datetime as dt
@@ -104,8 +107,30 @@ class CVM(threading.Thread):
 
             self.series.append(sample)
 
-    def __pre_int(self, ):
+    def __pre_int(self, host, impuity, *args):
+        """
+        parameters is a tuple with (xdata, ydata, mass, component(h, i))
+        """
+        _host_xs = impuity[0]  # atomic distance in a.u.
+        _host_ys = impuity[1]  # raw energy in Ry
+        _host_mass = impuity[2]  # atomic weight
+        _host_compon = impuity[3]  # component of this cluster
+        _host_ys = _host_ys / _host_compon[0]  # renormalized to 1 atom
+
+        # get minimum from a polynomial approximation
+        _host_poly_min = minimize_scalar(
+            UnivariateSpline(_host_xs, _host_ys, k=4),
+            bounds=(_host_xs[0], _host_xs[-1])
+        )
+        #  _host_min_x = _host_poly_min.x  # equilibrium atomic distance
+        _host_min_y = np.float(_host_poly_min.fun)  # ground status energy
+
+        _host = thermal_vibration_parameters(
+            _host_xs,
+            _host_ys - _host_min_y
+        )
         pass
 
     def run(self):
-        raise NotImplementedError('must implement this inherited abstract method')
+        raise NotImplementedError(
+            'must implement this inherited abstract method')
