@@ -102,19 +102,45 @@ class CVM(threading.Thread):
             sample.int_trip = np.float64(item['int_trip'])
             sample.int_tetra = np.float64(item['int_tetra'])
 
-            # Concentration of impuity
+            # Concentration of impurity
             sample.x_1 = np.float64(item['x_1'])
 
             self.series.append(sample)
 
-    def __pre_int(self, host, impuity, *args):
+    def __pre_minimum(self, xs, ys, base, correct):
         """
-        parameters is a tuple with (xdata, ydata, mass, component(h, i))
+        xs: array
+            atomic distance between nearest-neighbor
+        ys, impuity, correct: array
+            energies change for ys, impuity cluster and correct respectivly
+            (Ry/atom)
         """
-        _host_xs = impuity[0]  # atomic distance in a.u.
-        _host_ys = impuity[1]  # raw energy in Ry
-        _host_mass = impuity[2]  # atomic weight
-        _host_compon = impuity[3]  # component of this cluster
+        # get minimum from a polynomial
+        ys = ys + base - correct
+        poly_min = minimize_scalar(
+            UnivariateSpline(xs, ys, k=4),
+            bounds=(xs[0], xs[-1])
+        )
+        min_x = poly_min.x  # equilibrium atomic distance
+        min_y = np.float(poly_min.fun)  # ground status energy
+
+        return min_x, min_y
+
+    def __pre_int(self, host_0, impuity_0, xs, correct, *args):
+        """
+        host_0, impuity_0: float
+            internal energy of host and impuity cluster (Ry/atom)
+        xs: array
+            atomic distance between nearest-neighbor
+        correct: array
+            correct between band calculation and impurity calculation
+        args: array
+            a tuple with (energies, mass, component(h, i))
+        """
+        _host_xs = impurity[0]  # atomic distance in a.u.
+        _host_ys = impurity[1]  # raw energy in Ry
+        _host_mass = impurity[2]  # atomic weight
+        _host_compon = impurity[3]  # component of this cluster
         _host_ys = _host_ys / _host_compon[0]  # renormalized to 1 atom
 
         # get minimum from a polynomial approximation
