@@ -70,6 +70,8 @@ def thermal_vibration_parameters(xdata, ydata, M):
     debye_temp_0, debye_temp_func = _debye_temp_gene(
         r0, lmd, au2Kbar(B_0), np.float(M))
 
+    # parameters will be used to construt
+    # free energy with thermal vibration effect
     return dict(
         c1=c1,
         c2=c2,
@@ -89,11 +91,9 @@ def thermal_vibration_parameters(xdata, ydata, M):
 
 if __name__ == '__main__':
     xdata = np.array([7, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8])
-    # ydata = np.array([-10093.5962, -10093.60762, -10093.61555, -10093.62048,
-    #                   -10093.62287, -10093.62314, -10093.62163, -10093.61865,
-    #                   -10093.61445, -10093.60928, -10093.60331])
-
-    ydata = np.array([-10093.5971, -10093.60855, -10093.61655, -10093.62146, -10093.62388, -10093.62418, -10093.6227, -10093.61974, -10093.61557, -10093.61042, -10093.60447 ])
+    ydata = np.array([-10093.59710, -10093.60855, -10093.61655, -10093.62146,
+                      -10093.62388, -10093.62418, -10093.6227, -10093.61974,
+                      -10093.61557, -10093.61042, -10093.60447])
 
     ydata_func = UnivariateSpline(xdata, ydata)
     ydata_min = minimize_scalar(ydata_func, bounds=(7, 8), method='bounded')

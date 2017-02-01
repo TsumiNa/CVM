@@ -89,9 +89,49 @@
             /*
             Interaction energy
             */
-            "int_pair": [-0.159338507, 0.008116479, 0.001162063, 0.028092229, 0.004009463, -0.001842348, 0.002411882, 0.001739216, 0.008811186, 0.000127513, 0.000813077],
-            "int_trip": [0.013508962],
-            "int_tetra": [0.006625023],
+            "data": {
+                "xdata": [],
+                "host": {
+                    "mass": 106.4,
+                    "energy": []
+                },
+                "pair1": [
+                    {
+                        "mass": 106.4,
+                        "coefficient": 2,
+                        "energy": []
+                    },
+                    {
+                        "mass": 106.4,
+                        "coefficient": 2,
+                        "energy": []
+                    }
+                ],
+                "triple": [
+                    {
+                        "mass": 106.4,
+                        "coefficient": 2,
+                        "energy": []
+                    },
+                    {
+                        "mass": 106.4,
+                        "coefficient": 2,
+                        "energy": []
+                    }
+                ],
+                "tetra": [
+                    {
+                        "mass": 106.4,
+                        "coefficient": 2,
+                        "energy": []
+                    },
+                    {
+                        "mass": 106.4,
+                        "coefficient": 2,
+                        "energy": []
+                    }
+                ]
+            },
 
             /*
             Chemical potential
