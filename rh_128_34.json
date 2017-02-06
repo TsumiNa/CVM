@@ -1,21 +1,21 @@
 {
     /*
-    Host element.   
+    Host element.
     */
     "host": "Pd",
 
     /*
-    Impurity.   
+    Impurity.
     */
     "impurity": "Rh",
 
     /*
-    Meta prefix(optional).   
+    Meta prefix(optional).
     */
     "prefix": "",
 
     /*
-    Meta suffix(optional).   
+    Meta suffix(optional).
     */
     "suffix": "128_34",
 

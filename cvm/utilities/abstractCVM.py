@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 
-from .sample import Sample
-from .function_tool import thermal_vibration_parameters
+import datetime as dt
+import threading
+
+import numpy as np
 from scipy.interpolate import UnivariateSpline
 from scipy.optimize import minimize_scalar
-import numpy as np
-import threading
-import datetime as dt
+
+from .function_tool import thermal_vibration_parameters
+from .sample import Sample
 
 
 class CVM(threading.Thread):
@@ -107,7 +109,7 @@ class CVM(threading.Thread):
             host_en = data['host']['energy']
             host_mass = data['host']['mass']
             vib_host = self.__energy_vib(xs, 0, host_en, 0, host_mass)
-            
+
             # gain Interation energy for 1st-pair
             correct_en
             for cls in data['pair1']:
