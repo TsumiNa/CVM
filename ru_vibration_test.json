@@ -1,21 +1,23 @@
 {
     /*
-    Host element.   
+    Host element.
     */
     "host": "Pd",
+    "host_mass": 106.4,
 
     /*
-    Impurity.   
+    Impurity.
     */
     "impurity": "Ru",
+    "impurity_mass": 101.07,
 
     /*
-    Meta prefix(optional).   
+    Meta prefix(optional).
     */
     "prefix": "",
 
     /*
-    Meta suffix(optional).   
+    Meta suffix(optional).
     */
     "suffix": "origin",
 
@@ -91,10 +93,7 @@
             */
             "data": {
                 "xdata": [],
-                "host": {
-                    "mass": 106.4,
-                    "energy": []
-                },
+                "host": [],
                 "pair1": [
                     {
                         "mass": 106.4,

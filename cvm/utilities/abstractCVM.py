@@ -13,7 +13,6 @@ from .sample import Sample
 
 
 class CVM(threading.Thread):
-
     """
     Abstract CVM class
     ====================
@@ -33,11 +32,7 @@ class CVM(threading.Thread):
         super(CVM, self).__init__()
         self.count = 0
         self.series = []
-        self.output = {
-            'meta': {},
-            'results': [],
-            'experiment': {}
-        }
+        self.output = {'meta': {}, 'results': [], 'experiment': {}}
 
         ##################
         # init output
@@ -58,6 +53,10 @@ class CVM(threading.Thread):
         # Boltzmann constant
         self.bzc = np.float32(inp['bzc'])
 
+        # host and imourity
+        self.host_mass = inp['host_mass']
+        self.impurity_mass = inp['impurity_mass']
+
         ##################
         # init series
         ##################
@@ -65,16 +64,17 @@ class CVM(threading.Thread):
             raise NameError('need a defination of calculation series')
 
         for item in inp['series']:
+            # sample holds all data for calculation
             sample = Sample(item['label'])
+            self.series.append(sample)
+
             # chemical potential
             if len(item['delta_mu']) <= 1:
                 sample.mu = np.array(item['delta_mu'], np.float64)
             else:
-                sample.mu = np.linspace(
-                    item['delta_mu'][0],
-                    item['delta_mu'][1],
-                    item['delta_mu'][2]
-                )
+                sample.mu = np.linspace(item['delta_mu'][0],
+                                        item['delta_mu'][1],
+                                        item['delta_mu'][2])
 
             # Temperature
             if len(item['temp']) == 0:
@@ -82,11 +82,8 @@ class CVM(threading.Thread):
             if len(item['temp']) == 1:
                 sample.temp = np.array(item['temp'], np.single)
             elif len(item['temp']) == 3:
-                sample.temp = np.linspace(
-                    item['temp'][0],
-                    item['temp'][1],
-                    item['temp'][2]
-                )
+                sample.temp = np.linspace(item['temp'][0], item['temp'][1],
+                                          item['temp'][2])
             elif len(item['temp']) == 4:
                 raise NameError('can not use this function right now')
             else:
@@ -103,17 +100,15 @@ class CVM(threading.Thread):
             # by combined with Morse potential and Debye model
             # ==================================================
             data = item['data']
-            xs = data['xdata']
+            xs = np.array(data['xdata'])
 
             # gain free energy formula for host
-            host_en = data['host']['energy']
-            host_mass = data['host']['mass']
-            vib_host = self.__energy_vib(xs, 0, host_en, 0, host_mass)
+            host_en = np.array(data['host'])
+            vib_host = self.__energy_vib(xs, 0, host_en, 0, self.host_mass)
 
             # gain Interation energy for 1st-pair
-            correct_en
             for cls in data['pair1']:
-
+                pass
 
             # Equilibrium lattice constant
             for T in sample.temp:
@@ -126,9 +121,6 @@ class CVM(threading.Thread):
             sample.int_pair = np.float64(item['int_pair'])
             sample.int_trip = np.float64(item['int_trip'])
             sample.int_tetra = np.float64(item['int_tetra'])
-
-            # Concentration of impurity
-            self.series.append(sample)
 
     def __energy_vib(self, xs, host, cluster, correct, mass):
         """
@@ -152,9 +144,7 @@ class CVM(threading.Thread):
             # get minimum from a polynomial
             ys = ys + base - correct
             poly_min = minimize_scalar(
-                UnivariateSpline(xs, ys, k=4),
-                bounds=(xs[0], xs[-1])
-            )
+                UnivariateSpline(xs, ys, k=4), bounds=(xs[0], xs[-1]))
             min_x = poly_min.x  # equilibrium atomic distance
             min_y = np.float(poly_min.fun)  # ground status energy
 
@@ -176,7 +166,7 @@ class CVM(threading.Thread):
         D = ret['debye_func']  # Debye function
         theta_D = ret['debye_temp_func']  # Debye Temperature function
 
-        return lambda r, T: morse(r) + min_y \
+        return lambda r, T: morse(r) + min_y + \
             (9 / 8) * self.bzc * theta_D(r) - self.bzc * T * D(r, T) + \
             3 * self.bzc * T * np.log(1 - np.exp(-(theta_D(r) / T)))
 
