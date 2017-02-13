@@ -32,17 +32,14 @@ def show_parameter(ret):
     x0 = ret['x0']
     gamma_0 = ret['gamma_0']
     bulk_moduli = ret['bulk_moduli']
-
     debye_temp_0 = ret['debye_temperature_0']
-    debye_300K = ret['debye_func_0'](1)
 
     print("c1: {:f},  c2: {:f},  lambda: {:f}".format(c1, c2, lmd))
     print("r0: {:f},  x0: {:f}".format(r0, x0))
     print("Gruneisen constant: {:f}".format(gamma_0))
     print("Equilibrium lattice constant: {:f} a.u.".format(ad2lc(r0)))
     print("Bulk Modulus: {:f} Kbar".format(au2Kbar(bulk_moduli)))
-    print("Debye temperature: {:f} K".format(debye_temp_0))
-    print("Debye at 300K: {:f}".format(debye_300K))
+    print("Debye temperature: {:f} K\n".format(debye_temp_0))
 
 
 def thermal_vibration_parameters(xdata, ydata, M):
@@ -80,7 +77,7 @@ def thermal_vibration_parameters(xdata, ydata, M):
 
     # generate debye temperature Θ_D
     def _debye_temp_gene(r0, lmd, B, M):  # (ΘD)0 r=r0
-        D_0 = np.float(41.63516) * np.power(r0 * B / M, 1 / 2)
+        D_0 = np.float64(41.63516) * np.power(r0 * B / M, 1 / 2)
         return D_0, lambda r: D_0 * np.power(r0 / r, 3 * lmd * r / 2)
 
     c1, c2, lmd, r0, morse_potential = _morse_gene(xdata, ydata)
@@ -112,14 +109,14 @@ def thermal_vibration_parameters(xdata, ydata, M):
 
 if __name__ == '__main__':
     xdata = np.array([6.6, 6.8, 7, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8])
-    ydata = np.array([-7776.055853, -7776.102158, -7776.118432, -7776.118209, -7776.113401, -7776.10464, -7776.092511, -7776.077544, -7776.060214, -7776.040942, -7776.020108, -7775.998057, -7775.97508])
+    host = np.array([-10093.50087, -10093.56036, -10093.5962, -10093.60762, -10093.61555, -10093.62048, -10093.62287, -10093.62314, -10093.62163, -10093.61865, -10093.61445, -10093.60928, -10093.60331])
+    ydata = host + np.array([-0.00002222, -0.00002086, -0.00002088, -0.00002141, -0.00002392, -0.00002683, -0.00003284, -0.00004102, -0.00005496, -0.00007731, -0.00011052, -0.00016161, -0.0002401]) / 4
 
     ydata_func = UnivariateSpline(xdata, ydata)
     ydata_min = minimize_scalar(ydata_func, bounds=(6.6, 8), method='bounded')
-    ydata_min_x = ydata_min.x
     ydata_min_y = float(ydata_min.fun)
 
-    M_pd = 106.4
+    M_pd = 105.068
     xs = lc2ad(xdata)
     ys = ydata - ydata_min_y
 
@@ -133,9 +130,11 @@ if __name__ == '__main__':
     gamma_0 = ret['gamma_0']
     bulk_moduli = ret['bulk_moduli']
     morse = ret['morse']
+    theta_D = ret['debye_temperature_func']
+    D = ret['debye_func']
 
     debye_temp_0 = ret['debye_temperature_0']
-    debye_300K = ret['debye_func_0'](1)
+    debye_300K = ret['debye_func_0'](100)
 
     print("c1: {:f},  c2: {:f},  lambda: {:f}".format(c1, c2, lmd))
     print("r0: {:f},  x0: {:f}".format(r0, x0))
@@ -146,12 +145,18 @@ if __name__ == '__main__':
     print("Debye at 300K: {:f}".format(debye_300K))
 
     xdata_morse = np.linspace(6.6, 8, 50)
-    ydata_morse = [morse(lc2ad(r)) + ydata_min_y for r in xdata_morse]
-    plt.plot(xdata_morse, ydata_morse, '^', label='morse')
-    plt.plot(xdata_morse, ydata_func(xdata_morse), 'o', label='polynomial')
-    plt.plot(xdata, ydata, 'x--')
+    ydata_morse = [morse(lc2ad(r)) for r in xdata_morse]
+    bzc = 3.1668114E-6 * 2
+    T = 1600
+    ydata_vib = [morse(r) + (9 / 8) * bzc * theta_D(r)\
+        - bzc * T * (D(r, T) - 3 * np.log(1 - np.exp(-(theta_D(r) / T))))\
+        for r in lc2ad(xdata_morse)]
 
-    print("minimum at: {:f}".format(ydata_min_x))
-    print("minimum is: {:f}".format(ydata_min_y))
+    plt.plot(xdata_morse, ydata_morse, '^', label='morse')
+    plt.plot(xdata_morse, ydata_vib, 'o', label='polynomial')
+    plt.plot(xdata, ydata - ydata_min_y, 'x--')
+
+    print("minimum by morse: {:f}".format(ydata_min_x))
+    print("minimum by vibration: {:f}".format(ydata_min_y))
 
     plt.show()

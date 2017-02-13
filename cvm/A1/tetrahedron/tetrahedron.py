@@ -48,8 +48,8 @@ class tetrahedron(CVM):
                 sample.transfer[0],
                 sample.transfer[1],
                 sample.transfer[2], )
-        else:
-            sample.effctive_en(1, 8)
+        # else:
+        #     sample.effctive_en(1, 8)
 
         # pure energy of 2body 1st
         e1 = np.zeros((2, 2), np.float64)
@@ -105,7 +105,7 @@ class tetrahedron(CVM):
             self.x_[0] = 1 - sample.x_1
 
             # delta mu iteration
-            for temperture in np.nditer(sample.temp):
+            for temperture in sample.temp:
                 r_0 = temperture[0]
                 temp = temperture[1]
                 self.beta = np.float64(pow(self.bzc * temp, -1))

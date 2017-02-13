@@ -107,7 +107,8 @@ class CVM(threading.Thread):
                     mass = np.float32(data["mass"])
                     coeff = np.int32(data["coefficient"])
                     energies = np.array(data["energy"], np.float64)
-                    part = self.__free_energy(xs, host, energies / num, 0, mass)
+                    part = self.__free_energy(
+                        xs, host, energies / num, 0, mass)
                     parts.append((coeff, part))
 
                 def __int(r, T):
@@ -132,8 +133,10 @@ class CVM(threading.Thread):
             _temp = list()
             for T in np.nditer(sample.temp):
                 r_0 = minimize_scalar(
-                    lambda r: host_en(r, T), bounds=(xs[0], xs[-1]))
-                _temp.append((r_0, T))
+                    lambda r: host_en(r, T),
+                    bounds=(xs[0], xs[-1]), method='bounded'
+                )
+                _temp.append((r_0.x, T))
             sample.temp = np.array(_temp)
 
             # transter
@@ -141,7 +144,7 @@ class CVM(threading.Thread):
                 sample.transfer = item['transfer']
 
             # Interation energies
-            sample.int_pari_1 = __int_energy(2, xs, host, data["pair1"])
+            sample.int_pair_1 = __int_energy(2, xs, host, data["pair1"])
             sample.int_trip = __int_energy(3, xs, host, data["triple"])
             sample.int_tetra = __int_energy(4, xs, host, data["tetra"])
 
@@ -155,7 +158,9 @@ class CVM(threading.Thread):
 
         # get minimum from a polynomial
         poly_min = minimize_scalar(
-            UnivariateSpline(xs, ys, k=4), bounds=(xs[0], xs[-1]))
+            UnivariateSpline(xs, ys, k=4),
+            bounds=(xs[0], xs[-1]), method='bounded'
+        )
         min_x = poly_min.x  # equilibrium atomic distance
         min_y = np.float(poly_min.fun)  # ground status energy
 
@@ -169,30 +174,27 @@ class CVM(threading.Thread):
              total energy of host
              energy different of impuity cluster
              correct between band calculation and impurity calculation
-        """
 
-        # ys = cluster + host - correct
-        # for example:
-        # E_IIII = Imp_IIII(impuity calculation)
-        #           + Host_HHHH(band calculation)
-        #           - Correct_HHHH(impuity - band)
+        ys = cluster + host - correct
+        for example:
+        E_IIII = Imp_IIII(impuity calculation)
+                  + Host_HHHH(band calculation)
+                  - Correct_HHHH(impuity - band)
+        """
+        ys = cluster + host - correct
 
         # get polynomial minimum for morse fit
-        ys = cluster + host - correct
-        _, min_y = self.__minimum(xs, cluster + host - correct)
+        _, min_y = self.__minimum(xs, ys)
 
         # use polynomial minimum to obtain morse parameters
         ret = thermal_vibration_parameters(xs, ys - min_y, mass)
-
-        # show_parameter(ret)
-
         morse = ret['morse']  # Morse potential based on 0 minimum
         D = ret['debye_func']  # Debye function
         theta_D = ret['debye_temperature_func']  # Debye Temperature function
 
-        return lambda r, T: morse(r) + min_y + \
-            (9 / 8) * self.bzc * theta_D(r) - self.bzc * T * D(r, T) + \
-            3 * self.bzc * T * np.log(1 - np.exp(-(theta_D(r) / T)))
+        return lambda r, T: morse(r) + min_y + (9 / 8) * self.bzc * theta_D(r)\
+            - self.bzc * T * \
+            (D(r, T) - 3 * np.log(1 - np.exp(-(theta_D(r) / T))))
 
     def run(self):
         raise NotImplementedError(
