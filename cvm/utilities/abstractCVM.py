@@ -88,6 +88,7 @@ class CVM(threading.Thread):
                 raise NameError('can not use this function right now')
             else:
                 raise NameError('temperature was configured with error format')
+            sample.res['temp'] = sample.temp.tolist()
 
             # initialzed impurity Concentration
             sample.x_1 = np.float64(item['x_1'])
@@ -99,28 +100,67 @@ class CVM(threading.Thread):
             # Interation energies with thermal vibration
             # by combined with Morse potential and Debye model
             # ==================================================
+            def __int_energy(num, xs, host, datas):
+                """
+                generate interaction energy
+                """
+                parts = list()
+                for data in datas:
+                    mass = data["mass"]
+                    coeff = data["coefficient"]
+                    energies = data["energy"]
+                    part = self.__energy_vib(xs, host, energies / num,
+                                             mass / num)
+                    parts.append((coeff, part))
+
+                def __int(r, T):
+                    _int = np.float64(0)
+                    for part in parts:
+                        _int += part[0] * part[1](r, T)
+                    return num * _int
+
+                return __int
+
             data = item['data']
             xs = np.array(data['xdata'])
 
-            # gain free energy formula for host
+            # Host with vibration
+            # equilibrium lattice will evaluate from formula
             host_en = np.array(data['host'])
-            vib_host = self.__energy_vib(xs, 0, host_en, 0, self.host_mass)
-
-            # gain Interation energy for 1st-pair
-            for cls in data['pair1']:
-                pass
+            host_formula = self.__energy_vib(xs, 0, host_en, 0, self.host_mass)
 
             # Equilibrium lattice constant
-            for T in sample.temp:
-                pass
+            _temp = list()
+            for T in np.nditer(sample.temp):
+                r_0 = minimize_scalar(
+                    lambda r: host_formula(r, T), bounds=(xs[0], xs[-1]))
+                _temp.append(r_0, T)
+            sample.temp = np.array(_temp)
+
             # transter
             if 'transfer' in item:
                 sample.transfer = item['transfer']
 
             # Interation energies
-            sample.int_pair = np.float64(item['int_pair'])
-            sample.int_trip = np.float64(item['int_trip'])
-            sample.int_tetra = np.float64(item['int_tetra'])
+            sample.int_pari_1 = __int_energy(2, xs, host_en, data["pair1"])
+            sample.int_trip = __int_energy(3, xs, host_en, data["triple"])
+            sample.int_tetra = __int_energy(4, xs, host_en, data["tetra"])
+
+    def __minimum(self, xs, ys, **kwagrs):
+        """
+        xs: array
+            atomic distance between nearest-neighbor
+        ys: array
+            energies change for ys, impuity cluster and correct respectivly
+        """
+
+        # get minimum from a polynomial
+        poly_min = minimize_scalar(
+            UnivariateSpline(xs, ys, k=4), bounds=(xs[0], xs[-1]))
+        min_x = poly_min.x  # equilibrium atomic distance
+        min_y = np.float(poly_min.fun)  # ground status energy
+
+        return min_x, min_y
 
     def __energy_vib(self, xs, host, cluster, correct, mass):
         """
@@ -132,24 +172,6 @@ class CVM(threading.Thread):
              correct between band calculation and impurity calculation
         """
 
-        def __minimum(self, xs, ys, **kwagrs):
-            """
-            xs: array
-                atomic distance between nearest-neighbor
-            ys: array
-                energies change for ys, impuity cluster and correct respectivly
-            """
-            base = 0 if 'base' not in kwagrs else kwagrs['base']
-            correct = 0 if 'correct' not in kwagrs else kwagrs['correct']
-            # get minimum from a polynomial
-            ys = ys + base - correct
-            poly_min = minimize_scalar(
-                UnivariateSpline(xs, ys, k=4), bounds=(xs[0], xs[-1]))
-            min_x = poly_min.x  # equilibrium atomic distance
-            min_y = np.float(poly_min.fun)  # ground status energy
-
-            return min_x, min_y
-
         # ys = cluster + host - correct
         # for example:
         # E_IIII = Imp_IIII(impuity calculation)
@@ -157,7 +179,7 @@ class CVM(threading.Thread):
         #           - Correct_HHHH(impuity - band)
 
         # get polynomial minimum for morse fit
-        _, min_y = __minimum(xs, cluster, base=host, correct=correct)
+        _, min_y = self.__minimum(xs, cluster + host - correct)
 
         # use polynomial minimum to obtain morse parameters
         ret = thermal_vibration_parameters(xs, cluster - min_y, mass)
