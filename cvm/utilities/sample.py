@@ -13,7 +13,7 @@ class Sample(object):
         'label',  # label for a calculation sample
         'x_1',  # initialization of impurity concentration
         'condition',  # Convergence condition
-        'int_pair',  # interaction energy
+        'int_pari_1',  # interaction energy
         'int_trip',  # interaction energy
         'int_tetra',  # interaction energy
         'mu',  # Chemical potential

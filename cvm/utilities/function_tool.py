@@ -5,13 +5,13 @@ from scipy.interpolate import UnivariateSpline
 
 
 # lattice constan to atomic distance
-def lc2ad(s):
-    return s * np.power((3 / (16 * np.pi)), 1 / 3)
+def lc2ad(d, n=4):
+    return d * np.power((3 / (4 * n * np.pi)), 1 / 3)
 
 
 # latomic distance to attice constan
-def ad2lc(s):
-    return s / np.power((3 / (16 * np.pi)), 1 / 3)
+def ad2lc(d, n=4):
+    return d / np.power((3 / (4 * n * np.pi)), 1 / 3)
 
 
 # a.u. press to Kbar
@@ -22,6 +22,27 @@ def au2Kbar(p):
 # a.u. temperature to K
 def au2K(t):
     return t * 3.1577464e5
+
+
+def show_parameter(ret):
+    c1 = ret['c1']
+    c2 = ret['c2']
+    lmd = ret['lmd']
+    r0 = ret['r0']
+    x0 = ret['x0']
+    gamma_0 = ret['gamma_0']
+    bulk_moduli = ret['bulk_moduli']
+
+    debye_temp_0 = ret['debye_temperature_0']
+    debye_300K = ret['debye_func_0'](1)
+
+    print("c1: {:f},  c2: {:f},  lambda: {:f}".format(c1, c2, lmd))
+    print("r0: {:f},  x0: {:f}".format(r0, x0))
+    print("Gruneisen constant: {:f}".format(gamma_0))
+    print("Equilibrium lattice constant: {:f} a.u.".format(ad2lc(r0)))
+    print("Bulk Modulus: {:f} Kbar".format(au2Kbar(bulk_moduli)))
+    print("Debye temperature: {:f} K".format(debye_temp_0))
+    print("Debye at 300K: {:f}".format(debye_300K))
 
 
 def thermal_vibration_parameters(xdata, ydata, M):
@@ -90,13 +111,11 @@ def thermal_vibration_parameters(xdata, ydata, M):
 
 
 if __name__ == '__main__':
-    xdata = np.array([7, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8])
-    ydata = np.array([-10093.59710, -10093.60855, -10093.61655, -10093.62146,
-                      -10093.62388, -10093.62418, -10093.6227, -10093.61974,
-                      -10093.61557, -10093.61042, -10093.60447])
+    xdata = np.array([6.6, 6.8, 7, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8])
+    ydata = np.array([-7776.055853, -7776.102158, -7776.118432, -7776.118209, -7776.113401, -7776.10464, -7776.092511, -7776.077544, -7776.060214, -7776.040942, -7776.020108, -7775.998057, -7775.97508])
 
     ydata_func = UnivariateSpline(xdata, ydata)
-    ydata_min = minimize_scalar(ydata_func, bounds=(7, 8), method='bounded')
+    ydata_min = minimize_scalar(ydata_func, bounds=(6.6, 8), method='bounded')
     ydata_min_x = ydata_min.x
     ydata_min_y = float(ydata_min.fun)
 
@@ -126,7 +145,7 @@ if __name__ == '__main__':
     print("Debye temperature: {:f} K".format(debye_temp_0))
     print("Debye at 300K: {:f}".format(debye_300K))
 
-    xdata_morse = np.linspace(7, 8, 50)
+    xdata_morse = np.linspace(6.6, 8, 50)
     ydata_morse = [morse(lc2ad(r)) + ydata_min_y for r in xdata_morse]
     plt.plot(xdata_morse, ydata_morse, '^', label='morse')
     plt.plot(xdata_morse, ydata_func(xdata_morse), 'o', label='polynomial')

@@ -103,8 +103,6 @@ class tetrahedron(CVM):
                 sample.res['label'] = sample.res['label'] + '(T)'
             self.x_[1] = sample.x_1
             self.x_[0] = 1 - sample.x_1
-            print(' mu = {:06.4f}:'.format(self.mu[0].item(0)))
-            print(' 1st_int = {:06.4f}:'.format(sample.int_pair[0]))
 
             # delta mu iteration
             for temperture in np.nditer(sample.temp):
@@ -115,6 +113,8 @@ class tetrahedron(CVM):
                 # calculate
                 self.__init__en(r_0, temp, sample)
                 self.__reset__probability()
+                print(' mu = {:06.4f}:'.format(self.mu[0].item(0)))
+                print(' 1st_int = {:06.4f}:'.format(sample.int_pair_1(r_0, temp)))
                 while self.checker > sample.condition:
                     process(self)
 

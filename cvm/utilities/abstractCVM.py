@@ -9,6 +9,8 @@ from scipy.interpolate import UnivariateSpline
 from scipy.optimize import minimize_scalar
 
 from .function_tool import thermal_vibration_parameters
+from .function_tool import lc2ad
+from .function_tool import show_parameter
 from .sample import Sample
 
 
@@ -52,10 +54,6 @@ class CVM(threading.Thread):
 
         # Boltzmann constant
         self.bzc = np.float32(inp['bzc'])
-
-        # host and imourity
-        self.host_mass = inp['host_mass']
-        self.impurity_mass = inp['impurity_mass']
 
         ##################
         # init series
@@ -106,11 +104,10 @@ class CVM(threading.Thread):
                 """
                 parts = list()
                 for data in datas:
-                    mass = data["mass"]
-                    coeff = data["coefficient"]
-                    energies = data["energy"]
-                    part = self.__energy_vib(xs, host, energies / num,
-                                             mass / num)
+                    mass = np.float32(data["mass"])
+                    coeff = np.int32(data["coefficient"])
+                    energies = np.array(data["energy"], np.float64)
+                    part = self.__free_energy(xs, host, energies / num, 0, mass)
                     parts.append((coeff, part))
 
                 def __int(r, T):
@@ -122,19 +119,21 @@ class CVM(threading.Thread):
                 return __int
 
             data = item['data']
-            xs = np.array(data['xdata'])
+            xs = np.array(data['lattice_c'])
+            xs = lc2ad(xs)
 
             # Host with vibration
             # equilibrium lattice will evaluate from formula
-            host_en = np.array(data['host'])
-            host_formula = self.__energy_vib(xs, 0, host_en, 0, self.host_mass)
+            host = np.array(data['host_en'])
+            host_en = self.__free_energy(xs, 0, host, 0,
+                                         np.array(data['host_mass']))
 
             # Equilibrium lattice constant
             _temp = list()
             for T in np.nditer(sample.temp):
                 r_0 = minimize_scalar(
-                    lambda r: host_formula(r, T), bounds=(xs[0], xs[-1]))
-                _temp.append(r_0, T)
+                    lambda r: host_en(r, T), bounds=(xs[0], xs[-1]))
+                _temp.append((r_0, T))
             sample.temp = np.array(_temp)
 
             # transter
@@ -142,9 +141,9 @@ class CVM(threading.Thread):
                 sample.transfer = item['transfer']
 
             # Interation energies
-            sample.int_pari_1 = __int_energy(2, xs, host_en, data["pair1"])
-            sample.int_trip = __int_energy(3, xs, host_en, data["triple"])
-            sample.int_tetra = __int_energy(4, xs, host_en, data["tetra"])
+            sample.int_pari_1 = __int_energy(2, xs, host, data["pair1"])
+            sample.int_trip = __int_energy(3, xs, host, data["triple"])
+            sample.int_tetra = __int_energy(4, xs, host, data["tetra"])
 
     def __minimum(self, xs, ys, **kwagrs):
         """
@@ -162,7 +161,7 @@ class CVM(threading.Thread):
 
         return min_x, min_y
 
-    def __energy_vib(self, xs, host, cluster, correct, mass):
+    def __free_energy(self, xs, host, cluster, correct, mass):
         """
         xs: array
             atomic distance between nearest-neighbor
@@ -179,14 +178,17 @@ class CVM(threading.Thread):
         #           - Correct_HHHH(impuity - band)
 
         # get polynomial minimum for morse fit
+        ys = cluster + host - correct
         _, min_y = self.__minimum(xs, cluster + host - correct)
 
         # use polynomial minimum to obtain morse parameters
-        ret = thermal_vibration_parameters(xs, cluster - min_y, mass)
+        ret = thermal_vibration_parameters(xs, ys - min_y, mass)
+
+        # show_parameter(ret)
 
         morse = ret['morse']  # Morse potential based on 0 minimum
         D = ret['debye_func']  # Debye function
-        theta_D = ret['debye_temp_func']  # Debye Temperature function
+        theta_D = ret['debye_temperature_func']  # Debye Temperature function
 
         return lambda r, T: morse(r) + min_y + \
             (9 / 8) * self.bzc * theta_D(r) - self.bzc * T * D(r, T) + \

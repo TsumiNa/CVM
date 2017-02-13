@@ -1,15 +1,9 @@
 {
     /*
-    Host element.
+    Host and impurity element.
     */
     "host": "Pd",
-    "host_mass": 106.4,
-
-    /*
-    Impurity.
-    */
     "impurity": "Ru",
-    "impurity_mass": 101.07,
 
     /*
     Meta prefix(optional).
@@ -92,42 +86,73 @@
             Interaction energy
             */
             "data": {
-                "xdata": [],
-                "host": [],
+                "lattice_c": [6.6, 6.8, 7, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8],
+                "host_mass": 106.4,
+                "host_en": [-10093.50087, -10093.56036, -10093.5962, -10093.60762, -10093.61555, -10093.62048, -10093.62287, -10093.62314, -10093.62163, -10093.61865, -10093.61445, -10093.60928, -10093.60331],
                 "pair1": [
                     {
-                        "mass": 106.4,
-                        "coefficient": 2,
-                        "energy": []
+                        "mass": 101.07,
+                        "coefficient": 1,
+                        "energy": [1029.980747, 1029.986249, 1029.994704, 1029.999782, 1030.005354, 1030.011359, 1030.017741, 1030.024442, 1030.031404, 1030.038574, 1030.045899, 1030.053325, 1030.060802]
+                    },
+                    {
+                        "mass": 103.735,
+                        "coefficient": -2,
+                        "energy": [514.9931287, 514.995692, 514.999794, 515.0022832, 515.0050249, 515.0079877, 515.0111417, 515.0144567, 515.0179029, 515.0214521, 515.0250762, 515.0287452, 515.032431]
                     },
                     {
                         "mass": 106.4,
-                        "coefficient": 2,
-                        "energy": []
+                        "coefficient": 1,
+                        "energy": [-0.00001111, -0.00001043, -0.00001044, -0.000010705, -0.00001196, -0.000013415, -0.00001642, -0.00002051, -0.00002748, -0.000038655, -0.00005526, -0.000080805, -0.00012005]
                     }
                 ],
                 "triple": [
                     {
-                        "mass": 106.4,
-                        "coefficient": 2,
-                        "energy": []
+                        "mass": 101.07,
+                        "coefficient": 1,
+                        "energy": [2317.445021, 2317.458197, 2317.477768, 2317.489414, 2317.502146, 2317.515837, 2317.530362, 2317.545596, 2317.561415, 2317.577703, 2317.594344, 2317.611221, 2317.628226]
+                    },
+                    {
+                        "mass": 102.847,
+                        "coefficient": -3,
+                        "energy": [1544.971121, 1544.979374, 1544.992057, 1544.999673, 1545.008031, 1545.017039, 1545.026612, 1545.036662, 1545.047106, 1545.057861, 1545.068849, 1545.079988, 1545.091202]
+                    },
+                    {
+                        "mass": 104.623,
+                        "coefficient": 3,
+                        "energy": [772.489693, 772.493538, 772.499691, 772.5034249, 772.5075373, 772.5119816, 772.5167126, 772.5216851, 772.5268544, 772.5321782, 772.5376142, 772.5431178, 772.5486464]
                     },
                     {
                         "mass": 106.4,
-                        "coefficient": 2,
-                        "energy": []
+                        "coefficient": -1,
+                        "energy": [-0.000016665, -0.000015645, -0.00001566, -1.60575E-05, -0.00001794, -2.01225E-05, -0.00002463, -0.000030765, -0.00004122, -5.79825E-05, -0.00008289, -0.000121208, -0.000180075]
                     }
                 ],
                 "tetra": [
                     {
-                        "mass": 106.4,
-                        "coefficient": 2,
-                        "energy": []
+                        "mass": 101.07,
+                        "coefficient": 1,
+                        "energy": [4119.883486, 4119.908238, 4119.943978, 4119.965067, 4119.988051, 4120.01271, 4120.038832, 4120.066199, 4120.0946, 4120.123829, 4120.153689, 4120.183976, 4120.214502]
+                    },
+                    {
+                        "mass": 102.403,
+                        "coefficient": -4,
+                        "energy": [3089.926695, 3089.944263, 3089.970358, 3089.985885, 3090.002861, 3090.021116, 3090.040482, 3090.060795, 3090.081887, 3090.103604, 3090.125792, 3090.148295, 3090.170968]
+                    },
+                    {
+                        "mass": 103.735,
+                        "coefficient": 6,
+                        "energy": [2059.961494, 2059.972499, 2059.989409, 2059.999564, 2060.010708, 2060.022719, 2060.035482, 2060.048883, 2060.062808, 2060.077148, 2060.091799, 2060.106651, 2060.121603]
+                    },
+                    {
+                        "mass": 105.068,
+                        "coefficient": -4,
+                        "energy": [1029.986257, 1029.991384, 1029.999588, 1030.004566, 1030.01005, 1030.015975, 1030.022283, 1030.028913, 1030.035806, 1030.042904, 1030.050152, 1030.05749, 1030.064862]
                     },
                     {
                         "mass": 106.4,
-                        "coefficient": 2,
-                        "energy": []
+                        "coefficient": -4,
+                        "energy": [-0.00002222, -0.00002086, -0.00002088, -0.00002141, -0.00002392, -0.00002683, -0.00003284, -0.00004102, -0.00005496, -0.00007731, -0.00011052, -0.00016161, -0.0002401]
                     }
                 ]
             },
@@ -144,122 +169,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1950, 50]
-        },
-        {
-            /*
-            A label for a calculation sample
-            */
-            "label": "T = 1400K",
-
-            /*
-            elements concentration
-            must be normalized
-            */
-            "x_1": 0.01,
-
-            /*
-            Convergence condition
-             */
-            "condition": 1e-7,
-
-            /*
-            Interaction energy
-            */
-            "int_pair": [-0.158424613, 0.011412596, 0.001874865, 0.030246964, 0.004404573, -0.001990378, 0.002628893, 0.001575948, 0.010120054, 0.001303698, 0.000912126],
-            "int_trip": [0.013228548],
-            "int_tetra": [0.007254286],
-
-            /*
-            Chemical potential
-
-            Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
-            */
-            "delta_mu": [0.0],
-
-            /*
-            Temperature (K)
-
-            Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
-            */
-            "temp": [500, 1775, 40]
-        },
-        {
-            /*
-            A label for a calculation sample
-            */
-            "label": "T = 1200K",
-
-            /*
-            elements concentration
-            must be normalized
-            */
-            "x_1": 0.01,
-
-            /*
-            Convergence condition
-             */
-            "condition": 1e-7,
-
-            /*
-            Interaction energy
-            */
-            "int_pair": [-0.15915864, 0.015593491, 0.002659642, 0.029930223, 0.005723101, -0.002183987, 0.002874204, 0.001217302, 0.011597361, 0.001320977, 0.001015121],
-            "int_trip": [0.013228548],
-            "int_tetra": [0.007820555],
-
-            /*
-            Chemical potential
-
-            Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
-            */
-            "delta_mu": [0.0],
-
-            /*
-            Temperature (K)
-
-            Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
-            */
-            "temp": [500, 1608, 40]
-        },
-        {
-            /*
-            A label for a calculation sample
-            */
-            "label": "T = 800K",
-
-            /*
-            Impurity concentration
-            must be normalized
-            */
-            "x_1": 0.01,
-
-            /*
-            Convergence condition
-             */
-            "condition": 1e-7,
-
-            /*
-            Interaction energy
-            */
-            "int_pair": [-0.156330696, 0.026852342, 0.004438451, 0.031264398, 0.007519461, -0.00283706, 0.003530679, -0.000448172, 0.014907355, 0.001397849, 0.001059068],
-            "int_trip": [0.01220091],
-            "int_tetra": [0.008326279],
-
-
-            /*
-            Chemical potential
-
-            Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
-            */
-            "delta_mu": [0.0],
-
-            /*
-            Temperature (K)
-
-            Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
-            */
-            "temp": [500, 1180, 30]
+            "temp": [400, 1500, 40]
         }
     ]
 }
