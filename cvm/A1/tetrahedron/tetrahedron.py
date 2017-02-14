@@ -113,14 +113,16 @@ class tetrahedron(CVM):
                 # calculate
                 self.__init__en(r_0, temp, sample)
                 self.__reset__probability()
-                print(' mu = {:06.4f}:'.format(self.mu[0].item(0)))
-                print(' 1st_int = {:06.4f}:'.format(sample.int_pair_1(r_0, temp)))
+                print(' mu:    {:06.4f}:'.format(self.mu[0].item(0)))
+                sample.res['1st'].append(sample.int_pair_1(r_0, temp).item(0))
+                sample.res['trip'].append(sample.int_trip(r_0, temp).item(0))
+                sample.res['tetra'].append(sample.int_tetra(r_0, temp).item(0))
                 while self.checker > sample.condition:
                     process(self)
 
                 # push result into res
                 sample.res['c'].append(self.x_[1].item(0))
-                print('    T = {:06.3f}K,  c = {:06.6f},  count = {}'.format(
+                print('    T = {:06.3f}K,  c = {:06.6f},  count = {}\n'.format(
                     temp.item(0), self.x_[1].item(0), self.count))
 
             print('\n')

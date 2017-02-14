@@ -29,6 +29,9 @@ class Sample(object):
             'label': label,
             'temp': [],
             'c': [],
+            '1st': [],
+            'trip': [],
+            'tetra': [],
         }
 
     def effctive_en(self, to=1, end=0, start=2):

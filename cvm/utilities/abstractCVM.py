@@ -55,6 +55,9 @@ class CVM(threading.Thread):
         # Boltzmann constant
         self.bzc = np.float32(inp['bzc'])
 
+        # coversion
+        self.covn = np.float32(inp['conversion'])
+
         ##################
         # init series
         ##################
@@ -86,7 +89,7 @@ class CVM(threading.Thread):
                 raise NameError('can not use this function right now')
             else:
                 raise NameError('temperature was configured with error format')
-            sample.res['temp'] = sample.temp.tolist()
+            sample.res['temp'] = sample.temp
 
             # initialzed impurity Concentration
             sample.x_1 = np.float64(item['x_1'])
@@ -106,8 +109,8 @@ class CVM(threading.Thread):
                 for data in datas:
                     mass = np.float32(data["mass"])
                     coeff = np.int32(data["coefficient"])
-                    energies = np.array(data["energy"], np.float64)
-                    part = self.__free_energy(
+                    energies = np.array(data["energy"], np.float64) * self.covn
+                    part = self.__free_energy_vib(
                         xs, host, energies / num, 0, mass)
                     parts.append((coeff, part))
 
@@ -125,9 +128,9 @@ class CVM(threading.Thread):
 
             # Host with vibration
             # equilibrium lattice will evaluate from formula
-            host = np.array(data['host_en'])
-            host_en = self.__free_energy(xs, 0, host, 0,
-                                         np.array(data['host_mass']))
+            host = np.array(data['host_en']) * self.covn
+            host_en = self.__free_energy_vib(xs, 0, host, 0,
+                                             np.array(data['host_mass']))
 
             # Equilibrium lattice constant
             _temp = list()
@@ -166,7 +169,7 @@ class CVM(threading.Thread):
 
         return min_x, min_y
 
-    def __free_energy(self, xs, host, cluster, correct, mass):
+    def __free_energy_vib(self, xs, host, cluster, correct, mass):
         """
         xs: array
             atomic distance between nearest-neighbor

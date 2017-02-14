@@ -53,8 +53,15 @@
 
     /*
     Boltzmann constant
+    unit is eV/K
     */
-    "bzc": 6.3336228E-6,
+    "bzc": 8.6173303E-5,
+
+    /*
+    If energy input is not in eV unit
+    set this to get a conversion before calculation
+    */
+    "conversion": 13.605698066,
 
     /*
     what method(s) will be used for this calculation
