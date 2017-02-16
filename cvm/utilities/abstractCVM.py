@@ -111,7 +111,7 @@ class CVM(threading.Thread):
                     coeff = np.int32(data["coefficient"])
                     energies = np.array(data["energy"], np.float64) * self.covn
                     part = self.__free_energy_vib(
-                        xs, host, energies / num, 0, mass)
+                        xs, host, energies / num, mass)
                     parts.append((coeff, part))
 
                 def __int(r, T):
@@ -129,7 +129,7 @@ class CVM(threading.Thread):
             # Host with vibration
             # equilibrium lattice will evaluate from formula
             host = np.array(data['host_en']) * self.covn
-            host_en = self.__free_energy_vib(xs, 0, host, 0,
+            host_en = self.__free_energy_vib(xs, 0, host,
                                              np.array(data['host_mass']))
 
             # Equilibrium lattice constant
@@ -169,32 +169,29 @@ class CVM(threading.Thread):
 
         return min_x, min_y
 
-    def __free_energy_vib(self, xs, host, cluster, correct, mass):
+    def __free_energy_vib(self, xs, host, cluster, mass, correct=None):
         """
         xs: array
             atomic distance between nearest-neighbor
         correc, thost, cluster: array
-             total energy of host
-             energy different of impuity cluster
-             correct between band calculation and impurity calculation
-
-        ys = cluster + host - correct
-        for example:
-        E_IIII = Imp_IIII(impuity calculation)
-                  + Host_HHHH(band calculation)
-                  - Correct_HHHH(impuity - band)
+            total energy of host
+            energy different of impuity cluster
+            correct between band calculation and impurity calculation
+        mass: float
+            atomic mass
         """
-        ys = cluster + host - correct
 
-        # get polynomial minimum for morse fit
+        # perpare energies and get polynomial minimum for morse fit
+        ys = cluster + host if not correct else cluster + host - correct
         _, min_y = self.__minimum(xs, ys)
 
         # use polynomial minimum to obtain morse parameters
         ret = thermal_vibration_parameters(xs, ys - min_y, mass)
         morse = ret['morse']  # Morse potential based on 0 minimum
         D = ret['debye_func']  # Debye function
-        theta_D = ret['debye_temperature_func']  # Debye Temperature function
+        theta_D = ret['debye_temperature_func']  # Debye temperature function
 
+        # construct vibration withed energy formula
         return lambda r, T: morse(r) + min_y + (9 / 8) * self.bzc * theta_D(r)\
             - self.bzc * T * \
             (D(r, T) - 3 * np.log(1 - np.exp(-(theta_D(r) / T))))
