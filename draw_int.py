@@ -18,11 +18,11 @@ def process(opt):
         # plt.xlim(xmin=0.5, xmax=12.5)
         # plt.axhline(y=0, color='k', ls='-', lw=1.0)
         # label[i] = 'int= ' + '{:07.4}'.format(opt['Results'][i]['1st_int'])
-        # ax.plot(res['temp'], res['1st'], 'o-', ms=4, lw=1.5,
-        #         label='$E_{int}^{1st}$')
-        ax.plot(res['temp'], res['trip'], '^-', ms=4, lw=1.5,
+        ax.plot(res['temp'], res['1st'], 'o-', ms=4, lw=1.5,
+                label='$E_{int}^{1st}$')
+        ax.plot(res['temp'], res['2nd'], '^-', ms=4, lw=1.5,
                 label='$E_{int}^{trip}$')
-        ax.plot(res['temp'], res['tetra'], '>-', ms=4, lw=1.5,
+        ax.plot(res['temp'], res['4th'], '>-', ms=4, lw=1.5,
                 label='$E_{int}^{tetra}$')
 
     # set formater

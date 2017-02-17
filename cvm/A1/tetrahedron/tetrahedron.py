@@ -37,32 +37,24 @@ class tetrahedron(CVM):
         self.mu = np.zeros((2), np.float64)
         self.eta_sum = np.float64(0.0)
 
-    def __init__en(self, r_0, T, sample):
+    def __init__en(self, int):
         ###############################################
         # configuration
         ###############################################
         # use transfer
-        # transfer to 2nd
-        if hasattr(sample, 'transfer'):
-            sample.effctive_en(
-                sample.transfer[0],
-                sample.transfer[1],
-                sample.transfer[2], )
-        # else:
-        #     sample.effctive_en(1, 8)
 
         # pure energy of 2body 1st
         e1 = np.zeros((2, 2), np.float64)
         e1[0, 1] = e1[1, 0] = 0.5 * (
-            e1[0, 0] + e1[1, 1] - sample.int_pair_1(r_0, T))
+            e1[0, 0] + e1[1, 1] - int[0][0])
 
         # 3body-1st interaction energy
         de31 = np.zeros((2, 2, 2), np.float64)
-        de31[1, 1, 1] = sample.int_trip(r_0, T)
+        de31[1, 1, 1] = int[1]
 
         # 4body-1st interaction energy
         de41 = np.zeros((2, 2, 2, 2), np.float64)
-        de41[1, 1, 1, 1] = sample.int_tetra(r_0, T)
+        de41[1, 1, 1, 1] = int[2]
 
         # energy ε
         it = np.nditer(self.en, flags=['multi_index'])
@@ -105,18 +97,20 @@ class tetrahedron(CVM):
             self.x_[0] = 1 - sample.x_1
 
             # delta mu iteration
-            for temperture in sample.temp:
-                r_0 = temperture[0]
-                temp = temperture[1]
+            it = np.nditer(sample.temp, flags=['c_index'])
+            while not it.finished:
+                i = it.index
+                temp = it[0]
                 self.beta = np.float64(pow(self.bzc * temp, -1))
 
                 # calculate
-                self.__init__en(r_0, temp, sample)
+                int = sample.int[i]
+                self.__init__en(int)
                 self.__reset__probability()
                 print(' mu:    {:06.4f}:'.format(self.mu[0].item(0)))
-                sample.res['1st'].append(sample.int_pair_1(r_0, temp).item(0))
-                sample.res['trip'].append(sample.int_trip(r_0, temp).item(0))
-                sample.res['tetra'].append(sample.int_tetra(r_0, temp).item(0))
+                sample.res['1st'].append(int[0][0])
+                sample.res['2nd'].append(int[0][1])
+                sample.res['4th'].append(int[0][3])
                 while self.checker > sample.condition:
                     process(self)
 
@@ -124,6 +118,7 @@ class tetrahedron(CVM):
                 sample.res['c'].append(self.x_[1].item(0))
                 print('    T = {:06.3f}K,  c = {:06.6f},  count = {}\n'.format(
                     temp.item(0), self.x_[1].item(0), self.count))
+                it.iternext()
 
             print('\n')
             # save result to output
