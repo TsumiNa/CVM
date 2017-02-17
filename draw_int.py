@@ -20,10 +20,10 @@ def process(opt):
         # label[i] = 'int= ' + '{:07.4}'.format(opt['Results'][i]['1st_int'])
         ax.plot(res['temp'], res['1st'], 'o-', ms=4, lw=1.5,
                 label='$E_{int}^{1st}$')
-        ax.plot(res['temp'], res['2nd'], '^-', ms=4, lw=1.5,
-                label='$E_{int}^{trip}$')
-        ax.plot(res['temp'], res['4th'], '>-', ms=4, lw=1.5,
-                label='$E_{int}^{tetra}$')
+        # ax.plot(res['temp'], res['2nd'], '^-', ms=4, lw=1.5,
+        #         label='$E_{int}^{trip}$')
+        # ax.plot(res['temp'], res['4th'], '>-', ms=4, lw=1.5,
+        #         label='$E_{int}^{tetra}$')
 
     # set formater
     # ax.xaxis.set_major_formatter(FuncFormatter(percent))

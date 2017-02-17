@@ -302,7 +302,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [400, 1500, 40]
+            "temp": [400, 1600, 30]
         }
     ]
 }
