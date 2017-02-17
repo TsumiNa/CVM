@@ -168,10 +168,12 @@ class ClusterVibration():
 
 
 if __name__ == '__main__':
+    from unit_convert import *
+
     xdata = np.array([6.6, 6.8, 7, 7.1, 7.2, 7.3,
                       7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8])
     host = np.array([-10093.50087, -10093.56036, -10093.5962, -10093.60762, -10093.61555, -10093.62048, -10093.62287, -10093.62314, -10093.62163, -10093.61865, -10093.61445, -10093.60928, -10093.60331]) * 13.605698066
-    ydata = host + np.array([-0.00002222, -0.00002086, -0.00002088, -0.00002141, -0.00002392, -0.00002683, -0.00003284, -0.00004102, -0.00005496, -0.00007731, -0.00011052, -0.00016161, -0.0002401]) * 13.605698066 / 4
+    ydata = host + np.array([2059.975812, 2059.985624, 2060.001566, 2060.011281, 2060.022008, 2060.033623, 2060.046011, 2060.059054, 2060.07264, 2060.086609, 2060.101011, 2060.115579, 2060.130266]) * 13.605698066 / 2
 
     ydata_func = UnivariateSpline(xdata, ydata)
     ydata_min = minimize_scalar(ydata_func, bounds=(6.6, 8), method='bounded')
@@ -181,7 +183,7 @@ if __name__ == '__main__':
     xs = lc2ad(xdata)
     ys = ydata - ydata_min_y
 
-    ret = thermal_vibration_parameters(xs, ys, M_pd)
+    ret = ClusterVibration.fit_parameters(xs, ys, M_pd)
 
     c1 = ret['c1']
     c2 = ret['c2']
@@ -235,12 +237,12 @@ if __name__ == '__main__':
     plt.figure(figsize=(8, 6), dpi=150)
     plt.plot(xdata, ydata, 'x--', label='raw')
     plt.plot(xdata_morse, ydata_morse, 'o:', label='morse')
-    for T in [400, 600, 800, 1000, 1200, 1400, 1600]:
+    for T in [400, 800, 1200, 1600]:
         ydata_vib = [free_en_vib(r, T) for r in lc2ad(xdata_morse)]
         plt.plot(xdata_morse, ydata_vib, '^:', label='vibration(T=' + str(T) + '$K$)')
     plt.ylabel('total energy ($eV$)')
     plt.xlabel('lattice parameter ($a.u.$)')
 
     plt.legend()
-    plt.savefig('total energy of Pd', dpi=300)
+    # plt.savefig('total energy of Pd', dpi=300)
     plt.show()

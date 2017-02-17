@@ -119,6 +119,7 @@ class CVM(threading.Thread):
                     _int = cv.int_energy(
                         xs, data[n], host, self.bzc, num=2, conv=self.conv)
                     energies.append(_int(r, T))
+                energies[0] += np.float64(data['distortion'])
                 return sample.effctive_en(energies, transfer)
 
             int_trip = cv.int_energy(
