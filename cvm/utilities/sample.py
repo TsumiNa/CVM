@@ -31,6 +31,8 @@ class Sample(object):
             '1st': [],
             '2nd': [],
             '4th': [],
+            'trip': [],
+            'tetra': [],
         }
 
     @classmethod

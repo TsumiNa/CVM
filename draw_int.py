@@ -19,11 +19,15 @@ def process(opt):
         # plt.axhline(y=0, color='k', ls='-', lw=1.0)
         # label[i] = 'int= ' + '{:07.4}'.format(opt['Results'][i]['1st_int'])
         ax.plot(res['temp'], res['1st'], 'o-', ms=4, lw=1.5,
-                label='$E_{int}^{1st}$')
-        # ax.plot(res['temp'], res['2nd'], '^-', ms=4, lw=1.5,
-        #         label='$E_{int}^{trip}$')
-        # ax.plot(res['temp'], res['4th'], '>-', ms=4, lw=1.5,
-        #         label='$E_{int}^{tetra}$')
+                label='$\\tilde{E}_{int}^{1st}$')
+        ax.plot(res['temp'], res['2nd'], 'o-', ms=4, lw=1.5,
+                label='$E_{int}^{2nd}$')
+        ax.plot(res['temp'], res['4th'], 'o-', ms=4, lw=1.5,
+                label='$E_{int}^{4th}$')
+        ax.plot(res['temp'], res['trip'], '^-', ms=4, lw=1.5,
+                label='$E_{int}^{trip}$')
+        ax.plot(res['temp'], res['tetra'], '>-', ms=4, lw=1.5,
+                label='$E_{int}^{tetra}$')
 
     # set formater
     # ax.xaxis.set_major_formatter(FuncFormatter(percent))
@@ -33,14 +37,13 @@ def process(opt):
     ax.grid(axis='y')
     # ax.set_ylim(400, 2000)
     ax.set_xlabel('Temperature ($K$)')
-    ax.set_ylabel('interaction energy ($eV$)')
+    ax.set_ylabel('Interaction energy ($eV$)')
     ax.legend(loc='lower right', markerscale=1.2, fontsize=13)
     fig_name = "_".join((
         opt['meta']['prefix'],
         opt['meta']['host'],
         opt['meta']['impurity'],
         opt['meta']['suffix']
-    )).lstrip('_') + '.eps'
-    fig_name = 'int energy with temp depen'
+    )).lstrip('_') + ' int energy with temp depen'
     plt.savefig(fig_name, dpi=300)  # 300 dpi
     plt.show()

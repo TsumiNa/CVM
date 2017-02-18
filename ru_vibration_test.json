@@ -76,7 +76,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "T = 1600K",
+            "label": "with vibration(800K)",
 
             /*
             parameter refer how to the transfer long range interaction energy
