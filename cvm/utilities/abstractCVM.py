@@ -113,13 +113,15 @@ class CVM(threading.Thread):
             # get interaction energies
             def int_pair(r, T):
                 # transter
-                transfer = item['transfer']
                 energies = []
-                for n in ['pair' + str(s + 1) for s in np.arange(transfer[1])]:
+                transfer = item['transfer'][:]
+                for n in ['pair' + str(s + 1) for s in np.arange(8)]:
                     _int = cv.int_energy(
                         xs, data[n], host, self.bzc, num=2, conv=self.conv)
                     energies.append(_int(r, T))
                 energies[0] += np.float64(data['distortion'])
+                energies.append(np.float64(0.014304623))
+                transfer[1] += 1
                 return sample.effctive_en(energies, transfer)
 
             int_trip = cv.int_energy(
