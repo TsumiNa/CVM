@@ -76,6 +76,12 @@
             "label": "T = 1600K",
 
             /*
+            2nd parameter refer to the neighbour that transfer to
+            effctive_en(self, to=1, end=0, start=2)
+            */
+            "transfer": [1,10,2],
+
+            /*
             elements concentration
             must be normalized
             */
@@ -105,13 +111,19 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1950, 50]
+            "temp": [500, 1730, 50]
         },
         {
             /*
             A label for a calculation sample
             */
             "label": "T = 1400K",
+
+            /*
+            2nd parameter refer to the neighbour that transfer to
+            effctive_en(self, to=1, end=0, start=2)
+            */
+            "transfer": [1,10,2],
 
             /*
             elements concentration
@@ -143,13 +155,19 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1775, 40]
+            "temp": [500, 1440, 40]
         },
         {
             /*
             A label for a calculation sample
             */
             "label": "T = 1200K",
+
+            /*
+            2nd parameter refer to the neighbour that transfer to
+            effctive_en(self, to=1, end=0, start=2)
+            */
+            "transfer": [1,10,2],
 
             /*
             elements concentration
@@ -181,13 +199,19 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1608, 40]
+            "temp": [500, 1235, 40]
         },
         {
             /*
             A label for a calculation sample
             */
             "label": "T = 800K",
+
+            /*
+            2nd parameter refer to the neighbour that transfer to
+            effctive_en(self, to=1, end=0, start=2)
+            */
+            "transfer": [1,10,2],
 
             /*
             Impurity concentration
@@ -203,7 +227,7 @@
             /*
             Interaction energy
             */
-            "int_pair": [-0.156330696, 0.026852342, 0.004438451, 0.031264398, 0.007519461, -0.00283706, 0.003530679, -0.000448172, 0.014907355, 0.001397849, 0.001059068],
+            "int_pair": [-0.15538665, 0.025311905, 0.00467587, 0.029767363, 0.007683818, -0.003356254, -3.3334E-05, -0.000265311, 0.014304623, 0.000905867, 0.001211587],
             "int_trip": [0.01220091],
             "int_tetra": [0.008326279],
 
@@ -220,7 +244,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1180, 30]
+            "temp": [500, 1150, 30]
         }
     ]
 }
