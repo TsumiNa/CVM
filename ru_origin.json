@@ -205,6 +205,50 @@
             /*
             A label for a calculation sample
             */
+            "label": "T = 1000K",
+
+            /*
+            2nd parameter refer to the neighbour that transfer to
+            effctive_en(self, to=1, end=0, start=2)
+            */
+            "transfer": [1,10,2],
+
+            /*
+            elements concentration
+            must be normalized
+            */
+            "x_1": 0.01,
+
+            /*
+            Convergence condition
+             */
+            "condition": 1e-7,
+
+            /*
+            Interaction energy
+            */
+            "int_pair": [-0.158117858, 0.021086519, 0.003615442, 0.029952536, 0.006727201, -0.002213647, 0.003237068, 0.000560691, 0.012872351, 0.001314038, 0.001214172],
+            "int_trip": [0.013228548],
+            "int_tetra": [0.007820555],
+
+            /*
+            Chemical potential
+
+            Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
+            */
+            "delta_mu": [0.0],
+
+            /*
+            Temperature (K)
+
+            Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
+            */
+            "temp": [500, 981.4, 40]
+        },
+        {
+            /*
+            A label for a calculation sample
+            */
             "label": "T = 800K",
 
             /*
@@ -227,7 +271,7 @@
             /*
             Interaction energy
             */
-            "int_pair": [-0.15538665, 0.025311905, 0.00467587, 0.029767363, 0.007683818, -0.003356254, -3.3334E-05, -0.000265311, 0.014304623, 0.000905867, 0.001211587],
+            "int_pair": [-0.15538665, 0.026852342, 0.004438451, 0.031264398, 0.007519461, -0.00283706, 0.003530679, -0.000448172, 0.014907355, 0.001397849, 0.001059068],
             "int_trip": [0.01220091],
             "int_tetra": [0.008326279],
 
@@ -244,7 +288,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1150, 30]
+            "temp": [500, 708.8, 30]
         }
     ]
 }
