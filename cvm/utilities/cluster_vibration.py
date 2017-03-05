@@ -168,12 +168,10 @@ class ClusterVibration():
 
 
 if __name__ == '__main__':
-    from unit_convert import *
-
-    xdata = np.array([6.6, 6.8, 7, 7.1, 7.2, 7.3,
-                      7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8])
-    host = np.array([-10093.50087, -10093.56036, -10093.5962, -10093.60762, -10093.61555, -10093.62048, -10093.62287, -10093.62314, -10093.62163, -10093.61865, -10093.61445, -10093.60928, -10093.60331]) * 13.605698066
-    ydata = host + np.array([2059.975812, 2059.985624, 2060.001566, 2060.011281, 2060.022008, 2060.033623, 2060.046011, 2060.059054, 2060.07264, 2060.086609, 2060.101011, 2060.115579, 2060.130266]) * 13.605698066 / 2
+    xdata = np.array([6.8, 7, 7.1, 7.2, 7.3, 7.4,
+                      7.5, 7.6, 7.7, 7.8, 7.9, 8])
+    host = np.array([-10093.56036, -10093.5962, -10093.60762, -10093.61555, -10093.62048, -10093.62287, -10093.62314, -10093.62163, -10093.61865, -10093.61445, -10093.60928, -10093.60331]) * 13.605698066
+    ydata = host + np.array([-0.00001899, -0.00001899, -0.00001941, -0.00002156, -0.00002403, -0.00002904, -0.00003617, -0.0000481, -0.00006734, -0.00009579, -0.00013962, -0.0002073]) * 13.605698066 / 2
 
     ydata_func = UnivariateSpline(xdata, ydata)
     ydata_min = minimize_scalar(ydata_func, bounds=(6.6, 8), method='bounded')
@@ -201,11 +199,12 @@ if __name__ == '__main__':
     print("Gruneisen constant: {:f}".format(gamma_0))
     print("Equilibrium lattice constant: {:f} a.u.".format(ad2lc(r0)))
     print("Bulk Modulus: {:f} Kbar".format(bulk_moduli))
+    print("at 7.5: {:f}".format(morse(lc2ad(7.5))))
     print("")
 
     CONST_T = 800
     # morse potential
-    xdata_morse = np.linspace(6.6, 8, 50)
+    xdata_morse = np.linspace(6.8, 8, 50)
     ydata_morse = [morse(r) for r in lc2ad(xdata_morse)]
     ydata_morse_min = minimize_scalar(
         lambda r: morse(r), bounds=(lc2ad(6.6), lc2ad(8)), method='bounded')
@@ -219,7 +218,7 @@ if __name__ == '__main__':
     ydata_vib = [free_en_vib(r, CONST_T) for r in lc2ad(xdata_morse)]
     ydata_vib_min = minimize_scalar(
         lambda r: free_en_vib(r, CONST_T),
-        bounds=(lc2ad(6.6), lc2ad(8)), method='bounded')
+        bounds=(lc2ad(6.8), lc2ad(8)), method='bounded')
     ydata_vib_min_x = ydata_vib_min.x
     ydata_vib_min_y = ydata_vib_min.fun
 
