@@ -26,6 +26,10 @@ def process(opt):
                 label='$E_{int}^{4th}$')
         ax.plot(res['temp'], res['9th_a'], 'o-', ms=4, lw=1.5,
                 label='$E_{int}^{9th_a}$')
+        ax.plot(res['temp'], res['9th_b'], 'o-', ms=4, lw=1.5,
+                label='$E_{int}^{9th_b}$')
+        ax.plot(res['temp'], res['10th'], 'o-', ms=4, lw=1.5,
+                label='$E_{int}^{10th}$')
         ax.plot(res['temp'], res['trip'], '^-', ms=4, lw=1.5,
                 label='$E_{int}^{trip}$')
         ax.plot(res['temp'], res['tetra'], '>-', ms=4, lw=1.5,

@@ -32,6 +32,8 @@ class Sample(object):
             '2nd': [],
             '4th': [],
             '9th_a': [],
+            '9th_b': [],
+            '10th': [],
             'trip': [],
             'tetra': [],
         }
