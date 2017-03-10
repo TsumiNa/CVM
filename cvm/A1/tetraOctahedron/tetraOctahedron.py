@@ -42,29 +42,25 @@ class tetraOctahedron(CVM):
         self.beta = np.float64(0.0)
         self.mu = np.zeros((2), np.float64)
 
-    def __init__en(self, sample):
+    def __init__en(self, int):
         ###############################################
         # configuration
         ###############################################
-        # use transfer
-        # transfer to 2nd
-        sample.effctive_en(1, 8, 3)
 
         # pure energy of 2body-1st
         en1 = np.zeros((2, 2), np.float64)
-        en1[0, 1] = en1[1, 0] = \
-            0.5 * (en1[0, 0] + en1[1, 1] - sample.int_pair[0])
+        en1[0, 1] = en1[1, 0] = 0.5 * (en1[0, 0] + en1[1, 1] - int[0][0])
 
         #############################################
         # tetrahedron
         #############################################
         # 3body-1st interaction energy
         de31 = np.zeros((2, 2, 2), np.float64)
-        de31[1, 1, 1] = sample.int_trip[0]
+        de31[1, 1, 1] = int[1]
 
         # 4body-1st interaction energy
         de41 = np.zeros((2, 2, 2, 2), np.float64)
-        de41[1, 1, 1, 1] = sample.int_tetra[0]
+        de41[1, 1, 1, 1] = int[2]
 
         # energy ε
         it = np.nditer(self.enT, flags=['multi_index'])
@@ -85,7 +81,7 @@ class tetraOctahedron(CVM):
         # pure energy of 2body-1st
         en2 = np.zeros((2, 2), np.float64)
         en2[0, 1] = en2[1, 0] = \
-            0.5 * (en2[0, 0] + en2[1, 1] - sample.int_pair[1])
+            0.5 * (en2[0, 0] + en2[1, 1] - int[0][1])
 
         # energy ε
         it = np.nditer(self.enO, flags=['multi_index'])
@@ -120,22 +116,33 @@ class tetraOctahedron(CVM):
 
         # temperature iteration
         for sample in self.series:
-            sample.res['temp'] = sample.temp.tolist()
             if self.multi_calcu:
-                sample.res['label'] = sample.res['label'] + '(T)'
+                sample.res['label'] = sample.res['label'] + '(TO)'
             self.x_[1] = sample.x_1
             self.x_[0] = 1 - sample.x_1
-            self.__init__en(sample)
-            print(' mu = {:06.4f}:'.format(self.mu[0].item(0)))
-            print(' 1st_int = {:06.4f}:'.format(sample.int_pair[0]))
-            print(' 2nd_int = {:06.4f}:'.format(sample.int_pair[1]))
+            print('')
+            print(sample.res['label'])
 
             # delta mu iteration
-            for temp in np.nditer(sample.temp):
+            it = np.nditer(sample.temp, flags=['c_index'])
+            while not it.finished:
+                i = it.index
+                temp = it[0]
                 self.beta = np.float64(pow(self.bzc * temp, -1))
 
                 # calculate w
+                int = sample.int[i]
+                self.__init__en(int)
                 self.__reset__probability()
+                # print(' mu:     {:06.4f}'.format(self.mu[0].item(0)))
+                # print(' 1st:    {:06.4f}'.format(int[0][0].item(0)))
+                # print(' 2nd:    {:06.4f}'.format(int[0][1].item(0)))
+                sample.res['1st'].append(int[0][0])
+                sample.res['2nd'].append(int[0][1])
+                sample.res['4th'].append(int[0][3])
+                sample.res['9th_a'].append(int[0][8])
+                sample.res['trip'].append(int[1])
+                sample.res['tetra'].append(int[2])
                 while self.checker > sample.condition:
                     while self.checker > self.main_condition:
                         process(self)
@@ -145,9 +152,9 @@ class tetraOctahedron(CVM):
 
                 # push result into res
                 sample.res['c'].append(self.x_[1].item(0))
-                print('    T = {:06.3f}K,  c = {:06.6f},  count = {}'.
-                      format(temp.item(0), self.x_[1].item(0), self.count))
+                print(' T = {:06.3f}K,  c = {:06.6f},  count = {}'.format(
+                    temp.item(0), self.x_[1].item(0), self.count))
+                it.iternext()
 
-            print('\n')
             # save result to output
             self.output['results'].append(sample.res)

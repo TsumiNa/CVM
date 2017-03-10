@@ -94,6 +94,8 @@ class tetrahedron(CVM):
                 sample.res['label'] = sample.res['label'] + '(T)'
             self.x_[1] = sample.x_1
             self.x_[0] = 1 - sample.x_1
+            print('')
+            print(sample.res['label'])
 
             # delta mu iteration
             it = np.nditer(sample.temp, flags=['c_index'])
@@ -108,13 +110,11 @@ class tetrahedron(CVM):
                 self.__reset__probability()
                 # print(' mu:     {:06.4f}'.format(self.mu[0].item(0)))
                 # print(' 1st:    {:06.4f}'.format(int[0][0].item(0)))
-                # print(' 9th_b:    {:06.4f}'.format(int[0][9].item(0)))
+                # print(' 2nd:    {:06.4f}'.format(int[0][1].item(0)))
                 sample.res['1st'].append(int[0][0])
                 sample.res['2nd'].append(int[0][1])
                 sample.res['4th'].append(int[0][3])
-                # sample.res['9th_a'].append(int[0][8])
-                # sample.res['9th_b'].append(int[0][9])
-                # sample.res['10th'].append(int[0][10])
+                sample.res['9th_a'].append(int[0][8])
                 sample.res['trip'].append(int[1])
                 sample.res['tetra'].append(int[2])
                 while self.checker > sample.condition:
@@ -122,7 +122,7 @@ class tetrahedron(CVM):
 
                 # push result into res
                 sample.res['c'].append(self.x_[1].item(0))
-                print('    T = {:06.3f}K,  c = {:06.6f},  count = {}\n'.format(
+                print(' T = {:06.3f}K,  c = {:06.6f},  count = {}'.format(
                     temp.item(0), self.x_[1].item(0), self.count))
                 it.iternext()
 
