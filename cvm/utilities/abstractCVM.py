@@ -65,7 +65,35 @@ class CVM(threading.Thread):
 
         for item in inp['series']:
             # sample holds all data for calculation
-            sample = Sample(item['label'])
+            sample = Sample(
+                item['label'],
+                [
+                    12,
+                    6,
+                    24,
+                    12,
+                    24,
+                    8,
+                    48,
+                    6,
+                    12,  # 9th-a
+                    24,  # 9th-b
+                    4,
+                    24,
+                    24,
+                    48,  # 13th-a
+                    24,  # 13th-b
+                    48,
+                    12,
+                    24,  # 16th-a
+                    24,  # 16th-b
+                    24,  # 17th-a
+                    6,   # 17th-b
+                    48,  # 18th-a
+                    24,  # 18th-b
+                    24,
+                    48  # 20th
+                ])
             self.series.append(sample)
 
             # initialzed impurity Concentration
@@ -112,15 +140,27 @@ class CVM(threading.Thread):
 
             # get interaction energies
             def int_pair(r, T):
+                def gene_pair_label(start=1):
+                    while True:
+                        label = 'pair' + str(start)
+                        if label in data:
+                            start += 1
+                            yield label
+                        else:
+                            return
+
                 # transter
                 energies = []
+                pair_label = [n for n in gene_pair_label()]
+                if 'cut_pair' in data:
+                    pair_label = pair_label[:-data['cut_pair']]
                 transfer = item['transfer']
-                for n in ['pair' + str(s + 1) for s in np.arange(transfer[1])]:
+                for n in pair_label:
                     _int = cv.int_energy(
                         xs, data[n], host, self.bzc, num=2, conv=self.conv)
                     energies.append(_int(r, T))
                 energies[0] += np.float64(data['distortion'])
-                return sample.effctive_en(energies, transfer)
+                return sample.effctive_en(energies, *transfer)
 
             int_trip = cv.int_energy(
                 xs, data['triple'], host, self.bzc, num=3, conv=self.conv)

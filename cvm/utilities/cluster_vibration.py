@@ -117,7 +117,7 @@ class ClusterVibration():
             return (n / x**n) * ret
 
         # generate debye temperature Θ_D
-        def _debye_temp_gene(r0, lmd, B, M):  # (ΘD)0 r=r0
+        def __debye_temp_gene(r0, lmd, B, M):  # (ΘD)0 r=r0
             D_0 = np.float64(41.63516) * np.power(r0 * B / M, 1 / 2)
             return D_0, lambda r: D_0 * np.power(r0 / r, 3 * lmd * r / 2)
 
@@ -126,7 +126,7 @@ class ClusterVibration():
         x0 = np.exp(-lmd * r0)
         B_0 = - (c2 * (lmd**3)) / (6 * np.pi * np.log(x0))
         gamma_0 = lmd * r0 / 2
-        debye_temp_0, debye_temp_func = _debye_temp_gene(
+        debye_temp_0, debye_temp_func = __debye_temp_gene(
             r0, lmd, eV2Kbar(B_0), np.float(M))
 
         # parameters will be used to construt

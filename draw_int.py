@@ -18,22 +18,22 @@ def process(opt):
         # plt.xlim(xmin=0.5, xmax=12.5)
         # plt.axhline(y=0, color='k', ls='-', lw=1.0)
         # label[i] = 'int= ' + '{:07.4}'.format(opt['Results'][i]['1st_int'])
-        ax.plot(res['temp'], res['1st'], 'o-', ms=4, lw=1.5,
-                label='$\\tilde{E}_{int}^{1st}$')
-        ax.plot(res['temp'], res['2nd'], 'o-', ms=4, lw=1.5,
-                label='$E_{int}^{2nd}$')
-        ax.plot(res['temp'], res['4th'], 'o-', ms=4, lw=1.5,
-                label='$E_{int}^{4th}$')
-        ax.plot(res['temp'], res['9th_a'], 'o-', ms=4, lw=1.5,
-                label='$E_{int}^{9th_a}$')
-        ax.plot(res['temp'], res['9th_b'], 'o-', ms=4, lw=1.5,
-                label='$E_{int}^{9th_b}$')
-        ax.plot(res['temp'], res['10th'], 'o-', ms=4, lw=1.5,
-                label='$E_{int}^{10th}$')
-        ax.plot(res['temp'], res['trip'], '^-', ms=4, lw=1.5,
-                label='$E_{int}^{trip}$')
-        ax.plot(res['temp'], res['tetra'], '>-', ms=4, lw=1.5,
-                label='$E_{int}^{tetra}$')
+        ax.plot(res['temp'], res['1st'], 'o-', ms=3, lw=1.5,
+                label='$\\tilde{E}_{int}^{1st}$ ' + res['label'][:-7])
+        ax.plot(res['temp'], res['2nd'], 'o-', ms=3, lw=1.5,
+                label='$\\tilde{E}_{int}^{2nd}$ ' + res['label'][:-7])
+        # ax.plot(res['temp'], res['4th'], 'o-', ms=3, lw=1.5,
+        #         label='$E_{int}^{4th}$')
+        # ax.plot(res['temp'], res['9th_a'], 'o-', ms=3, lw=1.5,
+        #         label='$E_{int}^{9th_a}$')
+        # ax.plot(res['temp'], res['9th_b'], 'o-', ms=3, lw=1.5,
+        #         label='$E_{int}^{9th_b}$')
+        # ax.plot(res['temp'], res['10th'], 'o-', ms=3, lw=1.5,
+        #         label='$E_{int}^{10th}$')
+        # ax.plot(res['temp'], res['trip'], '^-', ms=3, lw=1.5,
+        #         label='$E_{int}^{trip}$')
+        # ax.plot(res['temp'], res['tetra'], '>-', ms=3, lw=1.5,
+        #         label='$E_{int}^{tetra}$')
 
     # set formater
     # ax.xaxis.set_major_formatter(FuncFormatter(percent))
@@ -44,7 +44,7 @@ def process(opt):
     # ax.set_ylim(400, 2000)
     ax.set_xlabel('Temperature ($K$)')
     ax.set_ylabel('Interaction energy ($eV$)')
-    ax.legend(loc='lower right', markerscale=1.2, fontsize=13)
+    ax.legend(loc='center right', markerscale=1.0, fontsize=8)
     fig_name = "_".join((
         opt['meta']['prefix'],
         opt['meta']['host'],
