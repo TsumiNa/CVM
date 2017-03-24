@@ -16,6 +16,7 @@ def process(opt):
     # draw experiment
     y_exp = opt['experiment'][0]['temp']
     x_exp = opt['experiment'][0]['c']
+    # ax.annotate('1200$K$', (0.005, 410), fontsize=13)
     ax.plot(x_exp, y_exp, 'x--', mew=3, mfc='w', ms=6, lw=1.5,
             label='Experiment')
 

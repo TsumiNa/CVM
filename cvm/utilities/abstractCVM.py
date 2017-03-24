@@ -64,6 +64,8 @@ class CVM(threading.Thread):
             raise NameError('need a defination of calculation series')
 
         for item in inp['series']:
+            if 'skip' in item and item['skip']:
+                continue
             # sample holds all data for calculation
             sample = Sample(
                 item['label'],
@@ -146,8 +148,8 @@ class CVM(threading.Thread):
                         if label in data:
                             start += 1
                             yield label
-                        else:
-                            return
+                            continue
+                        break
 
                 # transter
                 energies = []
