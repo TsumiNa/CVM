@@ -208,7 +208,7 @@ if __name__ == '__main__':
     ydata_morse = [morse(r) for r in lc2ad(xdata_morse)]
     ydata_morse_min = minimize_scalar(
         lambda r: morse(r), bounds=(lc2ad(6.6), lc2ad(8)), method='bounded')
-    ydata_morse_min_x = ydata_morse_min.x
+    ydata_morse_min_x = ad2lc(ydata_morse_min.x)
     ydata_morse_min_y = ydata_morse_min.fun
 
     # vibration
@@ -219,7 +219,7 @@ if __name__ == '__main__':
     ydata_vib_min = minimize_scalar(
         lambda r: free_en_vib(r, CONST_T),
         bounds=(lc2ad(6.8), lc2ad(8)), method='bounded')
-    ydata_vib_min_x = ydata_vib_min.x
+    ydata_vib_min_x = ad2lc(ydata_vib_min.x)
     ydata_vib_min_y = ydata_vib_min.fun
 
     print("minimum from morse: <{:f}, {:f}>".

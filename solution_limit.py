@@ -43,7 +43,8 @@ def process(opt):
     # ax.set_ylim(400, 2000)
     ax.set_ylabel('Temperature ($K$)')
     ax.set_xlabel('Concentration of ' + opt['meta']['impurity'].capitalize() + '($\%$)')
-    ax.legend(loc='lower right', markerscale=1.2, fontsize=13)
+    ax.annotate('(a) CVMT', (0.003, 1830), size=13)
+    ax.legend(loc='lower right', markerscale=1.2, fontsize=14)
     fig_name = "_".join((
         opt['meta']['prefix'],
         opt['meta']['host'],

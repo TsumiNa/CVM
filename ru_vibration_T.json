@@ -76,7 +76,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "with vibration(800K [T])",
+            "label": "$T_{FD}=800K$",
 
             /*
             parameter refer how to the transfer long range interaction energy
@@ -354,13 +354,13 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [400, 1280, 50]
+            "temp": [400, 1290, 50]
         },
         {
             /*
             A label for a calculation sample
             */
-            "label": "with vibration(1000K [T])",
+            "label": "$T_{FD}=1000K$",
 
             /*
             parameter refer how to the transfer long range interaction energy
@@ -644,7 +644,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "with vibration(1200K [T])",
+            "label": "$T_{FD}=1200K$",
 
             /*
             parameter refer how to the transfer long range interaction energy
@@ -922,7 +922,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [400, 1650, 50]
+            "temp": [400, 1700, 50]
         }
     ]
 }
