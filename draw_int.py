@@ -22,18 +22,6 @@ def process(opt):
                 label='$\\tilde{E}_{int}^{1st}$ ' + res['label'][:-7])
         ax.plot(res['temp'], res['2nd'], 'o-', ms=3, lw=1.5,
                 label='$\\tilde{E}_{int}^{2nd}$ ' + res['label'][:-7])
-        # ax.plot(res['temp'], res['4th'], 'o-', ms=3, lw=1.5,
-        #         label='$E_{int}^{4th}$')
-        # ax.plot(res['temp'], res['9th_a'], 'o-', ms=3, lw=1.5,
-        #         label='$E_{int}^{9th_a}$')
-        # ax.plot(res['temp'], res['9th_b'], 'o-', ms=3, lw=1.5,
-        #         label='$E_{int}^{9th_b}$')
-        # ax.plot(res['temp'], res['10th'], 'o-', ms=3, lw=1.5,
-        #         label='$E_{int}^{10th}$')
-        # ax.plot(res['temp'], res['trip'], '^-', ms=3, lw=1.5,
-        #         label='$E_{int}^{trip}$')
-        # ax.plot(res['temp'], res['tetra'], '>-', ms=3, lw=1.5,
-        #         label='$E_{int}^{tetra}$')
 
     # set formater
     # ax.xaxis.set_major_formatter(FuncFormatter(percent))

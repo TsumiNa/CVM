@@ -111,12 +111,6 @@ class tetrahedron(CVM):
                 # print(' mu:     {:06.4f}'.format(self.mu[0].item(0)))
                 # print(' 1st:    {:06.4f}'.format(int[0][0].item(0)))
                 # print(' 2nd:    {:06.4f}'.format(int[0][1].item(0)))
-                sample.res['1st'].append(int[0][0])
-                sample.res['2nd'].append(int[0][1])
-                sample.res['4th'].append(int[0][3])
-                sample.res['9th_a'].append(int[0][8])
-                sample.res['trip'].append(int[1])
-                sample.res['tetra'].append(int[2])
                 while self.checker > sample.condition:
                     process(self)
 

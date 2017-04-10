@@ -176,6 +176,7 @@ class CVM(threading.Thread):
                 pair = np.array(int_pair(r_0, T), np.float64)
                 trip = np.array(int_trip(r_0, T), np.float64)
                 tetra = np.array(int_tetra(r_0, T), np.float64)
+                sample.res['inter_en'].append(pair)
                 sample.int.append((pair, trip, tetra))
 
     def run(self):
