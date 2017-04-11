@@ -20,13 +20,13 @@ def process(opt):
 
     for res in opt['results']:
         t800 = res['inter_en'][0]
-        int_list.append((t800, '800$K$ (with vib.)'))
+        int_list.append((t800, '$T_{vib.}=800K$'))
 
         t1000 = res['inter_en'][1]
-        int_list.append((t1000, '1000$K$ (with vib.)'))
+        int_list.append((t1000, '$T_{vib.}=1000K$'))
 
         t1200 = res['inter_en'][2]
-        int_list.append((t1200, '1200$K$ (with vib.)'))
+        int_list.append((t1200, '$T_{vib.}=1200K$'))
 
     ax1.axhline(y=0, color='k', ls='-', lw=1.5)
     z = 5
