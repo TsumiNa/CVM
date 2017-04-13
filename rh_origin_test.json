@@ -63,7 +63,7 @@
     /*
     what method(s) will be used for this calculation
     */
-    "methods": ["T"],
+    "methods": ["TO"],
 
     /*
     data for calculation
@@ -73,13 +73,13 @@
             /*
             A label for a calculation sample
             */
-            "label": "CVMT8 (3+4 with distortion)",
+            "label": "CVMT10 (3+4 with distortion)",
 
             /*
             2nd parameter refer to the neighbour that transfer to
             effctive_en(self, to=1, end=0, start=2)
             */
-            "transfer": [1,10,2],
+            "transfer": [1,11,3],
 
             /*
             elements concentration
@@ -111,7 +111,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [400, 1010, 30]
+            "temp": [400, 890, 50]
         }
     ]
 }

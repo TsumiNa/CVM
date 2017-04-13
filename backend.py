@@ -49,6 +49,6 @@ def process(opt):
         opt['meta']['host'],
         opt['meta']['impurity'],
         opt['meta']['suffix']
-    )).lstrip('_') + '.eps'
+    )).lstrip('_') + '.png'
     plt.savefig(fig_name, dpi=300)  # 300 dpi
     plt.show()
