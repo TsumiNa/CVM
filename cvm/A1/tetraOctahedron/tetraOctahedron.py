@@ -46,17 +46,6 @@ class tetraOctahedron(CVM):
         ###############################################
         # configuration
         ###############################################
-        # use transfer
-        # transfer to 2nd
-        if hasattr(sample, 'transfer'):
-            sample.effctive_en(
-                sample.transfer[0],
-                sample.transfer[1],
-                sample.transfer[2],
-            )
-        else:
-            sample.effctive_en(1, 11, 3)
-
         # pure energy of 2body-1st
         en1 = np.zeros((2, 2), np.float64)
         en1[0, 1] = en1[1, 0] = \

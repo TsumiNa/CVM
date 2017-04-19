@@ -60,7 +60,37 @@ class CVM(threading.Thread):
             raise NameError('need a defination of calculation series')
 
         for item in inp['series']:
-            sample = Sample(item['label'])
+            # sample holds all data for calculation
+            sample = Sample(
+                item['label'],
+                [
+                    12,
+                    6,
+                    24,
+                    12,
+                    24,
+                    8,
+                    48,
+                    6,
+                    12,  # 9th-a
+                    24,  # 9th-b
+                    4,
+                    24,
+                    24,
+                    48,  # 13th-a
+                    24,  # 13th-b
+                    48,
+                    12,
+                    24,  # 16th-a
+                    24,  # 16th-b
+                    24,  # 17th-a
+                    6,   # 17th-b
+                    48,  # 18th-a
+                    24,  # 18th-b
+                    24,
+                    48  # 20th
+                ])
+
             # chemical potential
             if len(item['delta_mu']) <= 1:
                 sample.mu = np.array(item['delta_mu'], np.float64)
@@ -91,11 +121,16 @@ class CVM(threading.Thread):
             sample.condition = np.float32(item['condition'])
 
             # transter
+            en_pairs = np.float64(item['int_pair'])
+            int_pair = []
             if 'transfer' in item:
-                sample.transfer = item['transfer']
+                transfer = item['transfer']
+                int_pair = sample.effctive_en(en_pairs, *transfer)
+            else:
+                int_pair = en_pairs
 
             # Interation energies
-            sample.int_pair = np.float64(item['int_pair'])
+            sample.int_pair = int_pair
             sample.int_trip = np.float64(item['int_trip'])
             sample.int_tetra = np.float64(item['int_tetra'])
 

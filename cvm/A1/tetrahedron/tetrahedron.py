@@ -41,17 +41,6 @@ class tetrahedron(CVM):
         ###############################################
         # configuration
         ###############################################
-        # use transfer
-        # transfer to 2nd
-        if hasattr(sample, 'transfer'):
-            sample.effctive_en(
-                sample.transfer[0],
-                sample.transfer[1],
-                sample.transfer[2],
-            )
-        else:
-            sample.effctive_en(1, 8)
-
         # pure energy of 2body 1st
         e1 = np.zeros((2, 2), np.float64)
         e1[0, 1] = e1[1, 0] = 0.5 * (e1[0, 0] + e1[1, 1] - sample.int_pair[0])
