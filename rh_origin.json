@@ -73,7 +73,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "CVMT8 (3+4 with distortion)",
+            "label": "CVMT10 $T_{FD}=800K$",
 
             /*
             parameter refer how to the transfer long range interaction energy
@@ -96,7 +96,7 @@
             /*
             Interaction energy
             */
-            "int_pair": [-0.059641802, 0.002797332, -0.000884098, 0.001606833, 0.001972554, -0.000121635, -1.03403E-05, 0.000150887, 0.004535323, 0.000159731, 0.000521915],
+            "int_pair": [-0.05966, 0.003674, -0.0009467, 0.001885, 0.001987, 0.000049117, 0.000364777, 0.0000574, 0.00453936, 0.00025552, 0.000524],
             "int_trip": [0.005],
             "int_tetra": [0.008],
 
@@ -118,7 +118,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "CVMT8 (with distortion)",
+            "label": "CVMT10 $T_{FD}=1000K$",
 
             /*
             parameter refer how to the transfer long range interaction energy
@@ -141,52 +141,7 @@
             /*
             Interaction energy
             */
-            "int_pair": [-0.059641802, 0.002797332, -0.000884098, 0.001606833, 0.001972554, -0.000121635, -1.03403E-05, 0.000150887, 0.004535323, 0.000159731, 0.000521915],
-            "int_trip": [0],
-            "int_tetra": [0],
-
-            /*
-            Chemical potential
-
-            Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
-            */
-            "delta_mu": [0.0],
-
-            /*
-            Temperature (K)
-
-            Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
-            */
-            "temp": [200, 1350, 30]
-        },
-        {
-            /*
-            A label for a calculation sample
-            */
-            "label": "CVMT8 (3+4 without distortion)",
-
-            /*
-            parameter refer how to the transfer long range interaction energy
-            this is array with 4 elements means [to, end, start. percent]
-            eg: tansfer all to 1st from 2nd to 8th will be written as [1,8,2]
-            */
-            "transfer": [[1,11,2]],
-
-            /*
-            elements concentration
-            must be normalized
-            */
-            "x_1": 0.01,
-
-            /*
-            Convergence condition
-             */
-            "condition": 1e-7,
-
-            /*
-            Interaction energy
-            */
-            "int_pair": [-0.047847567, 0.002797332, -0.000884098, 0.001606833, 0.001972554, -0.000121635, -1.03403E-05, 0.000150887, 0.004535323, 0.000159731, 0.000521915],
+            "int_pair": [-0.05903, 0.00243, -0.001047, 0.002556976, 0.0013391, 0.00001551, 0.0002955, -0.00031157, 0.004188879, 0.000289, 0.000343],
             "int_trip": [0.005],
             "int_tetra": [0.008],
 
@@ -202,52 +157,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [200, 710, 30]
-        },
-        {
-            /*
-            A label for a calculation sample
-            */
-            "label": "CVMT8 (without distortion)",
-
-            /*
-            parameter refer how to the transfer long range interaction energy
-            this is array with 4 elements means [to, end, start. percent]
-            eg: tansfer all to 1st from 2nd to 8th will be written as [1,8,2]
-            */
-            "transfer": [[1,11,2]],
-
-            /*
-            elements concentration
-            must be normalized
-            */
-            "x_1": 0.01,
-
-            /*
-            Convergence condition
-             */
-            "condition": 1e-7,
-
-            /*
-            Interaction energy
-            */
-            "int_pair": [-0.047847567, 0.002797332, -0.000884098, 0.001606833, 0.001972554, -0.000121635, -1.03403E-05, 0.000150887, 0.004535323, 0.000159731, 0.000521915],
-            "int_trip": [0],
-            "int_tetra": [0],
-
-            /*
-            Chemical potential
-
-            Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
-            */
-            "delta_mu": [0.0],
-
-            /*
-            Temperature (K)
-
-            Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
-            */
-            "temp": [200, 1100, 30]
+            "temp": [400, 1010, 30]
         }
     ]
 }

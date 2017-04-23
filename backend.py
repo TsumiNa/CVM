@@ -41,7 +41,7 @@ def process(opt):
     # for preview
     ax.grid(axis='y')
     # ax.set_ylim(400, 2000)
-    ax.annotate('$T_{FD}=800K$', (0.002, 920), size=15)
+    # ax.annotate('$T_{FD}=800K$', (0.002, 920), size=15)
     ax.set_ylabel('Temperature ($K$)')
     ax.set_xlabel('Concentration of ' + opt['meta']['impurity'].capitalize() + '($\%$)')
     ax.legend(loc='lower right', markerscale=1.2, fontsize=13)
