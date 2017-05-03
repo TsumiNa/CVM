@@ -131,8 +131,7 @@ class CVM(threading.Thread):
             # by combined with Morse potential and Debye model
             # ==================================================
             data = item['data']
-            xs = np.array(data['lattice_c'])
-            xs = lc2ad(xs)
+            xs = lc2ad(np.array(data['lattice_c']))
 
             # Host with vibration
             # equilibrium lattice will evaluate from formula
@@ -169,10 +168,13 @@ class CVM(threading.Thread):
             int_tetra = cv.int_energy(
                 xs, data['tetra'], host, self.bzc, num=4, conv=self.conv)
             for T in np.nditer(sample.temp):
-                r_0 = minimize_scalar(
-                    lambda r: host_en(r, T),
-                    bounds=(xs[0], xs[-1]), method='bounded'
-                ).x
+                if 'fix_a0' in data:
+                    r_0 = lc2ad(np.float64(data['fix_a0']))
+                else:
+                    r_0 = minimize_scalar(
+                        lambda r: host_en(r, T),
+                        bounds=(xs[0], xs[-1]), method='bounded'
+                    ).x
                 pair = np.array(int_pair(r_0, T), np.float64)
                 trip = np.array(int_trip(r_0, T), np.float64)
                 tetra = np.array(int_tetra(r_0, T), np.float64)
