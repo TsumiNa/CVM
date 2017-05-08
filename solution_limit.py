@@ -11,7 +11,7 @@ def percent(x, pos=0):
 
 def process(opt):
     fig, ax = plt.subplots(figsize=(8, 4.5), dpi=150)  # 800 * 500
-    plt.subplots_adjust(top=0.96, bottom=0.11, left=0.10, right=0.97)
+    plt.subplots_adjust(top=0.97, bottom=0.14, left=0.12, right=0.97)
 
     # draw experiment
     y_exp = opt['experiment'][0]['temp']
@@ -40,10 +40,10 @@ def process(opt):
 
     # for preview
     ax.grid(axis='y')
-    # ax.set_ylim(400, 2000)
-    ax.set_ylabel('Temperature ($K$)')
-    ax.set_xlabel('Concentration of ' + opt['meta']['impurity'].capitalize() + '($\%$)')
-    ax.annotate('(a) CVMT', (0.003, 1830), size=13)
+    ax.tick_params(labelsize=14)
+    ax.set_ylabel('Temperature ($K$)', size=16)
+    ax.set_xlabel('Concentration of ' + opt['meta']['impurity'].capitalize() + '($\%$)', size=16)
+    ax.annotate('(c) CVMTO, $T_{FD}=1200K$', (0.003, 1830), size=14)
     ax.legend(loc='lower right', markerscale=1.2, fontsize=14)
     fig_name = "_".join((
         opt['meta']['prefix'],
