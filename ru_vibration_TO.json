@@ -76,7 +76,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "$T_{FD}=800K$",
+            "label": "$T_\\mathrm{FD}=800$K",
 
             /*
             parameter refer how to the transfer long range interaction energy
@@ -360,7 +360,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "$T_{FD}=1000K$",
+            "label": "$T_\\mathrm{FD}=1000$K",
 
             /*
             parameter refer how to the transfer long range interaction energy
@@ -644,7 +644,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "$T_{FD}=1200K$",
+            "label": "$T_\\mathrm{FD}=1200$K",
 
             /*
             parameter refer how to the transfer long range interaction energy

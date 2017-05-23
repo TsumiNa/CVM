@@ -77,7 +77,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "$1st\\,\\stackrel{100\\%}{\\Longleftarrow}\\ 4th\\ \\stackrel{\\ \\ 0\\%\\,}{\\Longrightarrow}\\,\\,2nd$",
+            "label": "$\\mathrm{1st}\\,\\stackrel{100\\%}{\\Longleftarrow}\\ \\mathrm{4th}\\ \\stackrel{\\ \\ 0\\%\\,}{\\Longrightarrow}\\,\\,\\mathrm{2nd}$",
 
             /*
             parameter refer how to the transfer long range interaction energy
@@ -362,7 +362,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "$1st\\ \\stackrel{\\ 70\\%}{\\Longleftarrow}\\ 4th\\ \\stackrel{\\ 30\\%}{\\Longrightarrow}\\ 2nd$",
+            "label": "$\\mathrm{1st}\\ \\stackrel{\\ 70\\%}{\\Longleftarrow}\\ \\mathrm{4th}\\ \\stackrel{\\ 30\\%}{\\Longrightarrow}\\ \\mathrm{2nd}$",
 
             /*
             parameter refer how to the transfer long range interaction energy
@@ -647,7 +647,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "$1st\\ \\stackrel{\\ 50\\%}{\\Longleftarrow}\\ 4th\\ \\stackrel{\\ 50\\%}{\\Longrightarrow}\\ 2nd$",
+            "label": "$\\mathrm{1st}\\ \\stackrel{\\ 50\\%}{\\Longleftarrow}\\ \\mathrm{4th}\\ \\stackrel{\\ 50\\%}{\\Longrightarrow}\\ \\mathrm{2nd}$",
 
             /*
             parameter refer how to the transfer long range interaction energy
@@ -932,7 +932,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "$1st\\ \\stackrel{\\ 30\\%}{\\Longleftarrow}\\ 4th\\ \\stackrel{\\ 70\\%}{\\Longrightarrow}\\ 2nd$",
+            "label": "$\\mathrm{1st}\\ \\stackrel{\\ 30\\%}{\\Longleftarrow}\\ \\mathrm{4th}\\ \\stackrel{\\ 70\\%}{\\Longrightarrow}\\ \\mathrm{2nd}$",
 
             /*
             parameter refer how to the transfer long range interaction energy
@@ -1217,7 +1217,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "$1st\\ \\stackrel{\\quad 0\\%\\,}{\\Longleftarrow}\\ 4th\\,\\stackrel{100\\%}{\\Longrightarrow}\\,2nd$",
+            "label": "$\\mathrm{1st}\\ \\stackrel{\\quad 0\\%\\,}{\\Longleftarrow}\\ \\mathrm{4th}\\,\\stackrel{100\\%}{\\Longrightarrow}\\,\\mathrm{2nd}$",
 
             /*
             parameter refer how to the transfer long range interaction energy

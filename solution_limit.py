@@ -40,11 +40,11 @@ def process(opt):
 
     # for preview
     ax.grid(axis='y')
-    ax.tick_params(labelsize=14)
-    ax.set_ylabel('Temperature ($K$)', size=16)
+    ax.tick_params(labelsize=14.5)
+    ax.set_ylabel('Temperature (K)', size=16)
     ax.set_xlabel('Concentration of ' + opt['meta']['impurity'].capitalize() + '($\%$)', size=16)
-    ax.annotate('(c) CVMTO, $T_{FD}=1200K$', (0.003, 1830), size=14)
-    ax.legend(loc='lower right', markerscale=1.2, fontsize=14)
+    ax.annotate('(b) CVMTO', (0.003, 1830), size=15)
+    ax.legend(loc='lower right', markerscale=1.2, fontsize=15)
     fig_name = "_".join((
         opt['meta']['prefix'],
         opt['meta']['host'],
