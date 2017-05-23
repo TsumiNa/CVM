@@ -357,7 +357,7 @@
             "temp": [400, 1290, 50]
         },
         {
-            "skip": false,
+            "skip": true,
             /*
             A label for a calculation sample
             */
@@ -642,7 +642,7 @@
             "temp": [400, 1550, 50]
         },
         {
-            "skip": false,
+            "skip": true,
             /*
             A label for a calculation sample
             */

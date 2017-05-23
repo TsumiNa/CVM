@@ -90,7 +90,7 @@ class CVM(threading.Thread):
                     24,  # 16th-a
                     24,  # 16th-b
                     24,  # 17th-a
-                    6,   # 17th-b
+                    6,  # 17th-b
                     48,  # 18th-a
                     24,  # 18th-b
                     24,
@@ -136,8 +136,8 @@ class CVM(threading.Thread):
             # Host with vibration
             # equilibrium lattice will evaluate from formula
             host = np.array(data['host_en']) * self.conv
-            host_en = cv.free_energy(
-                xs, host, 0, np.array(data['host_mass']), self.bzc)
+            host_en = cv.free_energy(xs, host, 0,
+                                     np.array(data['host_mass']), self.bzc)
 
             # get interaction energies
             def int_pair(r, T):
@@ -158,13 +158,13 @@ class CVM(threading.Thread):
                 transfer = item['transfer']
                 for n in pair_label:
                     _int = cv.int_energy(
-                        xs, data[n], host, self.bzc, num=2, conv=self.conv)
+                        xs, data[n], host, self.bzc, num=4, conv=self.conv)
                     energies.append(_int(r, T))
                 energies[0] += np.float64(data['distortion'])
                 return sample.effctive_en(energies, *transfer)
 
             int_trip = cv.int_energy(
-                xs, data['triple'], host, self.bzc, num=3, conv=self.conv)
+                xs, data['triple'], host, self.bzc, num=4, conv=self.conv)
             int_tetra = cv.int_energy(
                 xs, data['tetra'], host, self.bzc, num=4, conv=self.conv)
             for T in np.nditer(sample.temp):
@@ -173,8 +173,8 @@ class CVM(threading.Thread):
                 else:
                     r_0 = minimize_scalar(
                         lambda r: host_en(r, T),
-                        bounds=(xs[0], xs[-1]), method='bounded'
-                    ).x
+                        bounds=(xs[0], xs[-1]),
+                        method='bounded').x
                 pair = np.array(int_pair(r_0, T), np.float64)
                 trip = np.array(int_trip(r_0, T), np.float64)
                 tetra = np.array(int_tetra(r_0, T), np.float64)
