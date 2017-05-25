@@ -130,46 +130,52 @@ class CVM(threading.Thread):
             # Interation energies with thermal vibration
             # by combined with Morse potential and Debye model
             # ==================================================
-            data = item['data']
-            xs = lc2ad(np.array(data['lattice_c']))
+            datas = item['datas']
+            xs = lc2ad(np.array(datas['lattice_c']))
 
             # Host with vibration
             # equilibrium lattice will evaluate from formula
-            host = np.array(data['host_en']) * self.conv
+            host = np.array(datas['host_en']) * self.conv
             host_en = cv.free_energy(xs, host, 0,
-                                     np.array(data['host_mass']), self.bzc)
+                                     np.array(datas['host_mass']), self.bzc)
 
             # get interaction energies
-            def int_pair(r, T):
-                def gene_pair_label(start=1):
-                    while True:
-                        label = 'pair' + str(start)
-                        if label in data:
-                            start += 1
-                            yield label
-                            continue
-                        break
+            def gene_raw_int(data, acc=None):
+                if not data:
+                    return acc
+                part = data[0]['coefficient'] * np.array(data[0]['energy'])
+                return gene_raw_int(data[1:], part)
 
-                # transter
-                energies = []
-                pair_label = [n for n in gene_pair_label()]
-                if 'cut_pair' in data:
-                    pair_label = pair_label[:-data['cut_pair']]
-                transfer = item['transfer']
-                for n in pair_label:
-                    _int = cv.int_energy(
-                        xs, data[n], host, self.bzc, num=4, conv=self.conv)
-                    energies.append(_int(r, T))
-                energies[0] += np.float64(data['distortion'])
-                return sample.effctive_en(energies, *transfer)
+            def gene_pair_label(start=1):
+                while True:
+                    label = 'pair' + str(start)
+                    if label in datas:
+                        start += 1
+                        yield label
+                        continue
+                    break
 
+            # transter
+            int_ens = []
+            pair_ens = []
+            transfer = item['transfer']
+            pair_label = [n for n in gene_pair_label()]
+            if 'cut_pair' in datas:
+                pair_label = pair_label[:-datas['cut_pair']]
+            for n in pair_label:
+                int_ens.append(gene_raw_int(datas[n]))
+            # energies[0] += np.float64(datas['distortion'])
+            pair_ens = sample.effctive_en(int_ens, *transfer)
+
+            int_pair = cv.int_energy(
+                xs, datas[n], host, self.bzc, num=4, conv=self.conv)
             int_trip = cv.int_energy(
-                xs, data['triple'], host, self.bzc, num=4, conv=self.conv)
+                xs, datas['triple'], host, self.bzc, num=4, conv=self.conv)
             int_tetra = cv.int_energy(
-                xs, data['tetra'], host, self.bzc, num=4, conv=self.conv)
+                xs, datas['tetra'], host, self.bzc, num=4, conv=self.conv)
             for T in np.nditer(sample.temp):
-                if 'fix_a0' in data:
-                    r_0 = lc2ad(np.float64(data['fix_a0']))
+                if 'fix_a0' in datas:
+                    r_0 = lc2ad(np.float64(datas['fix_a0']))
                 else:
                     r_0 = minimize_scalar(
                         lambda r: host_en(r, T),
