@@ -140,11 +140,11 @@ class CVM(threading.Thread):
                                      np.array(datas['host_mass']), self.bzc)
 
             # get interaction energies
-            def gene_raw_int(data, acc=None):
+            def gene_raw_int(data, acc):
                 if not data:
                     return acc
                 part = data[0]['coefficient'] * np.array(data[0]['energy'])
-                return gene_raw_int(data[1:], part)
+                return gene_raw_int(data[1:], acc + part)
 
             def gene_pair_label(start=1):
                 while True:
@@ -157,18 +157,22 @@ class CVM(threading.Thread):
 
             # transter
             int_ens = []
-            pair_ens = []
             transfer = item['transfer']
             pair_label = [n for n in gene_pair_label()]
             if 'cut_pair' in datas:
                 pair_label = pair_label[:-datas['cut_pair']]
             for n in pair_label:
-                int_ens.append(gene_raw_int(datas[n]))
-            # energies[0] += np.float64(datas['distortion'])
-            pair_ens = sample.effctive_en(int_ens, *transfer)
+                int_ens.append(gene_raw_int(datas[n], np.zeros(len(xs))))
+            nn_ens = []
+            nn_ens[:] = int_ens[0]
+            nn_diff = sample.effctive_en(int_ens, *transfer)[0] - nn_ens
+            distortion = np.full(len(xs), np.float64(datas['distortion']))
+            datas['pair1'][0]['energy'] = np.array(
+                datas['pair1'][0]['energy']) + nn_diff + distortion / self.conv
 
+            print(datas['pair1'][0]['energy'])
             int_pair = cv.int_energy(
-                xs, datas[n], host, self.bzc, num=4, conv=self.conv)
+                xs, datas['pair1'], host, self.bzc, num=4, conv=self.conv)
             int_trip = cv.int_energy(
                 xs, datas['triple'], host, self.bzc, num=4, conv=self.conv)
             int_tetra = cv.int_energy(

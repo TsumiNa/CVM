@@ -49,7 +49,7 @@ class Sample(object):
         percent = 1 if length < 4 else arg[3]
 
         # prepare range
-        length = len(int_pair)
+        length = len(int_pair[0])
         if start > length or end > length or start > end:
             raise IndexError('index error')
         if end == 0:
@@ -58,7 +58,7 @@ class Sample(object):
             _range = range(start - 1, end)
 
         # print(_range)
-        _int = np.float(0)
+        _int = np.zeros(length)
         for index in _range:
             if index == to - 1:
                 pass

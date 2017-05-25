@@ -37,7 +37,7 @@ class tetrahedron(CVM):
         self.mu = np.zeros((2), np.float64)
         self.eta_sum = np.float64(0.0)
 
-    def __init__en(self, int):
+    def __init__en(self, int_ens):
         ###############################################
         # configuration
         ###############################################
@@ -45,15 +45,15 @@ class tetrahedron(CVM):
 
         # pure energy of 2body 1st
         e1 = np.zeros((2, 2), np.float64)
-        e1[0, 1] = e1[1, 0] = 0.5 * (e1[0, 0] + e1[1, 1] - int[0][0])
+        e1[0, 1] = e1[1, 0] = 0.5 * (e1[0, 0] + e1[1, 1] - int_ens[0])
 
         # 3body-1st interaction energy
         de31 = np.zeros((2, 2, 2), np.float64)
-        de31[1, 1, 1] = int[1]
+        de31[1, 1, 1] = int_ens[1]
 
         # 4body-1st interaction energy
         de41 = np.zeros((2, 2, 2, 2), np.float64)
-        de41[1, 1, 1, 1] = int[2]
+        de41[1, 1, 1, 1] = int_ens[2]
 
         # energy ε
         it = np.nditer(self.en, flags=['multi_index'])
@@ -105,8 +105,8 @@ class tetrahedron(CVM):
                 self.beta = np.float64(pow(self.bzc * temp, -1))
 
                 # calculate
-                int = sample.int[i]
-                self.__init__en(int)
+                int_ens = sample.int[i]
+                self.__init__en(int_ens)
                 self.__reset__probability()
                 # print(' mu:     {:06.4f}'.format(self.mu[0].item(0)))
                 # print(' 1st:    {:06.4f}'.format(int[0][0].item(0)))
