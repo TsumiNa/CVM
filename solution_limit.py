@@ -17,8 +17,8 @@ def process(opt):
     y_exp = opt['experiment'][0]['temp']
     x_exp = opt['experiment'][0]['c']
     # ax.annotate('1200$K$', (0.005, 410), fontsize=13)
-    ax.plot(x_exp, y_exp, 'x--', mew=3, mfc='w', ms=6, lw=1.5,
-            label='Experiment')
+    ax.plot(
+        x_exp, y_exp, 'x--', mew=3, mfc='w', ms=6, lw=1.5, label='Experiment')
 
     # theory
     # ax.plot(
@@ -31,8 +31,7 @@ def process(opt):
         # plt.xlim(xmin=0.5, xmax=12.5)
         # plt.axhline(y=0, color='k', ls='-', lw=1.0)
         # label[i] = 'int= ' + '{:07.4}'.format(opt['Results'][i]['1st_int'])
-        ax.plot(res['c'], res['temp'], 'o-', ms=4, lw=1.5,
-                label=res['label'])
+        ax.plot(res['c'], res['temp'], 'o-', ms=4, lw=1.5, label=res['label'])
 
     # set formater
     ax.xaxis.set_major_formatter(FuncFormatter(percent))
@@ -42,14 +41,14 @@ def process(opt):
     ax.grid(axis='y')
     ax.tick_params(labelsize=14.5)
     ax.set_ylabel('Temperature (K)', size=16)
-    ax.set_xlabel('Concentration of ' + opt['meta']['impurity'].capitalize() + '($\%$)', size=16)
-    ax.annotate('(b) CVMTO', (0.003, 1830), size=15)
+    ax.set_xlabel(
+        r'Concentration of ' + opt['meta']['impurity'].capitalize() +
+        r'($\%$)',
+        size=16)
+    ax.annotate('(a) CVMT', (0.003, 1830), size=15)
     ax.legend(loc='lower right', markerscale=1.2, fontsize=15)
-    fig_name = "_".join((
-        opt['meta']['prefix'],
-        opt['meta']['host'],
-        opt['meta']['impurity'],
-        opt['meta']['suffix']
-    )).lstrip('_')
+    fig_name = "_".join(
+        (opt['meta']['prefix'], opt['meta']['host'], opt['meta']['impurity'],
+         opt['meta']['suffix'])).lstrip('_')
     plt.savefig(fig_name, dpi=300)  # 300 dpi
     plt.show()

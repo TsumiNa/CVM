@@ -10,6 +10,7 @@ class ClusterVibration():
     """
     Tools class for cluster vibration
     """
+
     @classmethod
     def minimum(cls, xs, ys, **kwagrs):
         """
@@ -19,11 +20,15 @@ class ClusterVibration():
             energies change for ys, impuity cluster and correct respectivly
         """
 
+        # todo: can be used in future
+        if kwagrs:
+            pass
+
         # get minimum from a polynomial
         poly_min = minimize_scalar(
             UnivariateSpline(xs, ys, k=4),
-            bounds=(xs[0], xs[-1]), method='bounded'
-        )
+            bounds=(xs[0], xs[-1]),
+            method='bounded')
         min_x = poly_min.x  # equilibrium atomic distance
         min_y = np.float(poly_min.fun)  # ground status energy
 
@@ -41,6 +46,10 @@ class ClusterVibration():
         mass: float
             atomic mass
         """
+
+        # todo: can be used in future
+        if kwagrs:
+            pass
 
         # perpare energies and get polynomial minimum for morse fit
         ys = cluster + host if not correct else cluster + host - correct
@@ -91,12 +100,7 @@ class ClusterVibration():
             # morse parameters
             if not bounds:
                 bounds = ([3, 3, 1, xs[0]], [8.5, 8.5, 2, xs[-1]])
-            popt, err = curve_fit(
-                morse_mod,
-                xs,
-                ys,
-                bounds=bounds
-            )
+            popt, _ = curve_fit(morse_mod, xs, ys, bounds=bounds)
 
             return popt[0], popt[1], popt[2], popt[3],\
                 lambda r: morse_mod(r, popt[0], popt[1], popt[2], popt[3])
@@ -109,11 +113,7 @@ class ClusterVibration():
             except Exception as e:
                 raise e
 
-            ret, _ = quad(
-                lambda t: t**n / (np.exp(t) - 1),
-                0,
-                x
-            )
+            ret, _ = quad(lambda t: t**n / (np.exp(t) - 1), 0, x)
             return (n / x**n) * ret
 
         # generate debye temperature Θ_D
@@ -124,7 +124,7 @@ class ClusterVibration():
         c1, c2, lmd, r0, morse_potential = __morse_gene(xdata, ydata, bounds)
 
         x0 = np.exp(-lmd * r0)
-        B_0 = - (c2 * (lmd**3)) / (6 * np.pi * np.log(x0))
+        B_0 = -(c2 * (lmd**3)) / (6 * np.pi * np.log(x0))
         gamma_0 = lmd * r0 / 2
         debye_temp_0, debye_temp_func = __debye_temp_gene(
             r0, lmd, eV2Kbar(B_0), np.float(M))
@@ -144,8 +144,7 @@ class ClusterVibration():
             debye_temperature_0=debye_temp_0,
             debye_temperature_func=debye_temp_func,
             debye_func=lambda r, T: __debye_func(debye_temp_func(r) / T),
-            debye_func_0=lambda T: __debye_func(debye_temp_0 / T),
-        )
+            debye_func_0=lambda T: __debye_func(debye_temp_0 / T), )
 
     @classmethod
     def show_parameter(cls, ret):
@@ -165,83 +164,3 @@ class ClusterVibration():
         print("Bulk Modulus: {:f} Kbar".format(bulk_moduli))
         print("Debye temperature: {:f} K\n\n".format(debye_temp_0))
         print("")
-
-
-if __name__ == '__main__':
-    xdata = np.array([6.8, 7, 7.1, 7.2, 7.3, 7.4,
-                      7.5, 7.6, 7.7, 7.8, 7.9, 8])
-    host = np.array([-10093.56036, -10093.5962, -10093.60762, -10093.61555, -10093.62048, -10093.62287, -10093.62314, -10093.62163, -10093.61865, -10093.61445, -10093.60928, -10093.60331]) * 13.605698066
-    ydata = host + np.array([2059.988217, 2060.004186, 2060.013888, 2060.024606, 2060.03619, 2060.048539, 2060.061535, 2060.075045, 2060.088978, 2060.103229, 2060.117668, 2060.132217]) * 13.605698066 / 2
-
-    ydata_func = UnivariateSpline(xdata, ydata)
-    ydata_min = minimize_scalar(ydata_func, bounds=(6.6, 8), method='bounded')
-    ydata_min_y = float(ydata_min.fun)
-
-    M_pd = 106.4
-    xs = lc2ad(xdata)
-    ys = ydata - ydata_min_y
-
-    ret = ClusterVibration.fit_parameters(xs, ys, M_pd)
-
-    c1 = ret['c1']
-    c2 = ret['c2']
-    lmd = ret['lmd']
-    r0 = ret['r0']
-    x0 = ret['x0']
-    gamma_0 = ret['gamma_0']
-    bulk_moduli = ret['bulk_moduli']
-    morse = lambda r: ret['morse'](r) + ydata_min_y
-    theta_D = ret['debye_temperature_func']
-    D = ret['debye_func']
-
-    print("c1: {:f},  c2: {:f},  lambda: {:f}".format(c1, c2, lmd))
-    print("r0: {:f},  x0: {:f}".format(r0, x0))
-    print("Gruneisen constant: {:f}".format(gamma_0))
-    print("Equilibrium lattice constant: {:f} a.u.".format(ad2lc(r0)))
-    print("Bulk Modulus: {:f} Kbar".format(bulk_moduli))
-    print("at 7.5: {:f}".format(morse(lc2ad(7.5))))
-    print("")
-
-    CONST_T = 800
-    # morse potential
-    xdata_morse = np.linspace(6.8, 8, 50)
-    ydata_morse = [morse(r) for r in lc2ad(xdata_morse)]
-    ydata_morse_min = minimize_scalar(
-        lambda r: morse(r), bounds=(lc2ad(6.6), lc2ad(8)), method='bounded')
-    ydata_morse_min_x = ad2lc(ydata_morse_min.x)
-    ydata_morse_min_y = ydata_morse_min.fun
-
-    # vibration
-    def free_en_vib(r, T, bzc=8.6173303E-5):
-        return morse(r) + (9 / 8) * bzc * theta_D(r)\
-            - bzc * T * (D(r, T) - 3 * np.log(1 - np.exp(-(theta_D(r) / T))))
-    ydata_vib = [free_en_vib(r, CONST_T) for r in lc2ad(xdata_morse)]
-    ydata_vib_min = minimize_scalar(
-        lambda r: free_en_vib(r, CONST_T),
-        bounds=(lc2ad(6.8), lc2ad(8)), method='bounded')
-    ydata_vib_min_x = ad2lc(ydata_vib_min.x)
-    ydata_vib_min_y = ydata_vib_min.fun
-
-    print("minimum from morse: <{:f}, {:f}>".
-          format(ydata_morse_min_x, ydata_morse_min_y))
-    print("minimum from vibration: <{:f}, {:f}>".
-          format(ydata_vib_min_x, ydata_vib_min_y))
-    print("")
-
-    r_800 = 2.947958
-    en_vib = free_en_vib(r_800, CONST_T)
-    print("lattice constance at {:06.2f}K: {:f}".format(CONST_T, r_800))
-    print("free energy with vibration: {:f}".format(en_vib))
-
-    plt.figure(figsize=(8, 6), dpi=150)
-    plt.plot(xdata, ydata, 'x--', label='raw')
-    plt.plot(xdata_morse, ydata_morse, 'o:', label='morse')
-    for T in [400, 800, 1200, 1600]:
-        ydata_vib = [free_en_vib(r, T) for r in lc2ad(xdata_morse)]
-        plt.plot(xdata_morse, ydata_vib, '^:', label='vibration(T=' + str(T) + '$K$)')
-    plt.ylabel('total energy ($eV$)')
-    plt.xlabel('lattice parameter ($a.u.$)')
-
-    plt.legend()
-    # plt.savefig('total energy of Pd', dpi=300)
-    plt.show()

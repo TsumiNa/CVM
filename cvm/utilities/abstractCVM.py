@@ -66,130 +66,134 @@ class CVM(threading.Thread):
         for item in inp['series']:
             if 'skip' in item and item['skip']:
                 continue
-            # sample holds all data for calculation
-            sample = Sample(
-                item['label'],
-                [
-                    12,
-                    6,
-                    24,
-                    12,
-                    24,
-                    8,
-                    48,
-                    6,
-                    12,  # 9th-a
-                    24,  # 9th-b
-                    4,
-                    24,
-                    24,
-                    48,  # 13th-a
-                    24,  # 13th-b
-                    48,
-                    12,
-                    24,  # 16th-a
-                    24,  # 16th-b
-                    24,  # 17th-a
-                    6,  # 17th-b
-                    48,  # 18th-a
-                    24,  # 18th-b
-                    24,
-                    48  # 20th
-                ])
-            self.series.append(sample)
+            self.series.append(self.gene_series(item))
 
-            # initialzed impurity Concentration
-            sample.x_1 = np.float64(item['x_1'])
+    def gene_series(self, item):
+        # sample holds all data for calculation
+        sample = Sample(
+            item['label'],
+            [
+                12,
+                6,
+                24,
+                12,
+                24,
+                8,
+                48,
+                6,
+                12,  # 9th-a
+                24,  # 9th-b
+                4,
+                24,
+                24,
+                48,  # 13th-a
+                24,  # 13th-b
+                48,
+                12,
+                24,  # 16th-a
+                24,  # 16th-b
+                24,  # 17th-a
+                6,  # 17th-b
+                48,  # 18th-a
+                24,  # 18th-b
+                24,
+                48  # 20th
+            ])
 
-            # convergence condition
-            sample.condition = np.float32(item['condition'])
+        # initialzed impurity Concentration
+        sample.x_1 = np.float64(item['x_1'])
 
-            # chemical potential
-            if len(item['delta_mu']) <= 1:
-                sample.mu = np.array(item['delta_mu'], np.float64)
+        # convergence condition
+        sample.condition = np.float32(item['condition'])
+
+        # chemical potential
+        if len(item['delta_mu']) <= 1:
+            sample.mu = np.array(item['delta_mu'], np.float64)
+        else:
+            sample.mu = np.linspace(item['delta_mu'][0], item['delta_mu'][1],
+                                    item['delta_mu'][2])
+
+        # Temperature
+        if len(item['temp']) == 0:
+            raise NameError('must set temperature')
+        if len(item['temp']) == 1:
+            sample.temp = np.array(item['temp'], np.single)
+        elif len(item['temp']) == 3:
+            sample.temp = np.linspace(item['temp'][0], item['temp'][1],
+                                      item['temp'][2])
+        elif len(item['temp']) == 4:
+            raise NameError('can not use this function right now')
+        else:
+            raise NameError('temperature was configured with error format')
+        sample.res['temp'] = sample.temp
+
+        # =================================================
+        # Interation energies with thermal vibration
+        # by combined with Morse potential and Debye model
+        # ==================================================
+        datas = item['datas']
+        xs = lc2ad(np.array(datas['lattice_c']))
+
+        # Host with vibration
+        # equilibrium lattice will evaluate from formula
+        host = np.array(datas['host_en']) * self.conv
+        host_en = cv.free_energy(xs, host, 0,
+                                 np.array(datas['host_mass']), self.bzc)
+
+        # transter
+        int_ens = []
+        transfer = item['transfer']
+        pair_label = [n for n in self.gene_pair_label(datas)]
+        if 'cut_pair' in datas:
+            pair_label = pair_label[:-datas['cut_pair']]
+        for n in pair_label:
+            int_ens.append(self.gene_raw_int(datas[n], np.zeros(len(xs))))
+        nn_ens = []
+        nn_ens[:] = int_ens[0]
+        nn_diff = sample.effctive_en(int_ens, *transfer)[0] - nn_ens
+        distortion = np.full(len(xs), np.float64(datas['distortion']))
+        datas['pair1'][0]['energy'] = np.array(
+            datas['pair1'][0]['energy']) + nn_diff + distortion / self.conv
+
+        int_pair = cv.int_energy(
+            xs, datas['pair1'], host, self.bzc, num=4, conv=self.conv)
+        int_trip = cv.int_energy(
+            xs, datas['triple'], host, self.bzc, num=4, conv=self.conv)
+        int_tetra = cv.int_energy(
+            xs, datas['tetra'], host, self.bzc, num=4, conv=self.conv)
+        for T in np.nditer(sample.temp):
+            if 'fix_a0' in datas:
+                r_0 = lc2ad(np.float64(datas['fix_a0']))
             else:
-                sample.mu = np.linspace(item['delta_mu'][0],
-                                        item['delta_mu'][1],
-                                        item['delta_mu'][2])
+                r_0 = minimize_scalar(
+                    lambda r: host_en(r, T),
+                    bounds=(xs[0], xs[-1]),
+                    method='bounded').x
+            pair = np.array(int_pair(r_0, T), np.float64)
+            trip = np.array(int_trip(r_0, T), np.float64)
+            tetra = np.array(int_tetra(r_0, T), np.float64)
+            sample.res['inter_en'].append(pair)
+            sample.int.append((pair, trip, tetra))
 
-            # Temperature
-            if len(item['temp']) == 0:
-                raise NameError('must set temperature')
-            if len(item['temp']) == 1:
-                sample.temp = np.array(item['temp'], np.single)
-            elif len(item['temp']) == 3:
-                sample.temp = np.linspace(item['temp'][0], item['temp'][1],
-                                          item['temp'][2])
-            elif len(item['temp']) == 4:
-                raise NameError('can not use this function right now')
-            else:
-                raise NameError('temperature was configured with error format')
-            sample.res['temp'] = sample.temp
+        return sample
 
-            # =================================================
-            # Interation energies with thermal vibration
-            # by combined with Morse potential and Debye model
-            # ==================================================
-            datas = item['datas']
-            xs = lc2ad(np.array(datas['lattice_c']))
+    # get interaction energies
+    @classmethod
+    def gene_raw_int(cls, data, acc):
+        if not data:
+            return acc
+        part = data[0]['coefficient'] * np.array(data[0]['energy'])
+        return cls.gene_raw_int(data[1:], acc + part)
 
-            # Host with vibration
-            # equilibrium lattice will evaluate from formula
-            host = np.array(datas['host_en']) * self.conv
-            host_en = cv.free_energy(xs, host, 0,
-                                     np.array(datas['host_mass']), self.bzc)
-
-            # get interaction energies
-            def gene_raw_int(data, acc):
-                if not data:
-                    return acc
-                part = data[0]['coefficient'] * np.array(data[0]['energy'])
-                return gene_raw_int(data[1:], acc + part)
-
-            def gene_pair_label(start=1):
-                while True:
-                    label = 'pair' + str(start)
-                    if label in datas:
-                        start += 1
-                        yield label
-                        continue
-                    break
-
-            # transter
-            int_ens = []
-            transfer = item['transfer']
-            pair_label = [n for n in gene_pair_label()]
-            if 'cut_pair' in datas:
-                pair_label = pair_label[:-datas['cut_pair']]
-            for n in pair_label:
-                int_ens.append(gene_raw_int(datas[n], np.zeros(len(xs))))
-            nn_ens = []
-            nn_ens[:] = int_ens[0]
-            nn_diff = sample.effctive_en(int_ens, *transfer)[0] - nn_ens
-            distortion = np.full(len(xs), np.float64(datas['distortion']))
-            datas['pair1'][0]['energy'] = np.array(
-                datas['pair1'][0]['energy']) + nn_diff + distortion / self.conv
-
-            print(datas['pair1'][0]['energy'])
-            int_pair = cv.int_energy(
-                xs, datas['pair1'], host, self.bzc, num=4, conv=self.conv)
-            int_trip = cv.int_energy(
-                xs, datas['triple'], host, self.bzc, num=4, conv=self.conv)
-            int_tetra = cv.int_energy(
-                xs, datas['tetra'], host, self.bzc, num=4, conv=self.conv)
-            for T in np.nditer(sample.temp):
-                if 'fix_a0' in datas:
-                    r_0 = lc2ad(np.float64(datas['fix_a0']))
-                else:
-                    r_0 = minimize_scalar(
-                        lambda r: host_en(r, T),
-                        bounds=(xs[0], xs[-1]),
-                        method='bounded').x
-                pair = np.array(int_pair(r_0, T), np.float64)
-                trip = np.array(int_trip(r_0, T), np.float64)
-                tetra = np.array(int_tetra(r_0, T), np.float64)
-                sample.res['inter_en'].append(pair)
-                sample.int.append((pair, trip, tetra))
+    @classmethod
+    def gene_pair_label(cls, datas, start=1):
+        while True:
+            label = 'pair' + str(start)
+            if label in datas:
+                start += 1
+                yield label
+                continue
+            break
 
     def run(self):
         raise NotImplementedError(
