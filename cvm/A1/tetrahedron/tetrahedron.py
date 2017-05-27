@@ -45,7 +45,7 @@ class tetrahedron(CVM):
 
         # pure energy of 2body 1st
         e1 = np.zeros((2, 2), np.float64)
-        e1[0, 1] = e1[1, 0] = 0.5 * (e1[0, 0] + e1[1, 1] - int_ens[0])
+        e1[0, 1] = e1[1, 0] = 0.5 * (e1[0, 0] + e1[1, 1] - int_ens[0][0])
 
         # 3body-1st interaction energy
         de31 = np.zeros((2, 2, 2), np.float64)

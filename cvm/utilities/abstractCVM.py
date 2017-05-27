@@ -148,15 +148,23 @@ class CVM(threading.Thread):
             pair_label = pair_label[:-datas['cut_pair']]
         for n in pair_label:
             int_ens.append(self.gene_raw_int(datas[n], np.zeros(len(xs))))
-        nn_ens = []
-        nn_ens[:] = int_ens[0]
-        nn_diff = sample.effctive_en(int_ens, *transfer)[0] - nn_ens
-        distortion = np.full(len(xs), np.float64(datas['distortion']))
-        datas['pair1'][0]['energy'] = np.array(
-            datas['pair1'][0]['energy']) + nn_diff + distortion / self.conv
+        copy_int = np.array(int_ens)
+        effctive_int = np.array(sample.effctive_en(int_ens, *transfer))
+        int_diffs = effctive_int - copy_int
 
-        int_pair = cv.int_energy(
+        # 1st total energy
+        distortion = np.full(len(xs), np.float64(datas['distortion']))
+        distortion /= self.conv
+        datas['pair1'][0]['energy'] = np.array(
+            datas['pair1'][0]['energy']) + int_diffs[0] + distortion
+
+        datas['pair2'][0]['energy'] = np.array(
+            datas['pair2'][0]['energy']) + int_diffs[1]
+
+        int_pair1 = cv.int_energy(
             xs, datas['pair1'], host, self.bzc, num=4, conv=self.conv)
+        int_pair2 = cv.int_energy(
+            xs, datas['pair2'], host, self.bzc, num=6, conv=self.conv)
         int_trip = cv.int_energy(
             xs, datas['triple'], host, self.bzc, num=4, conv=self.conv)
         int_tetra = cv.int_energy(
@@ -169,11 +177,12 @@ class CVM(threading.Thread):
                     lambda r: host_en(r, T),
                     bounds=(xs[0], xs[-1]),
                     method='bounded').x
-            pair = np.array(int_pair(r_0, T), np.float64)
+            pair1 = np.array(int_pair1(r_0, T), np.float64)
+            pair2 = np.array(int_pair2(r_0, T), np.float64)
             trip = np.array(int_trip(r_0, T), np.float64)
             tetra = np.array(int_tetra(r_0, T), np.float64)
-            sample.res['inter_en'].append(pair)
-            sample.int.append((pair, trip, tetra))
+            sample.res['inter_en'].append(pair1)
+            sample.int.append(((pair1, pair2), trip, tetra))
 
         return sample
 

@@ -8,7 +8,6 @@ from .process import process
 
 
 class tetraOctahedron(CVM):
-
     """docstring for tetraOctahedron"""
 
     __slots__ = (
@@ -41,6 +40,10 @@ class tetraOctahedron(CVM):
         self.enO = np.zeros((2, 2, 2, 2, 2, 2), np.float64)
         self.beta = np.float64(0.0)
         self.mu = np.zeros((2), np.float64)
+        self.checker = np.float64(1.0)
+        self.af_ = np.zeros((2, 2, 2), np.float64)
+        self.main_condition = np.float64(1e-3)
+        self.sub_condition = np.float64(1e-2)
 
     def __init__en(self, int):
         ###############################################
@@ -131,14 +134,14 @@ class tetraOctahedron(CVM):
                 self.beta = np.float64(pow(self.bzc * temp, -1))
 
                 # calculate w
-                int = sample.int[i]
-                self.__init__en(int)
+                int_ens = sample.int[i]
+                self.__init__en(int_ens)
                 self.__reset__probability()
                 # print(' mu:     {:06.4f}'.format(self.mu[0].item(0)))
                 # print(' 1st:    {:06.4f}'.format(int[0][0].item(0)))
                 # print(' 2nd:    {:06.4f}'.format(int[0][1].item(0)))
                 while self.checker > sample.condition:
-                    while self.checker > self.main_condition:
+                    if self.checker > self.main_condition:
                         process(self)
                     else:
                         self.main_condition /= 10
