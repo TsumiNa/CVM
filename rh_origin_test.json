@@ -73,7 +73,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "CVMT1 $T_{FD}=800K$",
+            "label": "CVMT1",
 
             /*
             parameter refer how to the transfer long range interaction energy
@@ -97,8 +97,8 @@
             Interaction energy
             */
             "int_pair": [-0.04786, 0.003674, -0.0009467, 0.001885, 0.001987, 0.000049117, 0.000364777, 0.0000574, 0.00453936, 0.00025552, 0.000524],
-            "int_trip": [0.005],
-            "int_tetra": [0.008],
+            "int_trip": [0.004],
+            "int_tetra": [0.004],
 
             /*
             Chemical potential
@@ -118,7 +118,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "CVMT2 $T_{FD}=800K$",
+            "label": "CVMT2",
 
             /*
             parameter refer how to the transfer long range interaction energy
@@ -142,8 +142,8 @@
             Interaction energy
             */
             "int_pair": [-0.04786, 0.003674, -0.0009467, 0.001885, 0.001987, 0.000049117, 0.000364777, 0.0000574, 0.00453936, 0.00025552, 0.000524],
-            "int_trip": [0.005],
-            "int_tetra": [0.008],
+            "int_trip": [0.004],
+            "int_tetra": [0.004],
 
             /*
             Chemical potential
@@ -163,7 +163,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "CVMT3 $T_{FD}=800K$",
+            "label": "CVMT3",
 
             /*
             parameter refer how to the transfer long range interaction energy
@@ -187,8 +187,8 @@
             Interaction energy
             */
             "int_pair": [-0.04786, 0.003674, -0.0009467, 0.001885, 0.001987, 0.000049117, 0.000364777, 0.0000574, 0.00453936, 0.00025552, 0.000524],
-            "int_trip": [0.005],
-            "int_tetra": [0.008],
+            "int_trip": [0.004],
+            "int_tetra": [0.004],
 
             /*
             Chemical potential
@@ -208,7 +208,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "CVMT4 $T_{FD}=800K$",
+            "label": "CVMT4",
 
             /*
             parameter refer how to the transfer long range interaction energy
@@ -232,8 +232,8 @@
             Interaction energy
             */
             "int_pair": [-0.04786, 0.003674, -0.0009467, 0.001885, 0.001987, 0.000049117, 0.000364777, 0.0000574, 0.00453936, 0.00025552, 0.000524],
-            "int_trip": [0.005],
-            "int_tetra": [0.008],
+            "int_trip": [0.004],
+            "int_tetra": [0.004],
 
             /*
             Chemical potential
@@ -253,7 +253,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "CVMT8 $T_{FD}=800K$",
+            "label": "CVMT8",
 
             /*
             parameter refer how to the transfer long range interaction energy
@@ -277,8 +277,98 @@
             Interaction energy
             */
             "int_pair": [-0.04786, 0.003674, -0.0009467, 0.001885, 0.001987, 0.000049117, 0.000364777, 0.0000574, 0.00453936, 0.00025552, 0.000524],
-            "int_trip": [0.005],
-            "int_tetra": [0.008],
+            "int_trip": [0.004],
+            "int_tetra": [0.004],
+
+            /*
+            Chemical potential
+
+            Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
+            */
+            "delta_mu": [0.0],
+
+            /*
+            Temperature (K)
+
+            Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
+            */
+            "temp": [400, 1010, 30]
+        },
+        {
+            /*
+            A label for a calculation sample
+            */
+            "label": "CVMT10",
+
+            /*
+            parameter refer how to the transfer long range interaction energy
+            this is array with 4 elements means [to, end, start. percent]
+            eg: tansfer all to 1st from 2nd to 8th will be written as [1,8,2]
+            */
+            "transfer": [[1,11,2]],
+
+            /*
+            elements concentration
+            must be normalized
+            */
+            "x_1": 0.01,
+
+            /*
+            Convergence condition
+             */
+            "condition": 1e-7,
+
+            /*
+            Interaction energy
+            */
+            "int_pair": [-0.04786, 0.003674, -0.0009467, 0.001885, 0.001987, 0.000049117, 0.000364777, 0.0000574, 0.00453936, 0.00025552, 0.000524],
+            "int_trip": [0.004],
+            "int_tetra": [0.004],
+
+            /*
+            Chemical potential
+
+            Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
+            */
+            "delta_mu": [0.0],
+
+            /*
+            Temperature (K)
+
+            Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
+            */
+            "temp": [400, 1010, 30]
+        },
+        {
+            /*
+            A label for a calculation sample
+            */
+            "label": "CVMT10 with distortion",
+
+            /*
+            parameter refer how to the transfer long range interaction energy
+            this is array with 4 elements means [to, end, start. percent]
+            eg: tansfer all to 1st from 2nd to 8th will be written as [1,8,2]
+            */
+            "transfer": [[1,11,2]],
+
+            /*
+            elements concentration
+            must be normalized
+            */
+            "x_1": 0.01,
+
+            /*
+            Convergence condition
+             */
+            "condition": 1e-7,
+
+            /*
+            Interaction energy
+            */
+            "int_pair": [-0.05966, 0.003674, -0.0009467, 0.001885, 0.001987, 0.000049117, 0.000364777, 0.0000574, 0.00453936, 0.00025552, 0.000524],
+            "int_trip": [0.004],
+            "int_tetra": [0.004],
 
             /*
             Chemical potential

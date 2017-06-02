@@ -113,51 +113,6 @@
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
             "temp": [400, 1010, 30]
-        },
-        {
-            /*
-            A label for a calculation sample
-            */
-            "label": "CVMT10 $T_{FD}=1000K$",
-
-            /*
-            parameter refer how to the transfer long range interaction energy
-            this is array with 4 elements means [to, end, start. percent]
-            eg: tansfer all to 1st from 2nd to 8th will be written as [1,8,2]
-            */
-            "transfer": [[1,11,2]],
-
-            /*
-            elements concentration
-            must be normalized
-            */
-            "x_1": 0.01,
-
-            /*
-            Convergence condition
-             */
-            "condition": 1e-7,
-
-            /*
-            Interaction energy
-            */
-            "int_pair": [-0.05903, 0.00243, -0.001047, 0.002556976, 0.0013391, 0.00001551, 0.0002955, -0.00031157, 0.004188879, 0.000289, 0.000343],
-            "int_trip": [0.005],
-            "int_tetra": [0.008],
-
-            /*
-            Chemical potential
-
-            Chemical potential can be setted as a single value or continuous as [highest, lowest, point]
-            */
-            "delta_mu": [0.0],
-
-            /*
-            Temperature (K)
-
-            Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
-            */
-            "temp": [400, 1010, 30]
         }
     ]
 }
