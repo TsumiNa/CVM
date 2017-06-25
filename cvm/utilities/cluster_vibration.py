@@ -35,7 +35,7 @@ class ClusterVibration():
         return min_x, min_y
 
     @classmethod
-    def free_energy(cls, xs, cluster, host, mass, bzc, correct=None, **kwagrs):
+    def free_energy(cls, xs, cluster, host, mass, bzc, correct=None, **kwargs):
         """
         xs: array
             atomic distance between nearest-neighbor
@@ -47,10 +47,6 @@ class ClusterVibration():
             atomic mass
         """
 
-        # todo: can be used in future
-        if kwagrs:
-            pass
-
         # perpare energies and get polynomial minimum for morse fit
         ys = cluster + host if not correct else cluster + host - correct
         _, min_y = cls.minimum(xs, ys)
@@ -60,6 +56,10 @@ class ClusterVibration():
         morse = ret['morse']  # Morse potential based on 0 minimum
         D = ret['debye_func']  # Debye function
         theta_D = ret['debye_temperature_func']  # Debye temperature function
+
+        # todo: can be used in future
+        if 'noVib' in kwargs and kwargs['noVib'] is True:
+            return lambda r, T: morse(r) + min_y
 
         # construct vibration withed energy formula
         return lambda r, T: morse(r) + min_y + (9 / 8) * bzc * theta_D(r)\
@@ -78,7 +78,7 @@ class ClusterVibration():
             coeff = np.int(data['coefficient'])
             mass = np.float64(data['mass'])
             ys = np.array(data['energy'], np.float64) * conv / num
-            part = cls.free_energy(xs, ys, host, mass, bzc)
+            part = cls.free_energy(xs, ys, host, mass, bzc, **kwagrs)
             parts.append((coeff, part))
 
         def __int(r, T):
@@ -126,8 +126,9 @@ class ClusterVibration():
         x0 = np.exp(-lmd * r0)
         B_0 = -(c2 * (lmd**3)) / (6 * np.pi * np.log(x0))
         gamma_0 = lmd * r0 / 2
-        debye_temp_0, debye_temp_func = __debye_temp_gene(
-            r0, lmd, eV2Kbar(B_0), np.float(M))
+        debye_temp_0, debye_temp_func = __debye_temp_gene(r0, lmd,
+                                                          eV2Kbar(B_0),
+                                                          np.float(M))
 
         # parameters will be used to construt
         # free energy with thermal vibration effect

@@ -164,7 +164,13 @@ class CVM(threading.Thread):
         int_pair1 = cv.int_energy(
             xs, datas['pair1'], host, self.bzc, num=4, conv=self.conv)
         int_pair2 = cv.int_energy(
-            xs, datas['pair2'], host, self.bzc, num=6, conv=self.conv)
+            xs,
+            datas['pair2'],
+            host,
+            self.bzc,
+            num=6,
+            conv=self.conv,
+            noVib=True)
         int_trip = cv.int_energy(
             xs, datas['triple'], host, self.bzc, num=4, conv=self.conv)
         int_tetra = cv.int_energy(
