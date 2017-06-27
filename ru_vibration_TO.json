@@ -46,8 +46,8 @@
      */
     "experiment": [
         {
-            "temp": [1856, 1409, 1295, 1150, 1041, 910],
-            "c": [0.172, 0.08, 0.06, 0.04, 0.03, 0.02]
+            "temp": [1800, 1600, 1400, 1200, 1000, 885],
+            "c": [0.1675, 0.121, 0.078, 0.0425, 0.026, 0.02]
         }
     ],
 
@@ -1495,7 +1495,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1815, 50]
+            "temp": [500, 1850, 50]
         }
     ]
 }
