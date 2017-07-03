@@ -355,7 +355,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [600, 1825, 50]
+            "temp": [600, 1850, 50]
         },
         {
             "skip": false,
@@ -925,7 +925,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [600, 1616, 50]
+            "temp": [600, 1346.04, 50]
         }
     ]
 }

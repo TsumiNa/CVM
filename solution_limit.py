@@ -45,7 +45,7 @@ def process(opt):
         r'Concentration of ' + opt['meta']['impurity'].capitalize() +
         r'($\%$)',
         size=16)
-    ax.annotate(r'(a) CVMT10', (0.003, 1830), size=15)
+    ax.annotate(r'(c) CVMTO10, $T_\mathrm{FD}=1600$K', (0.003, 1830), size=15)
     ax.legend(loc='lower right', markerscale=1.2, fontsize=15)
     fig_name = "_".join(
         (opt['meta']['prefix'], opt['meta']['host'], opt['meta']['impurity'],
