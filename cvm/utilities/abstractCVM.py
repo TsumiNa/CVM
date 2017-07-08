@@ -158,8 +158,8 @@ class CVM(threading.Thread):
         datas['pair1'][0]['energy'] = np.array(
             datas['pair1'][0]['energy']) + int_diffs[0] + distortion
 
-        datas['pair2'][0][
-            'energy'] = np.array(datas['pair2'][0]['energy']) + int_diffs[1]
+        datas['pair2'][0]['energy'] = np.array(
+            datas['pair2'][0]['energy']) + int_diffs[1]
 
         int_pair1 = cv.int_energy(
             xs, datas['pair1'], host, self.bzc, num=4, conv=self.conv)
@@ -170,7 +170,7 @@ class CVM(threading.Thread):
             self.bzc,
             num=6,
             conv=self.conv,
-            noVib=True)
+            noVib=False)
         int_trip = cv.int_energy(
             xs, datas['triple'], host, self.bzc, num=4, conv=self.conv)
         int_tetra = cv.int_energy(
