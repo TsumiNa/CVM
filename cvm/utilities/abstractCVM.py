@@ -149,6 +149,7 @@ class CVM(threading.Thread):
         for n in pair_label:
             int_ens.append(self.gene_raw_int(datas[n], np.zeros(len(xs))))
         copy_int = np.array(int_ens)
+        print(copy_int)
         effctive_int = np.array(sample.effctive_en(int_ens, *transfer))
         int_diffs = effctive_int - copy_int
 
@@ -170,7 +171,7 @@ class CVM(threading.Thread):
             self.bzc,
             num=6,
             conv=self.conv,
-            noVib=False)
+            noVib=True)
         int_trip = cv.int_energy(
             xs, datas['triple'], host, self.bzc, num=4, conv=self.conv)
         int_tetra = cv.int_energy(
