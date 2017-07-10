@@ -170,7 +170,7 @@ class CVM(threading.Thread):
             self.bzc,
             num=6,
             conv=self.conv,
-            noVib=False)
+            noVib=True)
         int_trip = cv.int_energy(
             xs, datas['triple'], host, self.bzc, num=4, conv=self.conv)
         int_tetra = cv.int_energy(

@@ -109,8 +109,9 @@ class tetrahedron(CVM):
                 self.__init__en(int_ens)
                 self.__reset__probability()
                 # print(' mu:     {:06.4f}'.format(self.mu[0].item(0)))
-                print(' 1st:    {:06.4f}'.format(int_ens[0][0].item(0)))
-                # print(' 2nd:    {:06.4f}'.format(int[0][1].item(0)))
+                # print(' 1st:    {:06.4f}'.format(int_ens[0][0].item(0)))
+                # print(' 3body:    {:06.4f}'.format(int_ens[1].item(0)))
+                # print(' 4body:    {:06.4f}'.format(int_ens[2].item(0)))
                 while self.checker > sample.condition:
                     process(self)
 
