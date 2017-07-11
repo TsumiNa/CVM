@@ -27,11 +27,19 @@ def process(opt):
     # )
 
     # draw results
-    for res in opt['results']:
+    line_type = ['o-', 'o--', 'o:']
+    for i, res in enumerate(opt['results']):
         # plt.xlim(xmin=0.5, xmax=12.5)
         # plt.axhline(y=0, color='k', ls='-', lw=1.0)
         # label[i] = 'int= ' + '{:07.4}'.format(opt['Results'][i]['1st_int'])
-        ax.plot(res['c'], res['temp'], 'o-', ms=4, lw=1.5, label=res['label'])
+        ax.plot(
+            res['c'],
+            res['temp'],
+            line_type[i],
+            color='sienna',
+            ms=4,
+            lw=1.5,
+            label=res['label'])
 
     # set formater
     ax.xaxis.set_major_formatter(FuncFormatter(percent))
