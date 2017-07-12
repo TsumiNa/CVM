@@ -73,7 +73,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "CVMT10 $T_{FD}=800K$",
+            "label": "CVMT10",
 
             /*
             parameter refer how to the transfer long range interaction energy
@@ -96,9 +96,9 @@
             /*
             Interaction energy
             */
-            "int_pair": [-0.05966, 0.003674, -0.0009467, 0.001885, 0.001987, 0.000049117, 0.000364777, 0.0000574, 0.00453936, 0.00025552, 0.000524],
-            "int_trip": [0.005],
-            "int_tetra": [0.008],
+            "int_pair": [-0.059860628, 0.003673947, -0.000946957, 0.00188575, 0.001987792, 4.91166E-05, 0.000364769, 5.7416E-05, 0.004539269, 0.000255515, 0.000524636],
+            "int_trip": [0.003435847],
+            "int_tetra": [0.003604694],
 
             /*
             Chemical potential
@@ -112,7 +112,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [400, 1010, 30]
+            "temp": [400, 1000, 30]
         }
     ]
 }
