@@ -647,14 +647,14 @@
             /*
             A label for a calculation sample
             */
-            "label": "$\\mathrm{2nd}\\ \\Longleftarrow\\ \\mathrm{4th\\sim 10th}$",
+            "label": "$\\mathrm{2nd}\\ \\Longleftarrow\\ \\mathrm{3th\\sim 5th}$",
 
             /*
             parameter refer how to the transfer long range interaction energy
             this is array with 4 elements means [to, end, start. percent]
             eg: tansfer all to 1st from 2nd to 8th will be written as [1,8,2]
             */
-            "transfer": [[2,11,3]],
+            "transfer": [[1,11,6],[2,5,3]],
 
             /*
             elements concentration
@@ -925,7 +925,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [600, 850, 10]
+            "temp": [600, 1170, 40]
         }
     ]
 }

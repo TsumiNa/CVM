@@ -162,7 +162,13 @@ class CVM(threading.Thread):
             'energy'] = np.array(datas['pair2'][0]['energy']) + int_diffs[1]
 
         int_pair1 = cv.int_energy(
-            xs, datas['pair1'], host, self.bzc, num=4, conv=self.conv)
+            xs,
+            datas['pair1'],
+            host,
+            self.bzc,
+            num=4,
+            conv=self.conv,
+            noVib=False)
         int_pair2 = cv.int_energy(
             xs,
             datas['pair2'],
@@ -170,11 +176,23 @@ class CVM(threading.Thread):
             self.bzc,
             num=6,
             conv=self.conv,
-            noVib=True)
+            noVib=False)
         int_trip = cv.int_energy(
-            xs, datas['triple'], host, self.bzc, num=4, conv=self.conv)
+            xs,
+            datas['triple'],
+            host,
+            self.bzc,
+            num=4,
+            conv=self.conv,
+            noVib=False)
         int_tetra = cv.int_energy(
-            xs, datas['tetra'], host, self.bzc, num=4, conv=self.conv)
+            xs,
+            datas['tetra'],
+            host,
+            self.bzc,
+            num=4,
+            conv=self.conv,
+            noVib=False)
         for T in np.nditer(sample.temp):
             if 'fix_a0' in datas:
                 r_0 = lc2ad(np.float64(datas['fix_a0']))
@@ -187,6 +205,7 @@ class CVM(threading.Thread):
             pair2 = np.array(int_pair2(r_0, T), np.float64)
             trip = np.array(int_trip(r_0, T), np.float64)
             tetra = np.array(int_tetra(r_0, T), np.float64)
+            # print(ad2lc(r_0), pair1, trip, tetra)
             sample.res['inter_en'].append(pair1)
             sample.int.append(((pair1, pair2), trip, tetra))
 
