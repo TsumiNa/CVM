@@ -73,7 +73,7 @@
             /*
             A label for a calculation sample
             */
-            "label": "CVMT10",
+            "label": "$T_\\mathrm{FD}=800$K",
 
             /*
             parameter refer how to the transfer long range interaction energy
