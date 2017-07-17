@@ -158,8 +158,8 @@ class CVM(threading.Thread):
         datas['pair1'][0]['energy'] = np.array(
             datas['pair1'][0]['energy']) + int_diffs[0] + distortion
 
-        datas['pair2'][0][
-            'energy'] = np.array(datas['pair2'][0]['energy']) + int_diffs[1]
+        datas['pair2'][0]['energy'] = np.array(
+            datas['pair2'][0]['energy']) + int_diffs[1]
 
         int_pair1 = cv.int_energy(
             xs,

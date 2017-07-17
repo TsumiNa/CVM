@@ -123,8 +123,8 @@ fourteenPoint	../cvm/A1/fourteenPoint/__init__.py	/^from .fourteenPoint import f
 fourteenPoint	../cvm/A1/fourteenPoint/fourteenPoint.py	/^class fourteenPoint(CVM):$/;"	kind:class	line:10
 fourteenPoint.py	../cvm/A1/fourteenPoint/fourteenPoint.py	1;"	kind:file	line:1
 free_energy	../cvm/utilities/cluster_vibration.py	/^    def free_energy(cls, xs, cluster, host, mass, bzc, correct=None, **kwargs):$/;"	kind:member	line:38
-gene_pair_label	../cvm/utilities/abstractCVM.py	/^    def gene_pair_label(cls, datas, start=1):$/;"	kind:member	line:204
-gene_raw_int	../cvm/utilities/abstractCVM.py	/^    def gene_raw_int(cls, data, acc):$/;"	kind:member	line:197
+gene_pair_label	../cvm/utilities/abstractCVM.py	/^    def gene_pair_label(cls, datas, start=1):$/;"	kind:member	line:223
+gene_raw_int	../cvm/utilities/abstractCVM.py	/^    def gene_raw_int(cls, data, acc):$/;"	kind:member	line:216
 gene_series	../cvm/utilities/abstractCVM.py	/^    def gene_series(self, item):$/;"	kind:member	line:71
 help	../cvm/__main__.py	/^                    help=u"format results to json")$/;"	kind:variable	line:16
 help	../cvm/__main__.py	/^                    help=u"input card for CVM calculation")$/;"	kind:variable	line:12
@@ -206,7 +206,7 @@ run	../cvm/A1/quadrupleTetrahedron/quadrupleTetrahedron.py	/^    def run(self):$
 run	../cvm/A1/tetraOctahedron/tetraOctahedron.py	/^    def run(self):$/;"	kind:member	line:118
 run	../cvm/A1/tetraSquare/tetraSquare.py	/^    def run(self):$/;"	kind:member	line:186
 run	../cvm/A1/tetrahedron/tetrahedron.py	/^    def run(self):$/;"	kind:member	line:89
-run	../cvm/utilities/abstractCVM.py	/^    def run(self):$/;"	kind:member	line:213
+run	../cvm/utilities/abstractCVM.py	/^    def run(self):$/;"	kind:member	line:232
 sample.py	../cvm/utilities/sample.py	1;"	kind:file	line:1
 show_parameter	../cvm/utilities/cluster_vibration.py	/^    def show_parameter(cls, ret):$/;"	kind:member	line:151
 solution_limit.py	../solution_limit.py	1;"	kind:file	line:1
