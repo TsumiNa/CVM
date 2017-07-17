@@ -46,8 +46,8 @@
      */
     "experiment": [
         {
-            "temp": [1800, 1600, 1400, 1200, 1000, 885],
-            "c": [0.1675, 0.121, 0.078, 0.0425, 0.026, 0.02]
+            "temp": [1800, 1600, 1400, 1200, 1000, 875],
+            "c": [0.1615, 0.12, 0.078, 0.0442, 0.0265, 0.020]
         }
     ],
 
@@ -100,6 +100,7 @@
             /*
             Interaction energy
             */
+
             "datas": {
                 "lattice_c": [6.8, 7, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8],
                 "host_mass": 106.4,
@@ -385,6 +386,7 @@
             /*
             Interaction energy
             */
+
             "datas": {
                 "lattice_c": [6.8, 7, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8],
                 "host_mass": 106.4,
@@ -640,7 +642,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [600, 1655, 50]
+            "temp": [600, 1700, 50]
         },
         {
             "skip": false,
@@ -670,6 +672,7 @@
             /*
             Interaction energy
             */
+
             "datas": {
                 "lattice_c": [6.8, 7, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8],
                 "host_mass": 106.4,
