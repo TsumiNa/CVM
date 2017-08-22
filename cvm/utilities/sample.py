@@ -18,6 +18,7 @@ class Sample(object):
         'temp',  # Temperature (K)
         'transfer',
         'coord_num',
+        'gene_ints',
         'res',  # result
     )
 

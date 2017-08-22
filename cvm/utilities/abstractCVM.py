@@ -5,7 +5,8 @@ import datetime as dt
 import threading
 
 import numpy as np
-from scipy.optimize import minimize_scalar
+from scipy.optimize import minimize_scalar, curve_fit
+from scipy.interpolate import UnivariateSpline
 
 from .cluster_vibration import ClusterVibration as cv
 from .unit_convert import *
@@ -134,12 +135,6 @@ class CVM(threading.Thread):
         datas = item['datas']
         xs = lc2ad(np.array(datas['lattice_c']))
 
-        # Host with vibration
-        # equilibrium lattice will evaluate from formula
-        host = np.array(datas['host_en']) * self.conv
-        host_en = cv.free_energy(xs, host, 0,
-                                 np.array(datas['host_mass']), self.bzc)
-
         # transter
         int_ens = []
         transfer = item['transfer']
@@ -161,6 +156,7 @@ class CVM(threading.Thread):
         datas['pair2'][0]['energy'] = np.array(
             datas['pair2'][0]['energy']) + int_diffs[1]
 
+        host = np.array(datas['host_en']) * self.conv
         int_pair1 = cv.int_energy(
             xs,
             datas['pair1'],
@@ -168,7 +164,7 @@ class CVM(threading.Thread):
             self.bzc,
             num=4,
             conv=self.conv,
-            noVib=False)
+            noVib=True)
         int_pair2 = cv.int_energy(
             xs,
             datas['pair2'],
@@ -176,7 +172,7 @@ class CVM(threading.Thread):
             self.bzc,
             num=6,
             conv=self.conv,
-            noVib=False)
+            noVib=True)
         int_trip = cv.int_energy(
             xs,
             datas['triple'],
@@ -184,7 +180,7 @@ class CVM(threading.Thread):
             self.bzc,
             num=4,
             conv=self.conv,
-            noVib=False)
+            noVib=True)
         int_tetra = cv.int_energy(
             xs,
             datas['tetra'],
@@ -192,24 +188,65 @@ class CVM(threading.Thread):
             self.bzc,
             num=4,
             conv=self.conv,
-            noVib=False)
-        for T in np.nditer(sample.temp):
+            noVib=True)
+
+        # Host with vibration
+        # equilibrium lattice will evaluate from formula
+        phase_ens_func = self.gene_phase_en_func(
+            xs, host, (), *datas['tetra'], num=4)
+        lattice_func = self.gene_lattice_func(phase_ens_func)
+
+        def _gene_ints(T, c):
             if 'fix_a0' in datas:
                 r_0 = lc2ad(np.float64(datas['fix_a0']))
             else:
-                r_0 = minimize_scalar(
-                    lambda r: host_en(r, T),
-                    bounds=(xs[0], xs[-1]),
-                    method='bounded').x
+                r_0 = lattice_func(T, c)
             pair1 = np.array(int_pair1(r_0, T), np.float64)
             pair2 = np.array(int_pair2(r_0, T), np.float64)
             trip = np.array(int_trip(r_0, T), np.float64)
             tetra = np.array(int_tetra(r_0, T), np.float64)
-            # print(ad2lc(r_0), pair1, trip, tetra)
-            sample.res['inter_en'].append(pair1)
-            sample.int.append(((pair1, pair2), trip, tetra))
+            return (pair1, pair2), trip, tetra
+
+        sample.gene_ints = _gene_ints
 
         return sample
+
+    def gene_lattice_func(self, formulas, **kwagrs):
+        if 'bounds' in kwagrs:
+            _bounds = kwagrs['bounds']
+        else:
+            _bounds = (lc2ad(6.8), lc2ad(8.0))
+
+        if 'ratio' in kwagrs and len(kwagrs['ratio']) == len(formulas):
+            _ratio = kwagrs['ratio']
+        else:
+            _ratio = [0, 0.25, 0.5, 0.75, 1]
+
+        def _lattice_gene(T, c):
+            _lattice_minimums = list()
+            for func in formulas:
+                _lattice_min = minimize_scalar(
+                    lambda r: func(r, T), bounds=_bounds, method='bounded')
+                _lattice_minimums.append(_lattice_min.x)
+
+            _lattice_func = UnivariateSpline(_ratio, _lattice_minimums, k=4)
+            return _lattice_func(c)
+
+        return _lattice_gene
+
+    def gene_phase_en_func(self, xs, host, acc, *datas, **kwagrs):
+        if not datas:
+            return acc
+
+        data = datas[0]
+        conv = self.conv
+        num = kwagrs['num']
+        bzc = self.bzc
+        ys = np.array(data['energy'], np.float64) * conv / num
+        mass = np.array(data['mass'], np.float64)
+        _en_func = cv.free_energy(xs, ys, host, mass, bzc)
+        return self.gene_phase_en_func(xs, host, acc + (_en_func, ),
+                                       *datas[1:], **kwagrs)
 
     # get interaction energies
     @classmethod
