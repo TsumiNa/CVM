@@ -153,8 +153,8 @@ class CVM(threading.Thread):
         datas['pair1'][0]['energy'] = np.array(
             datas['pair1'][0]['energy']) + int_diffs[0] + distortion
 
-        datas['pair2'][0]['energy'] = np.array(
-            datas['pair2'][0]['energy']) + int_diffs[1]
+        datas['pair2'][0][
+            'energy'] = np.array(datas['pair2'][0]['energy']) + int_diffs[1]
 
         host = np.array(datas['host_en']) * self.conv
         int_pair1 = cv.int_energy(
@@ -164,7 +164,7 @@ class CVM(threading.Thread):
             self.bzc,
             num=4,
             conv=self.conv,
-            noVib=True)
+            noVib=False)
         int_pair2 = cv.int_energy(
             xs,
             datas['pair2'],
@@ -172,7 +172,7 @@ class CVM(threading.Thread):
             self.bzc,
             num=6,
             conv=self.conv,
-            noVib=True)
+            noVib=False)
         int_trip = cv.int_energy(
             xs,
             datas['triple'],
@@ -180,7 +180,7 @@ class CVM(threading.Thread):
             self.bzc,
             num=4,
             conv=self.conv,
-            noVib=True)
+            noVib=False)
         int_tetra = cv.int_energy(
             xs,
             datas['tetra'],
@@ -188,7 +188,7 @@ class CVM(threading.Thread):
             self.bzc,
             num=4,
             conv=self.conv,
-            noVib=True)
+            noVib=False)
 
         # Host with vibration
         # equilibrium lattice will evaluate from formula

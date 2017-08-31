@@ -12,7 +12,7 @@ CVM	../cvm/A1/tetraOctahedron/tetraOctahedron.py	/^from cvm.utilities import CVM
 CVM	../cvm/A1/tetraSquare/tetraSquare.py	/^from cvm.utilities import CVM$/;"	kind:namespace	line:5
 CVM	../cvm/A1/tetrahedron/tetrahedron.py	/^from cvm.utilities import CVM$/;"	kind:namespace	line:6
 CVM	../cvm/utilities/__init__.py	/^from .abstractCVM import CVM$/;"	kind:namespace	line:4
-CVM	../cvm/utilities/abstractCVM.py	/^class CVM(threading.Thread):$/;"	kind:class	line:15
+CVM	../cvm/utilities/abstractCVM.py	/^class CVM(threading.Thread):$/;"	kind:class	line:16
 ClusterVibration	../cvm/utilities/cluster_vibration.py	/^class ClusterVibration():$/;"	kind:class	line:9
 CvmCalc	../cvm/__init__.py	/^from .cvmCalc import CvmCalc$/;"	kind:namespace	line:4
 CvmCalc	../cvm/__main__.py	/^from .cvmCalc import CvmCalc$/;"	kind:namespace	line:6
@@ -22,11 +22,12 @@ FuncFormatter	../draw_int.py	/^from matplotlib.ticker import FuncFormatter$/;"	k
 FuncFormatter	../ru-int-temp.py	/^from matplotlib.ticker import FuncFormatter$/;"	kind:namespace	line:3
 FuncFormatter	../solution_limit.py	/^from matplotlib.ticker import FuncFormatter$/;"	kind:namespace	line:5
 QT	../cvm/cvmCalc.py	/^from .A1 import quadrupleTetrahedron as QT$/;"	kind:namespace	line:26
-Sample	../cvm/utilities/abstractCVM.py	/^from .sample import Sample$/;"	kind:namespace	line:12
+Sample	../cvm/utilities/abstractCVM.py	/^from .sample import Sample$/;"	kind:namespace	line:13
 Sample	../cvm/utilities/sample.py	/^class Sample(object):$/;"	kind:class	line:7
 T	../cvm/cvmCalc.py	/^from .A1 import tetrahedron as T$/;"	kind:namespace	line:22
 TO	../cvm/cvmCalc.py	/^from .A1 import tetraOctahedron as TO$/;"	kind:namespace	line:23
 TS	../cvm/cvmCalc.py	/^from .A1 import tetraSquare as TS$/;"	kind:namespace	line:24
+UnivariateSpline	../cvm/utilities/abstractCVM.py	/^from scipy.interpolate import UnivariateSpline$/;"	kind:namespace	line:9
 UnivariateSpline	../cvm/utilities/cluster_vibration.py	/^from scipy.interpolate import UnivariateSpline$/;"	kind:namespace	line:4
 __all__	../cvm/A1/__init__.py	/^__all__ = [$/;"	kind:variable	line:11
 __all__	../cvm/A1/doubleTetrahedron/__init__.py	/^__all__ = ['doubleTetrahedron']$/;"	kind:variable	line:6
@@ -61,8 +62,8 @@ __init__	../cvm/A1/tetraOctahedron/tetraOctahedron.py	/^    def __init__(self, i
 __init__	../cvm/A1/tetraSquare/tetraSquare.py	/^    def __init__(self, inp):$/;"	kind:member	line:31
 __init__	../cvm/A1/tetrahedron/tetrahedron.py	/^    def __init__(self, inp):$/;"	kind:member	line:26
 __init__	../cvm/cvmCalc.py	/^    def __init__(self, **kwargs):$/;"	kind:member	line:59
-__init__	../cvm/utilities/abstractCVM.py	/^    def __init__(self, inp):$/;"	kind:member	line:32
-__init__	../cvm/utilities/sample.py	/^    def __init__(self, label, coord_num):$/;"	kind:member	line:24
+__init__	../cvm/utilities/abstractCVM.py	/^    def __init__(self, inp):$/;"	kind:member	line:33
+__init__	../cvm/utilities/sample.py	/^    def __init__(self, label, coord_num):$/;"	kind:member	line:25
 __init__.py	../cvm/A1/__init__.py	1;"	kind:file	line:1
 __init__.py	../cvm/A1/doubleTetrahedron/__init__.py	1;"	kind:file	line:1
 __init__.py	../cvm/A1/fourteenPoint/__init__.py	1;"	kind:file	line:1
@@ -74,7 +75,7 @@ __init__.py	../cvm/A1/tetrahedron/__init__.py	1;"	kind:file	line:1
 __init__.py	../cvm/__init__.py	1;"	kind:file	line:1
 __init__.py	../cvm/utilities/__init__.py	1;"	kind:file	line:1
 __init__en	../cvm/A1/tetraOctahedron/tetraOctahedron.py	/^    def __init__en(self, int):$/;"	kind:member	line:48
-__init__en	../cvm/A1/tetrahedron/tetrahedron.py	/^    def __init__en(self, int_ens):$/;"	kind:member	line:40
+__init__en	../cvm/A1/tetrahedron/tetrahedron.py	/^    def __init__en(self, e_int):$/;"	kind:member	line:40
 __int	../cvm/utilities/cluster_vibration.py	/^        def __int(r, T):$/;"	kind:function	line:84
 __main__.py	../cvm/__main__.py	1;"	kind:file	line:1
 __morse_gene	../cvm/utilities/cluster_vibration.py	/^        def __morse_gene(xs, ys, bounds):$/;"	kind:function	line:95
@@ -94,19 +95,22 @@ __slots__	../cvm/A1/tetraOctahedron/tetraOctahedron.py	/^    __slots__ = ($/;"	k
 __slots__	../cvm/A1/tetraSquare/tetraSquare.py	/^    __slots__ = ($/;"	kind:variable	line:14
 __slots__	../cvm/A1/tetrahedron/tetrahedron.py	/^    __slots__ = ($/;"	kind:variable	line:14
 __slots__	../cvm/cvmCalc.py	/^    __slots__ = ($/;"	kind:variable	line:51
-__slots__	../cvm/utilities/abstractCVM.py	/^    __slots__ = ($/;"	kind:variable	line:24
+__slots__	../cvm/utilities/abstractCVM.py	/^    __slots__ = ($/;"	kind:variable	line:25
 __slots__	../cvm/utilities/sample.py	/^    __slots__ = ($/;"	kind:variable	line:12
 __version__	../cvm/__init__.py	/^__version__ = '0.2.0'$/;"	kind:variable	line:6
 __y_ij	../cvm/A1/pair/pair.py	/^    def __y_ij(self):$/;"	kind:member	line:65
 _eta_TO	../cvm/A1/tetraOctahedron/process.py	/^def _eta_TO(self):$/;"	kind:function	line:53
+_gene_ints	../cvm/utilities/abstractCVM.py	/^        def _gene_ints(T, c):$/;"	kind:function	line:199
+_lattice_gene	../cvm/utilities/abstractCVM.py	/^        def _lattice_gene(T, c):$/;"	kind:function	line:225
 abstractCVM.py	../cvm/utilities/abstractCVM.py	1;"	kind:file	line:1
 ad2lc	../cvm/utilities/unit_convert.py	/^def ad2lc(d, n=4):$/;"	kind:function	line:13
 argparse	../cvm/__main__.py	/^import argparse$/;"	kind:namespace	line:4
 args	../cvm/__main__.py	/^args = parser.parse_args()$/;"	kind:variable	line:17
 au2K	../cvm/utilities/unit_convert.py	/^def au2K(t):$/;"	kind:function	line:23
 cluster_vibration.py	../cvm/utilities/cluster_vibration.py	1;"	kind:file	line:1
+curve_fit	../cvm/utilities/abstractCVM.py	/^from scipy.optimize import minimize_scalar, curve_fit$/;"	kind:namespace	line:8
 curve_fit	../cvm/utilities/cluster_vibration.py	/^from scipy.optimize import curve_fit, minimize_scalar$/;"	kind:namespace	line:3
-cv	../cvm/utilities/abstractCVM.py	/^from .cluster_vibration import ClusterVibration as cv$/;"	kind:namespace	line:10
+cv	../cvm/utilities/abstractCVM.py	/^from .cluster_vibration import ClusterVibration as cv$/;"	kind:namespace	line:11
 cvmCalc.py	../cvm/cvmCalc.py	1;"	kind:file	line:1
 description	../cvm/__main__.py	/^                                 description=u"CVM calculation")$/;"	kind:variable	line:10
 doubleTetrahedron	../cvm/A1/__init__.py	/^from .doubleTetrahedron import doubleTetrahedron$/;"	kind:namespace	line:7
@@ -117,15 +121,17 @@ draw_int.py	../draw_int.py	1;"	kind:file	line:1
 dt	../cvm/cvmCalc.py	/^import datetime as dt$/;"	kind:namespace	line:19
 dt	../cvm/utilities/abstractCVM.py	/^import datetime as dt$/;"	kind:namespace	line:4
 eV2Kbar	../cvm/utilities/unit_convert.py	/^def eV2Kbar(p):$/;"	kind:function	line:18
-effctive_en	../cvm/utilities/sample.py	/^    def effctive_en(self, int_pair, *args):$/;"	kind:member	line:36
+effctive_en	../cvm/utilities/sample.py	/^    def effctive_en(self, int_pair, *args):$/;"	kind:member	line:37
 fit_parameters	../cvm/utilities/cluster_vibration.py	/^    def fit_parameters(cls, xdata, ydata, M, bounds=None):$/;"	kind:member	line:93
 fourteenPoint	../cvm/A1/fourteenPoint/__init__.py	/^from .fourteenPoint import fourteenPoint$/;"	kind:namespace	line:4
 fourteenPoint	../cvm/A1/fourteenPoint/fourteenPoint.py	/^class fourteenPoint(CVM):$/;"	kind:class	line:10
 fourteenPoint.py	../cvm/A1/fourteenPoint/fourteenPoint.py	1;"	kind:file	line:1
 free_energy	../cvm/utilities/cluster_vibration.py	/^    def free_energy(cls, xs, cluster, host, mass, bzc, correct=None, **kwargs):$/;"	kind:member	line:38
-gene_pair_label	../cvm/utilities/abstractCVM.py	/^    def gene_pair_label(cls, datas, start=1):$/;"	kind:member	line:223
-gene_raw_int	../cvm/utilities/abstractCVM.py	/^    def gene_raw_int(cls, data, acc):$/;"	kind:member	line:216
-gene_series	../cvm/utilities/abstractCVM.py	/^    def gene_series(self, item):$/;"	kind:member	line:71
+gene_lattice_func	../cvm/utilities/abstractCVM.py	/^    def gene_lattice_func(self, formulas, **kwagrs):$/;"	kind:member	line:214
+gene_pair_label	../cvm/utilities/abstractCVM.py	/^    def gene_pair_label(cls, datas, start=1):$/;"	kind:member	line:260
+gene_phase_en_func	../cvm/utilities/abstractCVM.py	/^    def gene_phase_en_func(self, xs, host, acc, *datas, **kwagrs):$/;"	kind:member	line:237
+gene_raw_int	../cvm/utilities/abstractCVM.py	/^    def gene_raw_int(cls, data, acc):$/;"	kind:member	line:253
+gene_series	../cvm/utilities/abstractCVM.py	/^    def gene_series(self, item):$/;"	kind:member	line:72
 help	../cvm/__main__.py	/^                    help=u"format results to json")$/;"	kind:variable	line:16
 help	../cvm/__main__.py	/^                    help=u"input card for CVM calculation")$/;"	kind:variable	line:12
 help	../cvm/__main__.py	/^                    help=u"set post processer to handle output results")$/;"	kind:variable	line:14
@@ -136,7 +142,7 @@ matplotlib	../cvm/utilities/cluster_vibration.py	/^import matplotlib.pyplot as p
 matplotlib	../draw_int.py	/^import matplotlib.pyplot as plt$/;"	kind:namespace	line:4
 matplotlib	../ru-int-temp.py	/^import matplotlib.pyplot as plt$/;"	kind:namespace	line:2
 matplotlib	../solution_limit.py	/^import matplotlib.pyplot as plt$/;"	kind:namespace	line:4
-minimize_scalar	../cvm/utilities/abstractCVM.py	/^from scipy.optimize import minimize_scalar$/;"	kind:namespace	line:8
+minimize_scalar	../cvm/utilities/abstractCVM.py	/^from scipy.optimize import minimize_scalar, curve_fit$/;"	kind:namespace	line:8
 minimize_scalar	../cvm/utilities/cluster_vibration.py	/^from scipy.optimize import curve_fit, minimize_scalar$/;"	kind:namespace	line:3
 minimum	../cvm/utilities/cluster_vibration.py	/^    def minimum(cls, xs, ys, **kwagrs):$/;"	kind:member	line:15
 morse_mod	../cvm/utilities/cluster_vibration.py	/^            def morse_mod(r, c1, c2, lmd, r0):$/;"	kind:function	line:96
@@ -206,7 +212,7 @@ run	../cvm/A1/quadrupleTetrahedron/quadrupleTetrahedron.py	/^    def run(self):$
 run	../cvm/A1/tetraOctahedron/tetraOctahedron.py	/^    def run(self):$/;"	kind:member	line:118
 run	../cvm/A1/tetraSquare/tetraSquare.py	/^    def run(self):$/;"	kind:member	line:186
 run	../cvm/A1/tetrahedron/tetrahedron.py	/^    def run(self):$/;"	kind:member	line:89
-run	../cvm/utilities/abstractCVM.py	/^    def run(self):$/;"	kind:member	line:232
+run	../cvm/utilities/abstractCVM.py	/^    def run(self):$/;"	kind:member	line:269
 sample.py	../cvm/utilities/sample.py	1;"	kind:file	line:1
 show_parameter	../cvm/utilities/cluster_vibration.py	/^    def show_parameter(cls, ret):$/;"	kind:member	line:151
 solution_limit.py	../solution_limit.py	1;"	kind:file	line:1
