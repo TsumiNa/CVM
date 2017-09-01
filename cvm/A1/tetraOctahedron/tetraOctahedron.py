@@ -45,25 +45,25 @@ class tetraOctahedron(CVM):
         self.main_condition = np.float64(1e-3)
         self.sub_condition = np.float64(1e-2)
 
-    def __init__en(self, int):
+    def __init__en(self, e_int):
         ###############################################
         # configuration
         ###############################################
 
         # pure energy of 2body-1st
         en1 = np.zeros((2, 2), np.float64)
-        en1[0, 1] = en1[1, 0] = 0.5 * (en1[0, 0] + en1[1, 1] - int[0][0])
+        en1[0, 1] = en1[1, 0] = 0.5 * (en1[0, 0] + en1[1, 1] - e_int[0][0])
 
         #############################################
         # tetrahedron
         #############################################
         # 3body-1st interaction energy
         de31 = np.zeros((2, 2, 2), np.float64)
-        de31[1, 1, 1] = int[1]
+        de31[1, 1, 1] = e_int[1]
 
         # 4body-1st interaction energy
         de41 = np.zeros((2, 2, 2, 2), np.float64)
-        de41[1, 1, 1, 1] = int[2]
+        de41[1, 1, 1, 1] = e_int[2]
 
         # energy ε
         it = np.nditer(self.enT, flags=['multi_index'])
@@ -84,7 +84,7 @@ class tetraOctahedron(CVM):
         # pure energy of 2body-1st
         en2 = np.zeros((2, 2), np.float64)
         en2[0, 1] = en2[1, 0] = \
-            0.5 * (en2[0, 0] + en2[1, 1] - int[0][1])
+            0.5 * (en2[0, 0] + en2[1, 1] - e_int[0][1])
 
         # energy ε
         it = np.nditer(self.enO, flags=['multi_index'])
@@ -134,14 +134,16 @@ class tetraOctahedron(CVM):
                 self.beta = np.float64(pow(self.bzc * temp, -1))
 
                 # calculate w
-                int_ens = sample.int[i]
-                self.__init__en(int_ens)
+                # e_int = sample.gene_ints(temp, self.x_[1])
+                # self.__init__en(e_int)
                 self.__reset__probability()
                 # print(' mu:     {:06.4f}'.format(self.mu[0].item(0)))
-                # print(' 1st:    {:06.4f}'.format(int[0][0].item(0)))
-                # print(' 2nd:    {:06.4f}'.format(int[0][1].item(0)))
+                # print(' 1st:    {:06.4f}'.format(e_int[0][0].item(0)))
+                # print(' 2nd:    {:06.4f}'.format(e_int[0][1].item(0)))
                 while self.checker > sample.condition:
                     if self.checker > self.main_condition:
+                        e_int = sample.gene_ints(temp, self.x_[1])
+                        self.__init__en(e_int)
                         process(self)
                     else:
                         self.main_condition /= 10
