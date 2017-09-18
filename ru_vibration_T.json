@@ -101,7 +101,6 @@
             Interaction energy
             */
             "datas": {
-                "fix_a0": 7.46,
                 "lattice_c": [6.8, 7, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8],
                 "host_mass": 106.4,
                 "distortion": -0.033,
@@ -356,7 +355,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [400, 1290, 50]
+            "temp": [400, 899, 80]
         },
         {
             "skip": false,
@@ -387,7 +386,6 @@
             Interaction energy
             */
             "datas": {
-                "fix_a0": 7.46,
                 "lattice_c": [6.8, 7, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8],
                 "host_mass": 106.4,
                 "distortion": -0.033,
@@ -642,7 +640,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [400, 1550, 50]
+            "temp": [400, 1091.90, 100]
         },
         {
             "skip": false,
@@ -673,7 +671,6 @@
             Interaction energy
             */
             "datas": {
-                "fix_a0": 7.46,
                 "lattice_c": [6.8, 7, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8],
                 "host_mass": 106.4,
                 "distortion": -0.033,
@@ -928,7 +925,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [400, 1700, 50]
+            "temp": [400, 1321.2, 80]
         },
         {
             "skip": false,
@@ -959,7 +956,6 @@
             Interaction energy
             */
             "datas": {
-                "fix_a0": 7.46,
                 "lattice_c": [6.8, 7, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8],
                 "host_mass": 106.4,
                 "distortion": -0.033,
@@ -1214,7 +1210,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1700, 50]
+            "temp": [500, 1529, 50]
         },
         {
             "skip": false,
@@ -1245,7 +1241,6 @@
             Interaction energy
             */
             "datas": {
-                "fix_a0": 7.46,
                 "lattice_c": [6.8, 7, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8],
                 "host_mass": 106.4,
                 "distortion": -0.033,

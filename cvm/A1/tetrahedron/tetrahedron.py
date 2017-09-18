@@ -105,8 +105,6 @@ class tetrahedron(CVM):
                 self.beta = np.float64(pow(self.bzc * temp, -1))
 
                 # calculate
-                # e_int = sample.gene_ints(temp, self.x_[1])
-                # self.__init__en(e_int)
                 self.__reset__probability()
                 # print(' mu:     {:06.4f}'.format(self.mu[0].item(0)))
                 # print(' 1st:    {:06.4f}'.format(e_int[0][0].item(0)))
