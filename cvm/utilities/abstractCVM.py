@@ -200,22 +200,12 @@ class CVM(threading.Thread):
         else:
             lattice_func = self.gene_lattice_func(phase_ens_func)
 
-        # _xs = np.linspace(0, 1, 50)
-        # _ys = lattice_func(1200, _xs)
-        # import matplotlib.pyplot as plt
-        # import os
-        # plt.plot(_xs, ad2lc(_ys))
-        # plt.show()
-        # os._exit()
-
         def _gene_ints(T, c):
             if 'fix_a0' in datas:
                 r_0 = lc2ad(np.float64(datas['fix_a0']))
-                print(
-                    ' This calculation will use a fixed lattice parameter at {:06.4f}'.
-                    format(r_0.item[0]))
             else:
                 r_0 = lattice_func(T, c)
+
             pair1 = np.array(int_pair1(r_0, T), np.float64)
             pair2 = np.array(int_pair2(r_0, T), np.float64)
             trip = np.array(int_trip(r_0, T), np.float64)
@@ -235,7 +225,7 @@ class CVM(threading.Thread):
         if 'ratio' in kwagrs and len(kwagrs['ratio']) == len(formulas):
             _ratio = kwagrs['ratio']
         else:
-            _ratio = [1, 0.75, 0.5, 0.25, 0]
+            _ratio = [0, 0.25, 0.5, 0.75, 1]
 
         def _lattice_gene(T, c):
             _lattice_minimums = list()
@@ -244,8 +234,9 @@ class CVM(threading.Thread):
                     lambda r: formula(r, T), bounds=_bounds, method='bounded')
                 _lattice_minimums.append(_lattice_min.x)
 
-            _lattice_func = UnivariateSpline(_ratio, _lattice_minimums, k=3)
-            return _lattice_func( 0.0) if 'noImpDepen' in kwagrs and kwagrs['noImpDepen'] is True \
+            _lattice_func = UnivariateSpline(
+                _ratio, _lattice_minimums[::-1], k=2)
+            return _lattice_func(0.0) if 'noImpDepen' in kwagrs and kwagrs['noImpDepen'] is True \
                                        else _lattice_func(c)
 
         return _lattice_gene

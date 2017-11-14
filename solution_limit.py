@@ -49,10 +49,10 @@ def process(opt):
     # for preview
     ax.grid(axis='y')
     ax.tick_params(labelsize=14.5)
-    ax.set_ylabel('Temperature (K)', size=16)
+    ax.set_ylabel(r'Temperature, $T$/K', size=16)
     ax.set_xlabel(
         r'Concentration of ' + opt['meta']['impurity'].capitalize() +
-        r'($\%$)',
+        r', $c$(at$\%$)',
         size=16)
     ax.annotate(
         r'CVMT10, with thermal vibration effect', (0.003, 1830), size=15)
@@ -61,5 +61,5 @@ def process(opt):
     fig_name = "_".join(
         (opt['meta']['prefix'], opt['meta']['host'], opt['meta']['impurity'],
          opt['meta']['suffix'])).lstrip('_')
-    plt.savefig(fig_name, dpi=300)  # 300 dpi
+    plt.savefig(fig_name, dpi=600)  # 300 dpi
     plt.show()
