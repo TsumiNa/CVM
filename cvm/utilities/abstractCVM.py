@@ -64,7 +64,7 @@ class CVM(threading.Thread):
         if 'series' not in inp or len(inp['series']) == 0:
             raise NameError('need a defination of calculation series')
 
-        for item in inp['series']:
+        for item in inp['series'][::-1]:
             if 'skip' in item and item['skip']:
                 continue
             self.series.append(self.gene_series(item))
@@ -153,8 +153,8 @@ class CVM(threading.Thread):
         datas['pair1'][0]['energy'] = np.array(
             datas['pair1'][0]['energy']) + int_diffs[0] + distortion
 
-        datas['pair2'][0][
-            'energy'] = np.array(datas['pair2'][0]['energy']) + int_diffs[1]
+        datas['pair2'][0]['energy'] = np.array(
+            datas['pair2'][0]['energy']) + int_diffs[1]
 
         host = np.array(datas['host_en']) * self.conv
         int_pair1 = cv.int_energy(

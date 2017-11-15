@@ -55,7 +55,7 @@ def process(opt):
         r', $c$(at$\%$)',
         size=16)
     ax.annotate(
-        r'CVMT10, with thermal vibration effect', (0.003, 1830), size=15)
+        r'(b)CVMT10, with thermal vibration effect', (0.003, 1830), size=15)
     # ax.annotate(r'$T_\mathrm{FD}=1600$K', (0.004, 1630), size=17)
     ax.legend(loc='lower right', markerscale=1.2, fontsize=15)
     fig_name = "_".join(
