@@ -35,9 +35,9 @@ def process(opt):
         ax.plot(
             res['c'],
             res['temp'],
-            'o-',
-            # line_type[i],
-            # color='sienna',
+            # 'o-',
+            line_type[i],
+            color='darkorange',
             ms=4,
             lw=1.5,
             label=res['label'])
@@ -52,11 +52,11 @@ def process(opt):
     ax.set_ylabel(r'Temperature, $T$/K', size=16)
     ax.set_xlabel(
         r'Concentration of ' + opt['meta']['impurity'].capitalize() +
-        r', $c$(at$\%$)',
+        r', $c$/at$\%$',
         size=16)
     ax.annotate(
-        r'(b)CVMT10, with thermal vibration effect', (0.003, 1830), size=15)
-    # ax.annotate(r'$T_\mathrm{FD}=1600$K', (0.004, 1630), size=17)
+        r'(b)CVMTO10, with thermal vibration effect', (0.003, 1830), size=15)
+    ax.annotate(r'$T_\mathrm{FD}=1600$K', (0.004, 1630), size=17)
     ax.legend(loc='lower right', markerscale=1.2, fontsize=15)
     fig_name = "_".join(
         (opt['meta']['prefix'], opt['meta']['host'], opt['meta']['impurity'],
