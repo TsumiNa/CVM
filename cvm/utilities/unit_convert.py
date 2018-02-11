@@ -9,7 +9,7 @@ def lc2ad(d, n=4):
     return d * np.power((3 / (4 * n * np.pi)), 1 / 3)
 
 
-# latomic distance to attice constan
+# atomic distance to lattice constan
 def ad2lc(d, n=4):
     return d / np.power((3 / (4 * n * np.pi)), 1 / 3)
 

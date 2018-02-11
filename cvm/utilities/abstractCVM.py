@@ -200,17 +200,20 @@ class CVM(threading.Thread):
         else:
             lattice_func = self.gene_lattice_func(phase_ens_func)
 
-        def _gene_ints(T, c):
+        def _gene_ints(T, c, only_r0=False):
             if 'fix_a0' in datas:
                 r_0 = lc2ad(np.float64(datas['fix_a0']))
             else:
                 r_0 = lattice_func(T, c)
 
-            pair1 = np.array(int_pair1(r_0, T), np.float64)
-            pair2 = np.array(int_pair2(r_0, T), np.float64)
-            trip = np.array(int_trip(r_0, T), np.float64)
-            tetra = np.array(int_tetra(r_0, T), np.float64)
-            return (pair1, pair2), trip, tetra
+            if not only_r0:
+                pair1 = np.array(int_pair1(r_0, T), np.float64)
+                pair2 = np.array(int_pair2(r_0, T), np.float64)
+                trip = np.array(int_trip(r_0, T), np.float64)
+                tetra = np.array(int_tetra(r_0, T), np.float64)
+                return (pair1, pair2), trip, tetra
+
+            return r_0, c
 
         sample.gene_ints = _gene_ints
 

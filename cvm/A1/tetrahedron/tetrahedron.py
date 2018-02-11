@@ -89,6 +89,7 @@ class tetrahedron(CVM):
     def run(self):
 
         # temperature iteration
+        ctr_0 = []
         for sample in self.series:
             if self.multi_calcu:
                 sample.res['label'] = sample.res['label'] + '(T)'
@@ -115,11 +116,15 @@ class tetrahedron(CVM):
                     self.__init__en(e_int)
                     process(self)
 
+                # from ...utilities.unit_convert import ad2lc
+                # r_0, c = sample.gene_ints(temp, self.x_[1], only_r0=True)
+                # ctr_0.append([temp, c, ad2lc(r_0)])
                 # push result into res
                 sample.res['c'].append(self.x_[1].item(0))
                 print(' T = {:06.3f}K,  c = {:06.6f},  count = {}'.format(
                     temp.item(0), self.x_[1].item(0), self.count))
                 it.iternext()
 
+            # np.savetxt('ctr_0.csv', np.asarray(ctr_0), delimiter=',')
             # save result to output
             self.output['results'].append(sample.res)
