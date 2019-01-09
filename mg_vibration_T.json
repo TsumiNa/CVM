@@ -1334,7 +1334,7 @@
 
         Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
         */
-      "temp": [300, 650, 20]
+      "temp": [300, 670, 20]
     }
   ]
 }
