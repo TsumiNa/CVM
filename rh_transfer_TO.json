@@ -7,7 +7,7 @@
     /*
     Impurity.   
     */
-    "impurity": "Ru",
+    "impurity": "Rh",
 
     /*
     Meta prefix(optional).   
@@ -17,12 +17,12 @@
     /*
     Meta suffix(optional).   
     */
-    "suffix": "origin",
+    "suffix": "transfer_TO",
 
     /*
     descripton your calculation. it's optional
     */
-    "description": "PdRu solubility limit calculation with tetrahedron approximation",
+    "description": "PdRh solubility limit calculation with tetrahedron approximation",
 
 
     /*
@@ -50,8 +50,8 @@
      */
     "experiment": [
         {
-            "temp": [1856, 1409, 1295, 1150, 1041, 910 ],
-            "c": [0.172, 0.08, 0.06, 0.04, 0.03, 0.02]
+            "temp": [863, 855.5, 848, 840.5, 833, 828, 823],
+            "c": [0.12, 0.115, 0.11, 0.105, 0.1, 0.095, 0.09]
         }
     ],
 
@@ -63,7 +63,7 @@
     /*
     what method(s) will be used for this calculation
     */
-    "methods": ["T"],
+    "methods": ["TO"],
 
     /*
     data for calculation
@@ -73,13 +73,13 @@
             /*
             A label for a calculation sample
             */
-            "label": "T = 1600K",
+            "label": "$1st\\,\\stackrel{100\\%}{\\Longleftarrow}\\ 4th\\ \\stackrel{\\ \\ 0\\%\\,}{\\Longrightarrow}\\,\\,2nd$",
 
             /*
             2nd parameter refer to the neighbour that transfer to
             effctive_en(self, to=1, end=0, start=2)
             */
-            "transfer": [[1,11,2]],
+            "transfer": [[1,11,3]],
 
             /*
             elements concentration
@@ -95,9 +95,9 @@
             /*
             Interaction energy
             */
-            "int_pair": [-0.159338507, 0.008116479, 0.001162063, 0.028092229, 0.004009463, -0.001842348, 0.002411882, 0.001739216, 0.008811186, 0.000127513, 0.000813077],
-            "int_trip": [0.013508962],
-            "int_tetra": [0.006625023],
+            "int_pair": [-0.059641802, 0.002797332, -0.000884098, 0.001606833, 0.001972554, -0.000121635, -1.03403E-05, 0.000150887, 0.004535323, 0.000159731, 0.000521915],
+            "int_trip": [0.005],
+            "int_tetra": [0.008],
 
             /*
             Chemical potential
@@ -111,19 +111,19 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1730, 50]
+            "temp": [400, 890, 50]
         },
         {
             /*
             A label for a calculation sample
             */
-            "label": "T = 1400K",
+            "label": "$1st\\ \\stackrel{\\ 70\\%}{\\Longleftarrow}\\ 4th\\ \\stackrel{\\ 30\\%}{\\Longrightarrow}\\ 2nd$",
 
             /*
             2nd parameter refer to the neighbour that transfer to
             effctive_en(self, to=1, end=0, start=2)
             */
-            "transfer": [[1,11,2]],
+            "transfer": [[1,11,5],[1,3,3],[1,4,4,0.7],[2,4,4,0.3]],
 
             /*
             elements concentration
@@ -139,9 +139,9 @@
             /*
             Interaction energy
             */
-            "int_pair": [-0.158424613, 0.011412596, 0.001874865, 0.030246964, 0.004404573, -0.001990378, 0.002628893, 0.001575948, 0.010120054, 0.001303698, 0.000912126],
-            "int_trip": [0.013228548],
-            "int_tetra": [0.007254286],
+            "int_pair": [-0.059641802, 0.002797332, -0.000884098, 0.001606833, 0.001972554, -0.000121635, -1.03403E-05, 0.000150887, 0.004535323, 0.000159731, 0.000521915],
+            "int_trip": [0.005],
+            "int_tetra": [0.008],
 
             /*
             Chemical potential
@@ -155,19 +155,19 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1440, 40]
+            "temp": [400, 890, 50]
         },
         {
             /*
             A label for a calculation sample
             */
-            "label": "T = 1200K",
+            "label": "$1st\\ \\stackrel{\\ 50\\%}{\\Longleftarrow}\\ 4th\\ \\stackrel{\\ 50\\%}{\\Longrightarrow}\\ 2nd$",
 
             /*
             2nd parameter refer to the neighbour that transfer to
             effctive_en(self, to=1, end=0, start=2)
             */
-            "transfer": [[1,11,2]],
+            "transfer": [[1,11,5],[1,3,3],[1,4,4,0.5],[2,4,4,0.5]],
 
             /*
             elements concentration
@@ -183,9 +183,9 @@
             /*
             Interaction energy
             */
-            "int_pair": [-0.15915864, 0.015593491, 0.002659642, 0.029930223, 0.005723101, -0.002183987, 0.002874204, 0.001217302, 0.011597361, 0.001320977, 0.001015121],
-            "int_trip": [0.013228548],
-            "int_tetra": [0.007820555],
+            "int_pair": [-0.059641802, 0.002797332, -0.000884098, 0.001606833, 0.001972554, -0.000121635, -1.03403E-05, 0.000150887, 0.004535323, 0.000159731, 0.000521915],
+            "int_trip": [0.005],
+            "int_tetra": [0.008],
 
             /*
             Chemical potential
@@ -199,19 +199,19 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 1235, 40]
+            "temp": [400, 890, 50]
         },
         {
             /*
             A label for a calculation sample
             */
-            "label": "T = 1000K",
+            "label": "$1st\\ \\stackrel{\\ 30\\%}{\\Longleftarrow}\\ 4th\\ \\stackrel{\\ 70\\%}{\\Longrightarrow}\\ 2nd$",
 
             /*
             2nd parameter refer to the neighbour that transfer to
             effctive_en(self, to=1, end=0, start=2)
             */
-            "transfer": [[1,11,2]],
+            "transfer": [[1,11,5],[1,3,3],[1,4,4,0.3],[2,4,4,0.7]],
 
             /*
             elements concentration
@@ -227,9 +227,9 @@
             /*
             Interaction energy
             */
-            "int_pair": [-0.158117858, 0.021086519, 0.003615442, 0.029952536, 0.006727201, -0.002213647, 0.003237068, 0.000560691, 0.012872351, 0.001314038, 0.001214172],
-            "int_trip": [0.013228548],
-            "int_tetra": [0.007820555],
+            "int_pair": [-0.059641802, 0.002797332, -0.000884098, 0.001606833, 0.001972554, -0.000121635, -1.03403E-05, 0.000150887, 0.004535323, 0.000159731, 0.000521915],
+            "int_trip": [0.005],
+            "int_tetra": [0.008],
 
             /*
             Chemical potential
@@ -243,22 +243,22 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 981.4, 40]
+            "temp": [400, 890, 50]
         },
         {
             /*
             A label for a calculation sample
             */
-            "label": "T = 800K",
+            "label": "$1st\\ \\stackrel{\\quad 0\\%\\,}{\\Longleftarrow}\\ 4th\\,\\stackrel{100\\%}{\\Longrightarrow}\\,2nd$",
 
             /*
             2nd parameter refer to the neighbour that transfer to
             effctive_en(self, to=1, end=0, start=2)
             */
-            "transfer": [[1,11,2]],
+            "transfer": [[1,11,5],[1,3,3],[2,4,4]],
 
             /*
-            Impurity concentration
+            elements concentration
             must be normalized
             */
             "x_1": 0.01,
@@ -271,10 +271,9 @@
             /*
             Interaction energy
             */
-            "int_pair": [-0.15538665, 0.026852342, 0.004438451, 0.031264398, 0.007519461, -0.00283706, 0.003530679, -0.000448172, 0.014907355, 0.001397849, 0.001059068],
-            "int_trip": [0.01220091],
-            "int_tetra": [0.008326279],
-
+            "int_pair": [-0.059641802, 0.002797332, -0.000884098, 0.001606833, 0.001972554, -0.000121635, -1.03403E-05, 0.000150887, 0.004535323, 0.000159731, 0.000521915],
+            "int_trip": [0.005],
+            "int_tetra": [0.008],
 
             /*
             Chemical potential
@@ -288,7 +287,7 @@
 
             Temperature can be setted as a single value or continuous as [highest, lowest, point, starter]
             */
-            "temp": [500, 708.8, 30]
+            "temp": [400, 890, 50]
         }
     ]
 }
