@@ -51,7 +51,8 @@ class CvmCalc(object):
     __slots__ = (
         'backend',
         'workerpool',
-        'args',  # argvs will be reformatted as {'option': 'value'}
+        'output_json',  # format output to json
+        'backends',  # post processes
         'method_dict',  # store calculation methods as {'name': method}
     )
 
@@ -69,25 +70,19 @@ class CvmCalc(object):
             QT=QT,
         )
 
-        # parse flags
+        # add cvm to path
         cwd = os.getcwd() + '/'
         cmd_folder = os.path.dirname(__file__)
         if cmd_folder not in sys.path:
             sys.path.append(cmd_folder)
 
-        self.args = kwargs
-
-        if not self.args['backend']:
-            self.backend = None
+        # parse flags
+        self.output_json = True if kwargs['output_json'] else False
+        self.backends = kwargs['backend'] if 'backend' in kwargs else None
+        if 'inp' in kwargs:
+            self.__run(kwargs['inp'])
         else:
-            try:
-                self.backend = __import__(self.args['backend'][:-3])
-            except ImportError as e:
-                raise e
-        if 'inp' in self.args:
-            self.__run(self.args['inp'])
-        else:
-            with open(cwd + self.args['inp_card']) as f:
+            with open(cwd + kwargs['inp_card']) as f:
                 _content = f.read()
                 _content = pattern.sub('', _content)
             f = tempfile.TemporaryFile(mode='w+t')
@@ -120,10 +115,14 @@ class CvmCalc(object):
         if not os.path.exists('log/'):
             os.makedirs('log/')
 
-        if self.backend is not None:
-            self.backend.process(worker.output)
+        if self.backends:
+            for backend in self.backends:
+                try:
+                    __import__(backend[:-3]).process(worker.output)
+                except ImportError as e:
+                    raise e
 
-        if self.args['output_json']:
+        if self.output_json:
             with open(log_path + '.json', 'w') as f:
                 json.dump(worker.output, f, indent=2)
         else:

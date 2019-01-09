@@ -2,6 +2,9 @@
 __pycache__/
 .idea/
 /log
+*.pyc
 *.png
 *.jpg
 *.eps
+*.xlsx
+.vscode/tags

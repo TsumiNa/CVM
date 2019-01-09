@@ -2,13 +2,13 @@
 # -*- coding:utf-8 -*-
 
 import numpy as np
+
 from cvm.utilities import CVM
 
 from .process import process
 
 
 class tetrahedron(CVM):
-
     """docstring for tetrahedron"""
 
     __slots__ = (
@@ -37,21 +37,23 @@ class tetrahedron(CVM):
         self.mu = np.zeros((2), np.float64)
         self.eta_sum = np.float64(0.0)
 
-    def __init__en(self, sample):
+    def __init__en(self, e_int):
         ###############################################
         # configuration
         ###############################################
+        # use transfer
+
         # pure energy of 2body 1st
         e1 = np.zeros((2, 2), np.float64)
-        e1[0, 1] = e1[1, 0] = 0.5 * (e1[0, 0] + e1[1, 1] - sample.int_pair[0])
+        e1[0, 1] = e1[1, 0] = 0.5 * (e1[0, 0] + e1[1, 1] - e_int[0][0])
 
         # 3body-1st interaction energy
         de31 = np.zeros((2, 2, 2), np.float64)
-        de31[1, 1, 1] = sample.int_trip[0]
+        de31[1, 1, 1] = e_int[1]
 
         # 4body-1st interaction energy
         de41 = np.zeros((2, 2, 2, 2), np.float64)
-        de41[1, 1, 1, 1] = sample.int_tetra[0]
+        de41[1, 1, 1, 1] = e_int[2]
 
         # energy ε
         it = np.nditer(self.en, flags=['multi_index'])
@@ -60,10 +62,10 @@ class tetrahedron(CVM):
             self.en[i, j, k, l] = \
                 0.5 * (e1[i, j] + e1[i, k] + e1[i, l] +
                        e1[j, k] + e1[j, l] + e1[k, l]) + \
-                (de31[i, j, k] + de31[i, k, l] +
-                 de31[i, j, l] + de31[j, k, l]) + \
+                de31[i, j, k] + de31[i, k, l] + \
+                de31[i, j, l] + de31[j, k, l] + \
                 de41[i, j, k, l]
-            # print('self.enTS{} is: {}'.format(it.multi_index, self.enTS[i, j, k, l, m, n, o]))
+            # print('en{} is: {}'.format(it.multi_index, self.en[i, j, k, l]))
             it.iternext()
 
         # chemical potential
@@ -87,30 +89,42 @@ class tetrahedron(CVM):
     def run(self):
 
         # temperature iteration
+        ctr_0 = []
         for sample in self.series:
-            sample.res['temp'] = sample.temp.tolist()
             if self.multi_calcu:
                 sample.res['label'] = sample.res['label'] + '(T)'
             self.x_[1] = sample.x_1
             self.x_[0] = 1 - sample.x_1
-            self.__init__en(sample)
-            print(' mu = {:06.4f}:'.format(self.mu[0].item(0)))
-            print(' 1st_int = {:06.4f}:'.format(sample.int_pair[0]))
+            print('')
+            print(sample.res['label'])
 
             # delta mu iteration
-            for temp in np.nditer(sample.temp):
+            it = np.nditer(sample.temp, flags=['c_index'])
+            while not it.finished:
+                i = it.index
+                temp = it[0]
                 self.beta = np.float64(pow(self.bzc * temp, -1))
 
                 # calculate
                 self.__reset__probability()
+                # print(' mu:     {:06.4f}'.format(self.mu[0].item(0)))
+                # print(' 1st:    {:06.4f}'.format(e_int[0][0].item(0)))
+                # print(' 3body:    {:06.4f}'.format(e_int[1].item(0)))
+                # print(' 4body:    {:06.4f}'.format(e_int[2].item(0)))
                 while self.checker > sample.condition:
+                    e_int = sample.gene_ints(temp, self.x_[1])
+                    self.__init__en(e_int)
                     process(self)
 
+                # from ...utilities.unit_convert import ad2lc
+                # r_0, c = sample.gene_ints(temp, self.x_[1], only_r0=True)
+                # ctr_0.append([temp, c, ad2lc(r_0)])
                 # push result into res
                 sample.res['c'].append(self.x_[1].item(0))
-                print('    T = {:06.3f}K,  c = {:06.6f},  count = {}'.
-                      format(temp.item(0), self.x_[1].item(0), self.count))
+                print(' T = {:06.3f}K,  c = {:06.6f},  count = {}'.format(
+                    temp.item(0), self.x_[1].item(0), self.count))
+                it.iternext()
 
-            print('\n')
+            # np.savetxt('ctr_0.csv', np.asarray(ctr_0), delimiter=',')
             # save result to output
             self.output['results'].append(sample.res)
