@@ -148,13 +148,15 @@ class CVM(threading.Thread):
         int_diffs = effctive_int - copy_int
 
         # 1st total energy
-        distortion = np.full(len(xs), np.float64(datas['distortion']))
+        distortion = np.full(len(xs), np.float64(datas['distortion'][0]))
         distortion /= self.conv
         datas['pair1'][0]['energy'] = np.array(
             datas['pair1'][0]['energy']) + int_diffs[0] + distortion
 
+        distortion = np.full(len(xs), np.float64(datas['distortion'][1]))
+        distortion /= self.conv
         datas['pair2'][0]['energy'] = np.array(
-            datas['pair2'][0]['energy']) + int_diffs[1]
+            datas['pair2'][0]['energy']) + int_diffs[1] + distortion
 
         host = np.array(datas['host_en']) * self.conv
         int_pair1 = cv.int_energy(
