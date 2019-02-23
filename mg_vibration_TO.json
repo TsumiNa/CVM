@@ -136,7 +136,7 @@
         ],
         "no_imp_depen": false,
         "host_mass": 26.982,
-        "distortion": [-0.03, -0.02],
+        "distortion": [-0.035, -0.036],
         "host_en": [
           -485.837607,
           -485.845934,
