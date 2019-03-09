@@ -143,15 +143,18 @@ class CVM(threading.Thread):
             pair_label = pair_label[:-datas['cut_pair']]
         for n in pair_label:
             int_ens.append(self.gene_raw_int(datas[n], np.zeros(len(xs))))
-        int_ens = np.array(int_ens)
 
-        # add distortion energies
-        if 'distortion' in datas:
-            for i, v in enumerate(datas['distortion']):
-                print(v)
-                distortion = np.float64(v) / self.conv
-                int_ens[i] += distortion
-                # print(int_ens[i])
+        # =====================================>
+        # int_ens = np.array(int_ens)
+
+        # # add distortion energies
+        # if 'distortion' in datas:
+        #     for i, v in enumerate(datas['distortion']):
+        #         print(v)
+        #         distortion = np.float64(v) / self.conv
+        #         int_ens[i] += distortion
+        #         # print(int_ens[i])
+        # <==========================================
 
         copy_int = np.array(int_ens)
         effective_int = np.array(sample.effctive_en(int_ens, *transfer))
@@ -165,21 +168,22 @@ class CVM(threading.Thread):
         #         datas[pair][0]['energy'] = np.array(
         #             datas[pair][0]['energy']) + distortion + int_diffs[i]
 
-        # # 1st total energy
-        # distortion = np.full(len(xs), np.float64(datas['distortion'][0]))
-        # distortion /= self.conv
-        # datas['pair1'][0]['energy'] = np.array(
-        #     datas['pair1'][0]['energy']) + int_diffs[0] + distortion
+        # 1st total energy
+        distortion = np.full(len(xs), np.float64(datas['distortion'][0]))
+        distortion /= self.conv
+        datas['pair1'][0]['energy'] = np.array(
+            datas['pair1'][0]['energy']) + int_diffs[0] + distortion
 
-        # distortion = np.full(len(xs), np.float64(datas['distortion'][1]))
-        # distortion /= self.conv
-        # datas['pair2'][0]['energy'] = np.array(
-        #     datas['pair2'][0]['energy']) + int_diffs[1] + distortion
+        distortion = np.full(len(xs), np.float64(datas['distortion'][1]))
+        distortion /= self.conv
+        datas['pair2'][0]['energy'] = np.array(
+            datas['pair2'][0]['energy']) + int_diffs[1] + distortion
 
         host = np.array(datas['host_en']) * self.conv
         int_pair1 = cv.int_energy(
             xs,
-            datas['pair1'][0]['energy'] + int_diffs[0],
+            datas['pair1'],
+            # datas['pair1'][0]['energy'] + int_diffs[0],
             host,
             self.bzc,
             num=4,
@@ -187,7 +191,8 @@ class CVM(threading.Thread):
             noVib=False)
         int_pair2 = cv.int_energy(
             xs,
-            datas['pair2'][0]['energy'] + int_diffs[1],
+            datas['pair2'],
+            # datas['pair2'][0]['energy'] + int_diffs[1],
             host,
             self.bzc,
             num=6,
@@ -243,7 +248,7 @@ class CVM(threading.Thread):
         if 'bounds' in kwagrs:
             _bounds = kwagrs['bounds']
         else:
-            _bounds = (lc2ad(6.8), lc2ad(8.0))
+            _bounds = (lc2ad(7.0), lc2ad(9.0))
 
         if 'ratio' in kwagrs and len(kwagrs['ratio']) == len(formulas):
             _ratio = kwagrs['ratio']

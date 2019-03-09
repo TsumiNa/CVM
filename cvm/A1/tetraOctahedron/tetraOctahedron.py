@@ -149,6 +149,7 @@ class tetraOctahedron(CVM):
                         self.main_condition /= 10
                         self.sub_condition /= 10
 
+                import pdb; pdb.set_trace()
                 # push result into res
                 sample.res['c'].append(self.x_[1].item(0))
                 print(' T = {:06.3f}K,  c = {:06.6f},  count = {}'.format(

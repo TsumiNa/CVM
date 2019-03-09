@@ -116,6 +116,7 @@ class tetrahedron(CVM):
                     self.__init__en(e_int)
                     process(self)
 
+                import pdb; pdb.set_trace()
                 # from ...utilities.unit_convert import ad2lc
                 # r_0, c = sample.gene_ints(temp, self.x_[1], only_r0=True)
                 # ctr_0.append([temp, c, ad2lc(r_0)])
