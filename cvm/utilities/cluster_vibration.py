@@ -6,7 +6,7 @@ from scipy.interpolate import UnivariateSpline
 from .unit_convert import *
 
 
-class ClusterVibration():
+class ClusterVibration(object):
     """
     Tools class for cluster vibration
     """
@@ -126,9 +126,8 @@ class ClusterVibration():
         x0 = np.exp(-lmd * r0)
         B_0 = -(c2 * (lmd**3)) / (6 * np.pi * np.log(x0))
         gamma_0 = lmd * r0 / 2
-        debye_temp_0, debye_temp_func = __debye_temp_gene(r0, lmd,
-                                                          eV2Kbar(B_0),
-                                                          np.float(M))
+        debye_temp_0, debye_temp_func = __debye_temp_gene(
+            r0, lmd, eV2Kbar(B_0), np.float(M))
 
         # parameters will be used to construt
         # free energy with thermal vibration effect
@@ -145,7 +144,8 @@ class ClusterVibration():
             debye_temperature_0=debye_temp_0,
             debye_temperature_func=debye_temp_func,
             debye_func=lambda r, T: __debye_func(debye_temp_func(r) / T),
-            debye_func_0=lambda T: __debye_func(debye_temp_0 / T), )
+            debye_func_0=lambda T: __debye_func(debye_temp_0 / T),
+        )
 
     @classmethod
     def show_parameter(cls, ret):

@@ -36,7 +36,7 @@ class Sample(object):
 
     def effctive_en(self, int_pair, *args):
         """
-        2nd parameter refer to the neighbour that transfer to
+        2nd parameter refer to the neighbor that transfer to
         """
         if not args:
             return int_pair
