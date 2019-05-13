@@ -1,0 +1,8 @@
+numpy
+scipy
+pandas
+ruamel.yaml
+tqdm
+jupyter
+jupyterlab
+matplotlib
