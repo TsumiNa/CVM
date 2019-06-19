@@ -24,9 +24,13 @@ class ClusterVibration(object):
                  vibration=True,
                  mean='arithmetic',
                  morse_paras_bounds=None):
-        assert len(xs) == len(ys), 'xs and ys must have same dim'
+
+        if not len(xs) == len(ys):
+            raise ValueError('xs and ys must have same dim.')
         self.vibration = vibration
-        self._label = label
+        self.label = label
+        if label[-1] == '_':
+            label = label[:-1]
         self._mass, self._num = mixed_atomic_weight(label, mean=mean)
         self._xs = self._check_input(xs)
         self._ys = self._check_input(ys) / self._num
@@ -43,7 +47,8 @@ class ClusterVibration(object):
         # energy shift
         if energy_shift is not None:
             if isinstance(energy_shift, Iterable):
-                assert len(energy_shift) == len(ys), 'energy_shift must have same dim with ys'
+                if len(energy_shift) != len(ys):
+                    raise ValueError('energy_shift must have same dim with ys')
                 self._ys += np.array(energy_shift)
             else:
                 self._ys += np.full_like(ys, energy_shift)
@@ -126,22 +131,30 @@ class ClusterVibration(object):
         ret, _ = quad(lambda t: t**n / (np.exp(t) - 1), 0, x)
         return (n / x**n) * ret
 
-    def __call__(self, T, r=None, *, min_x=None):
-        """
-        xs: array
-            atomic distance between nearest-neighbor
-        correc, thost, cluster: array
-            total energy of host
-            energy different of impuity cluster
-            correct between band calculation and impurity calculation
-        mass: float
-            atomic mass
+    def __call__(self, T: float, *, r: float = None, min_x: str = None, vibration: bool = None):
+        """Get free energy.
+
+        Parameters
+        ----------
+        T : float
+            Temperature.
+        r : float, optional
+            Atomic distance, by default ``None``.
+        vibration: bool
+            Specific whether or not to import the thermal vibration effect.
+        min_x: str, optional
+            By default ``None``.
+            If not ``None``, function will returns equilibrium lattice constant as second result.
+            The string can be ``ws`` or ``lattice``.
+        
         """
 
         bzc = 8.6173303e-5
+        if vibration is None:
+            vibration = self.vibration
 
         if r is not None:
-            if not self.vibration:
+            if not vibration:
                 return (self.morse_potential(r) + self._shift) * self._num
 
             # construct vibration withed energy formula
@@ -150,16 +163,16 @@ class ClusterVibration(object):
                 bzc * T * (self.debye_function(T, r) - \
                 3 * np.log(1 - np.exp(-(self.debye_temperature(r) / T))))) * self._num
 
-        if not self.vibration:
+        if not vibration:
             if min_x:
                 if min_x == 'ws':
                     return self._ground_en * self._num, self._lattic_cons
                 if min_x == 'lattice':
                     return self._ground_en * self._num, uc.ad2lc(self._lattic_cons)
                 raise ValueError("min_x can only be 'ws' or 'lattice' but got %s" % min_x)
-            return self._ground_en
+            return self._ground_en * self._num
 
-        poly_min = minimize_scalar(lambda _r: self(T, _r),
+        poly_min = minimize_scalar(lambda _r: self(T, r=_r),
                                    bounds=(self._xs[0], self._xs[-1]),
                                    method='bounded')
 
@@ -198,8 +211,10 @@ class ClusterVibration(object):
         )
 
     def __repr__(self):
+        s1 = '  |-'
+        header = [f'{self.label}:']
 
-        return '\n'.join([
+        return f'\n{s1}'.join(header + [
             'c1: {:f},  c2: {:f},  lambda: {:f}'.format(self.c1, self.c2, self.lmd), \
             'r0: {:f},  x0: {:f}'.format(self.r_0, self.x_0), \
             'Gruneisen constant: {:f}'.format(self.gamma_0), \

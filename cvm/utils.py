@@ -211,18 +211,21 @@ def parse_input_set(path_of_set):
 
     if 'series' in inp:
         for s in inp['series']:
+            s['lattice'] = s['lattice'] if 'lattice' in s else 'lattice'
+            s['is_ry_unit'] = s['is_ry_unit'] if 'is_ry_unit' in s else True
+
             ens = pd.read_csv(path / s['energies'], index_col=s['lattice'])
-            if 'is_ry_unit' in s:
+            if s['is_ry_unit'] in s:
                 ens = ens * 13.605698066
             s['energies'] = ens
 
             if 'normalizer' in s:
                 ens = pd.read_csv(path / s['normalizer']['energies'], index_col=s['lattice'])
-                if 'is_ry_unit' in s:
+                if s['is_ry_unit'] in s:
                     ens = ens * 13.605698066
                 s['normalizer']['energies'] = ens
 
-            # remove unused
+            # remove unused parameter
             del s['lattice']
             del s['is_ry_unit']
 

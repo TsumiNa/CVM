@@ -14,19 +14,20 @@ series:
   - energies: 800K_cluster.csv # raw energies
     label: $T_\mathrm{FD}=800$K
     temperature: [400, 1290, 50]
-    is_ry_unit: true # set true to tell cvm to convert energies to eV unit.
 
-    skip: false # optional, by default true
-    x_1: 0.01 # optional, by default x_1 = 0.001
-    condition: 1e-07 # optional, by default condition = 1e-07
-    host: host # optional, by default host = host
-    lattice: lattice # optional, by default lattice = lattice
-    mean: 'arithmetic' # optional, by default 'arithmetic'. set how to mix atom weights, can be 'arithmetic', 'harmonic', and 'geometric'
+    tag: 800k # optional, by default None. Alias of the `label` to give a human-friendly spelling.    is_ry_unit: true # optional, by default true. Set to true to execute an automatic conversion from Ry to eV.
+    skip: false # optional, by default false. Set to true to skip this series instance.
+    x_1: 0.01 # optional, by default x_1 = 0.001. The initialization concentration of impurity.
+    condition: 1e-07 # optional, by default condition = 1e-07. Convergence condition.
+    host: host # optional, by default host = 'host'. The column name of host energies.
+    lattice: lattice # optional, by default lattice = 'lattice'. The column name of lattice parameters.
+    mean: 'arithmetic' # optional, by default 'arithmetic'. Specific how to mix atom weights, can be 'arithmetic', 'harmonic', and 'geometric'.
+    vibration: true # optional., by default true. Specific whether or not to import the thermal vibration effect.
 
-    # set how to estimate r_0 by the given T and c
+    # set how to estimate r_0 by the given T and c.
     # if omit, r_0 will be calculated from each phase respectively.
-    # if constant, will ignore T and c
-    # if dict, will do a parabolic curve fitting
+    # if constant, will ignore T and c.
+    # if dict, will do a parabolic curve fitting.
     r_0: { Ru4: 1.0, Pd1Ru3: 0.75, Pd2Ru2: 0.5, Pd3Ru1: 0.25, Pd4: 0.0 }
 
     normalizer: &Normalizer
@@ -75,20 +76,16 @@ series:
         - { 11_II: 1, 11_IH: -2, 11_HH: 1 }
 
     clusters: &Cluster
-      1st: { Pd2Ru2: 1, Pd3Ru1: -2, Pd4: 1 }
-      2nd: { Pd4Ru2: 1, Pd5Ru1: -2, Pd6: 1 }
+      pair1: { Pd2Ru2: 1, Pd3Ru1: -2, Pd4: 1 }
+      pair2: { Pd4Ru2: 1, Pd5Ru1: -2, Pd6: 1 }
       triple: { Pd1Ru3: 1, Pd2Ru2: -3, Pd3Ru1: 3, Pd4: -1 }
       tetra: { Ru4: 1, Pd1Ru3: -4, Pd2Ru2: 6, Pd3Ru1: -4, Pd4: 1 }
 
   - energies: 1000K_cluster.csv # raw energies
     label: $T_\mathrm{FD}=1000$K
     temperature: [400, 1550, 50]
-    is_ry_unit: true # set true to tell cvm to convert energies to eV unit.
+    tag: 1000k
 
-    # set how to estimate r_0 by the given T and c
-    # if omit, r_0 will be calculated from each phase respectively.
-    # if constant, will ignore T and c
-    # if dict, will do a parabolic curve fitting
     r_0: { Ru4: 1.0, Pd1Ru3: 0.75, Pd2Ru2: 0.5, Pd3Ru1: 0.25, Pd4: 0.0 }
 
     normalizer:
@@ -101,12 +98,8 @@ series:
   - energies: 1200K_cluster.csv # raw energies
     label: $T_\mathrm{FD}=1200$K
     temperature: [400, 1700, 50]
-    is_ry_unit: true # set true to tell cvm to convert energies to eV unit.
+    tag: 1200k
 
-    # set how to estimate r_0 by the given T and c
-    # if omit, r_0 will be calculated from each phase respectively.
-    # if constant, will ignore T and c
-    # if dict, will do a parabolic curve fitting
     r_0: { Ru4: 1.0, Pd1Ru3: 0.75, Pd2Ru2: 0.5, Pd3Ru1: 0.25, Pd4: 0.0 }
 
     normalizer:
@@ -119,12 +112,8 @@ series:
   - energies: 1400K_cluster.csv # raw energies
     label: $T_\mathrm{FD}=1400$K
     temperature: [500, 1700, 50]
-    is_ry_unit: true # set true to tell cvm to convert energies to eV unit.
+    tag: 1400k
 
-    # set how to estimate r_0 by the given T and c
-    # if omit, r_0 will be calculated from each phase respectively.
-    # if constant, will ignore T and c
-    # if dict, will do a parabolic curve fitting
     r_0: { Ru4: 1.0, Pd1Ru3: 0.75, Pd2Ru2: 0.5, Pd3Ru1: 0.25, Pd4: 0.0 }
 
     normalizer:
@@ -137,12 +126,8 @@ series:
   - energies: 1600K_cluster.csv # raw energies
     label: $T_\mathrm{FD}=1600$K
     temperature: [500, 1870, 50]
-    is_ry_unit: true # set true to tell cvm to convert energies to eV unit.
+    tag: 1600k
 
-    # set how to estimate r_0 by the given T and c
-    # if omit, r_0 will be calculated from each phase respectively.
-    # if constant, will ignore T and c
-    # if dict, will do a parabolic curve fitting
     r_0: { Ru4: 1.0, Pd1Ru3: 0.75, Pd2Ru2: 0.5, Pd3Ru1: 0.25, Pd4: 0.0 }
 
     normalizer:

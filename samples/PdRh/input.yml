@@ -12,22 +12,24 @@ experiment:
 # series is a list contains sets of raw data and parameters for CVM calculations
 series:
   - energies: cluster.csv # raw energies
-    label: $T_\mathrm{FD}=800$K
-    temperature: [400, 1000, 20]
-    is_ry_unit: true # set true to tell cvm to convert energies to eV unit.
+    label: $T_\mathrm{FD}=800$K # The label of this sample. A label can be used to access series from the CVM instance.
+    temperature: [400, 1000, 20] # Temperature steps follow the format [start, stop, # of steps].
 
-    skip: false # optional, by default true
-    x_1: 0.01 # optional, by default x_1 = 0.001
-    condition: 1e-07 # optional, by default condition = 1e-07
-    host: host # optional, by default host = host
-    lattice: lattice # optional, by default lattice = lattice
-    mean: 'arithmetic' # optional, by default 'arithmetic'. set how to mix atom weights, can be 'arithmetic', 'harmonic', and 'geometric'
+    tag: 800k # optional, by default None. Alias of the `label` to give a human-friendly spelling.
+    is_ry_unit: true # optional, by default true. Set to true to execute an automatic conversion from Ry to eV.
+    skip: false # optional, by default false. Set to true to skip this series instance.
+    x_1: 0.01 # optional, by default x_1 = 0.001. The initialization concentration of impurity.
+    condition: 1e-07 # optional, by default condition = 1e-07. Convergence condition.
+    host: host # optional, by default host = 'host'. The column name of host energies.
+    lattice: lattice # optional, by default lattice = 'lattice'. The column name of lattice parameters.
+    mean: 'arithmetic' # optional, by default 'arithmetic'. Specific how to mix atom weights, can be 'arithmetic', 'harmonic', and 'geometric'.
+    vibration: true # optional., by default true. Specific whether or not to import the thermal vibration effect.
 
-    # set how to estimate r_0 by the given T and c
+    # set how to estimate r_0 by the given T and c.
     # if omit, r_0 will be calculated from each phase respectively.
-    # if constant, will ignore T and c
-    # if dict, will do a parabolic curve fitting
-    # r_0: { Rh4: 1.0, Pd1Rh3: 0.75, Pd2Rh2: 0.5, Pd3Rh1: 0.25, Pd4: 0.0 }
+    # if constant, will ignore T and c.
+    # if dict, will do a parabolic curve fitting.
+    r_0: { Rh4: 1.0, Pd1Rh3: 0.75, Pd2Rh2: 0.5, Pd3Rh1: 0.25, Pd4: 0.0 }
 
     normalizer:
       energies: normalizer.csv
@@ -75,7 +77,7 @@ series:
         - { 11_II: 1, 11_IH: -2, 11_HH: 1 }
 
     clusters:
-      1st: { Pd2Rh2: 1, Pd3Rh1: -2, Pd4: 1 }
-      2nd: { Pd4Rh2: 1, Pd5Rh1: -2, Pd6: 1 }
+      pair1: { Pd2Rh2_: 1, Pd3Rh1: -2, Pd4: 1 }
+      pair2: { Pd4Rh2: 1, Pd5Rh1: -2, Pd6: 1 }
       triple: { Pd1Rh3: 1, Pd2Rh2: -3, Pd3Rh1: 3, Pd4: -1 }
       tetra: { Rh4: 1, Pd1Rh3: -4, Pd2Rh2: 6, Pd3Rh1: -4, Pd4: 1 }

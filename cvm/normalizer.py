@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from copy import deepcopy
 
 from collections import defaultdict
 
@@ -20,7 +21,8 @@ class Normalizer(defaultdict):
             _ints.append(tmp)
         self._ints = pd.DataFrame(data=_ints, columns=energies.index.tolist())
 
-        for k, v in targets.items():
+        self.targets = deepcopy(targets)
+        for k, v in self.targets.items():
             self[k] = self._energy_diff(**v)
 
     def _energy_diff(self, steps, ratios):
@@ -60,3 +62,10 @@ class Normalizer(defaultdict):
                     _int_diff += ratios[index] * self._ints.values[index] * percent / ratios[to - 1]
 
         return _int_diff
+
+    def __repr__(self):
+        s1 = '  |-'
+        header = [self.__class__.__name__ + ':']
+
+        return f'\n{s1}'.join(header +
+                              ['{}: {}'.format(k, v['steps']) for k, v in self.targets.items()])
