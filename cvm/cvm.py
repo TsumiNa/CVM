@@ -11,7 +11,6 @@ calculated solubility limit.
 """
 
 import json
-import yaml
 import sys
 import os
 import tempfile
@@ -20,9 +19,6 @@ import re as regex
 
 from .A1 import tetrahedron as T
 from .A1 import tetraOctahedron as TO
-from .A1 import tetraSquare as TS
-from .A1 import doubleTetrahedron as DT
-from .A1 import quadrupleTetrahedron as QT
 
 pattern = regex.compile(r"(/\*)+.+?(\*/)", regex.S)  # remove comment in json
 
@@ -62,10 +58,7 @@ class CvmCalc(object):
         self.workerpool = []
         self.method_dict = dict(
             T=T,
-            DT=DT,
             TO=TO,
-            TS=TS,
-            QT=QT,
         )
 
         # add cvm to path
@@ -119,10 +112,3 @@ class CvmCalc(object):
                     __import__(backend[:-3]).process(worker.output)
                 except ImportError as e:
                     raise e
-
-        if self.output_json:
-            with open(log_path + '.json', 'w') as f:
-                json.dump(worker.output, f, indent=2)
-        else:
-            with open(log_path + '.yaml', 'w') as f:
-                yaml.dump(worker.output, f, default_flow_style=False, indent=3)

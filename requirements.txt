@@ -1,8 +1,12 @@
-numpy
-scipy
-pandas
+###### Requirements without Version Specifiers ######
 ruamel.yaml
 tqdm
 jupyter
 jupyterlab
 matplotlib
+
+###### Requirements with Version Specifiers ######
+scipy == 1.*
+numpy == 1.*
+pandas == 0.24.*
+joblib == 0.13.*
