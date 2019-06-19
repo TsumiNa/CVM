@@ -1,0 +1,16 @@
+name: cvm
+channels:
+  - defaults
+dependencies:
+  - python=3.7
+  - seaborn
+  - matplotlib
+  - scipy=1.*
+  - numpy=1.*
+  - pandas=0.24.*
+  - joblib=0.13.*
+  - jupyter
+  - pip:
+      - ruamel.yaml
+      - tqdm
+      - jupyterlab

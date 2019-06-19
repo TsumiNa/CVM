@@ -1,8 +1,6 @@
 ###### Requirements without Version Specifiers ######
 ruamel.yaml
 tqdm
-jupyter
-jupyterlab
 matplotlib
 
 ###### Requirements with Version Specifiers ######
