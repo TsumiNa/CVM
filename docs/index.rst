@@ -3,8 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to CVM's documentation!
-===============================
+CVM documentation
+=================
+CVM is a python package for solution limit calculation using **Cluster Variation Method** (CVM).
+
 
 .. toctree::
    :maxdepth: 2

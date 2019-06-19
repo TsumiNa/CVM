@@ -72,13 +72,13 @@ class BaseCVM(defaultdict, metaclass=ABCMeta):
             tmp = Sample(**s)
             self.add_sample(tmp)
 
-    def add_sample(self, val: Sample):
+    def add_sample(self, sample: Sample):
         """Add sample data
         
         Parameters
         ----------
-        val : Sample
-            Instance of :py:class:`Sample`.
+        sample : Sample
+            Instance of :py:class:`.Sample`.
         
         """
 
@@ -86,12 +86,12 @@ class BaseCVM(defaultdict, metaclass=ABCMeta):
             f_ = _f
             return lambda self_: self_[f_]
 
-        if not isinstance(val, Sample):
+        if not isinstance(sample, Sample):
             raise TypeError('sample must be a Sample instance')
-        self[val.label] = val
+        self[sample.label] = sample
 
-        if val.tag is not None:
-            setattr(self.__class__, f'tag_{val.tag}', property(_nest(val.label)))
+        if sample.tag is not None:
+            setattr(self.__class__, f'tag_{sample.tag}', property(_nest(sample.label)))
 
     @classmethod
     def from_samples(cls, meta: dict, *samples: Sample, experiment: dict = None):
@@ -188,18 +188,20 @@ class BaseCVM(defaultdict, metaclass=ABCMeta):
                     self.process(**process_paras)
 
                     if verbose:
-                        yield ret(label=label,
-                                  temperature=T,
-                                  concentration=self.x_[1],
-                                  num_of_ite=self.count,
-                                  int_energy=e_int)
+                        yield ret(
+                            label=label,
+                            temperature=T,
+                            concentration=self.x_[1],
+                            num_of_ite=self.count,
+                            int_energy=e_int)
 
                 if not verbose:
-                    yield ret(label=label,
-                              temperature=T,
-                              concentration=self.x_[1],
-                              num_of_ite=self.count,
-                              int_energy=e_int)
+                    yield ret(
+                        label=label,
+                        temperature=T,
+                        concentration=self.x_[1],
+                        num_of_ite=self.count,
+                        int_energy=e_int)
 
     def __repr__(self):
         s1 = '  | \n  |-'

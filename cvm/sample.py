@@ -19,24 +19,69 @@ class Sample(defaultdict):
     Sample is a object which store a group of configuration data for calculation
     """
 
-    def __init__(
-            self,
-            label: str,
-            *,
-            tag: str = None,
-            temperature: list = None,
-            energies: pd.DataFrame = None,
-            clusters: dict = None,
-            mean: str = 'arithmetic',
-            vibration: bool = True,
-            skip: bool = False,
-            x_1: float = 0.001,
-            condition: float = 1e-07,
-            host: str = 'host',
-            r_0: Union[float, dict] = None,
-            normalizer: Union[dict, Normalizer] = None,
-            patch=None,
-    ):
+    def __init__(self,
+                 label: str,
+                 *,
+                 tag: str = None,
+                 temperature: list = None,
+                 energies: pd.DataFrame = None,
+                 clusters: dict = None,
+                 mean: str = 'arithmetic',
+                 vibration: bool = True,
+                 skip: bool = False,
+                 x_1: float = 0.001,
+                 condition: float = 1e-07,
+                 host: str = 'host',
+                 r_0: Union[float, dict] = None,
+                 normalizer: Union[dict, Normalizer] = None):
+        """
+        
+        Parameters
+        ----------
+        label : str
+            The Sample label.
+        tag : str, optional
+            An alias of the label for human-friendly using.
+            By default ``None``.
+        temperature : list, optional
+            Temperature steps follow the format [start, stop, # of steps].
+            By default ``None``.
+        energies : pd.DataFrame, optional
+            A :py:class:`pandas.DataFrame` object contain raw energies.
+            By default ``None``.
+        clusters : dict, optional
+            Set how to calculate interaction energy.
+            By default ``None``.
+        mean : str, optional
+            Specific how to mix atom weights.
+            Can be 'arithmetic', 'harmonic', and 'geometric'.
+            By default 'arithmetic'.
+        vibration : bool, optional
+            Specific whether or not to import the thermal vibration effect.
+            By default ``True``.
+        skip : bool, optional
+            Set to true to skip this series sample.
+            By default ``False``.
+        x_1 : float, optional
+            The initialization concentration of impurity.
+            By default ``0.001``.
+        condition : float, optional
+            Convergence condition.
+            By default ``1e-07``.
+        host : str, optional
+            The column name of host energies in ``energies``.
+            By default 'host'.
+        r_0 : Union[float, dict, None], optional
+            Set how to estimate r_0 from the given T and c.
+            If ``None``, r_0 will be calculated from each phase respectively.
+            If constant, will ignore T and c.
+            If dict, will do a parabolic curve fitting.
+            By default ``None``.
+        normalizer : Union[dict, Normalizer], optional
+            Configuration of a :py:class:`.Normalizer` or an instance.
+            If given, this will be used to normalize the long-range interaction energy.
+            By default ``None``.
+        """
         super().__init__()
         self.label = label
         self.tag = tag
@@ -45,7 +90,6 @@ class Sample(defaultdict):
         self.condition = condition
         self.skip = skip
         self.x_1 = x_1
-        self.patch = patch
 
         # ##########
         # private vars
@@ -84,27 +128,24 @@ class Sample(defaultdict):
 
             for c in energies:
                 ys = energies[c]
-                self[c] = ClusterVibration(c,
-                                           xs,
-                                           ys,
-                                           energy_shift=energy_shift,
-                                           mean=self.mean,
-                                           vibration=self.vibration)
+                self[c] = ClusterVibration(
+                    c, xs, ys, energy_shift=energy_shift, mean=self.mean, vibration=self.vibration)
                 setattr(self.__class__, c, property(_nest(c)))
                 if self._normalizer and c in self._normalizer:
                     ys = energies[c] + self._normalizer[c]
                     c = f'{c}_'
-                    self[c] = ClusterVibration(c,
-                                               xs,
-                                               ys,
-                                               energy_shift=energy_shift,
-                                               mean=self.mean,
-                                               vibration=self.vibration)
+                    self[c] = ClusterVibration(
+                        c,
+                        xs,
+                        ys,
+                        energy_shift=energy_shift,
+                        mean=self.mean,
+                        vibration=self.vibration)
                     setattr(self.__class__, c, property(_nest(c)))
 
         else:
-            raise TypeError('energies must be <pd.DataFrame> but got %s' %
-                            energies.__class__.__name__)
+            raise TypeError(
+                'energies must be <pd.DataFrame> but got %s' % energies.__class__.__name__)
 
     def set_temperature(self, temp):
         l = len(temp)  # get length of 'temp'
@@ -152,12 +193,13 @@ class Sample(defaultdict):
                 if k in self._ens:
                     ys = (self._ens[k] + v)
                     k = f'{k}_'
-                    self[k] = ClusterVibration(k,
-                                               xs,
-                                               ys,
-                                               energy_shift=energy_shift,
-                                               mean=self.mean,
-                                               vibration=self.vibration)
+                    self[k] = ClusterVibration(
+                        k,
+                        xs,
+                        ys,
+                        energy_shift=energy_shift,
+                        mean=self.mean,
+                        vibration=self.vibration)
                     setattr(self.__class__, k, property(_nest(k)))
 
     def __call__(self,

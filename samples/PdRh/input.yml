@@ -25,7 +25,7 @@ series:
     mean: 'arithmetic' # optional, by default 'arithmetic'. Specific how to mix atom weights, can be 'arithmetic', 'harmonic', and 'geometric'.
     vibration: true # optional., by default true. Specific whether or not to import the thermal vibration effect.
 
-    # set how to estimate r_0 by the given T and c.
+    # set how to estimate r_0 from the given T and c.
     # if omit, r_0 will be calculated from each phase respectively.
     # if constant, will ignore T and c.
     # if dict, will do a parabolic curve fitting.
@@ -76,7 +76,7 @@ series:
         - { 10_II: 1, 10_IH: -2, 10_HH: 1 }
         - { 11_II: 1, 11_IH: -2, 11_HH: 1 }
 
-    clusters:
+    clusters: # Set how to calculate interaction energy.
       pair1: { Pd2Rh2_: 1, Pd3Rh1: -2, Pd4: 1 }
       pair2: { Pd4Rh2: 1, Pd5Rh1: -2, Pd6: 1 }
       triple: { Pd1Rh3: 1, Pd2Rh2: -3, Pd3Rh1: 3, Pd4: -1 }
