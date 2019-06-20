@@ -5,6 +5,7 @@ import collections
 import json
 import re
 import tempfile
+from contextlib import contextmanager
 from pathlib import Path
 
 import numpy as np
@@ -270,3 +271,36 @@ def parse_formula(formula):
         expanded_formula = formula.replace(m.group(), expanded_sym)
         return parse_formula(expanded_formula)
     return get_sym_dict(formula, 1)
+
+
+@contextmanager
+def cvm_context(**kwargs):
+    """
+    Set temp environment variable using ``with`` statement.
+
+    Examples
+    --------
+    >>> import os
+    >>> with cvm_context(simple_print='True'):
+    >>>    print(os.getenv('simple_print'))
+    True
+    >>> print(os.getenv('simple_print'))
+    None
+
+    Parameters
+    ----------
+    kwargs: dict[str]
+        Dict with string value.
+    """
+    import os
+
+    tmp = dict()
+    for k, v in kwargs.items():
+        tmp[k] = os.getenv(k)
+        os.environ[k] = v
+    yield
+    for k, v in tmp.items():
+        if not v:
+            del os.environ[k]
+        else:
+            os.environ[k] = v

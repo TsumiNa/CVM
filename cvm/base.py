@@ -2,9 +2,10 @@
 # -*- coding:utf-8 -*-
 
 import datetime as dt
-from typing import List
+import os
 from abc import ABCMeta, abstractmethod
 from collections import defaultdict, namedtuple
+from typing import List
 
 import numpy as np
 
@@ -81,17 +82,12 @@ class BaseCVM(defaultdict, metaclass=ABCMeta):
             Instance of :py:class:`.Sample`.
         
         """
-
-        def _nest(_f):
-            f_ = _f
-            return lambda self_: self_[f_]
-
         if not isinstance(sample, Sample):
             raise TypeError('sample must be a Sample instance')
         self[sample.label] = sample
 
         if sample.tag is not None:
-            setattr(self.__class__, f'tag_{sample.tag}', property(_nest(sample.label)))
+            setattr(self, f'tag_{sample.tag}', self[sample.label])
 
     @classmethod
     def from_samples(cls, meta: dict, *samples: Sample, experiment: dict = None):
@@ -206,6 +202,15 @@ class BaseCVM(defaultdict, metaclass=ABCMeta):
     def __repr__(self):
         s1 = '  | \n  |-'
         s2 = '  | '
+        s3 = '  |-'
         header = [self.__class__.__name__ + ':']
 
-        return f'\n{s1}'.join(header + [f'\n{s2}'.join(str(v).split('\n')) for v in self.values()])
+        flag = os.getenv('simple_print')
+
+        meta = f'\n{s3}'.join(['meta:'] + [f'{k}: {v}' for k, v in self.meta.items()])
+        if not flag:
+            return f'\n{s1}'.join(header + [f'\n{s2}'.join(str(meta).split('\n'))] +
+                                  [f'\n{s2}'.join(str(v).split('\n')) for v in self.values()])
+        else:
+            return f'\n{s1}'.join(header + [f'\n{s2}'.join(str(meta).split('\n'))] +
+                                  ['{}'.format(str(v).split('\n')[0][:-1]) for v in self.values()])

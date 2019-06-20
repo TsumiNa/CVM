@@ -59,16 +59,18 @@ class ClusterVibration(object):
         self._paras = self._fit_paras()
 
         # calculate equilibrium constant
-        poly_min = minimize_scalar(lambda _r: self.morse_potential(_r) + self._shift,
-                                   bounds=(self._xs[0], self._xs[-1]),
-                                   method='bounded')
+        poly_min = minimize_scalar(
+            lambda _r: self.morse_potential(_r) + self._shift,
+            bounds=(self._xs[0], self._xs[-1]),
+            method='bounded')
         self._lattic_cons = poly_min.x
         self._ground_en = poly_min.fun
 
     def _get_shift(self):
-        poly_min = minimize_scalar(UnivariateSpline(self._xs, self._ys, k=4),
-                                   bounds=(self._xs[0], self._xs[-1]),
-                                   method='bounded')
+        poly_min = minimize_scalar(
+            UnivariateSpline(self._xs, self._ys, k=4),
+            bounds=(self._xs[0], self._xs[-1]),
+            method='bounded')
 
         return poly_min.fun
 
@@ -82,42 +84,101 @@ class ClusterVibration(object):
         raise TypeError('input must be a array with shape (n,)')
 
     @property
-    def c1(self):
+    def c1(self) -> float:
+        """Morse potential paramter `C1`.
+
+        Returns
+        -------
+        float
+        """
         return self._paras['c1']
 
     @property
-    def c2(self):
+    def c2(self) -> float:
+        """Morse potential paramter `C2`.
+
+        Returns
+        -------
+        float
+        """
         return self._paras['c2']
 
     @property
-    def lmd(self):
+    def lmd(self) -> float:
+        """Morse potential paramter `lambda`.
+
+        Returns
+        -------
+        float
+        """
         return self._paras['lmd']
 
     @property
-    def r_0(self):
+    def r_0(self) -> float:
+        """Atomic distance at equilibrium status.
+
+        Returns
+        -------
+        float
+        """
         return self._paras['r_0']
 
     @property
-    def equilibrium_lattice_cons(self):
+    def equilibrium_lattice_cons(self) -> float:
+        """Equilibrium lattice constant.
+
+        Returns
+        -------
+        float
+        """
         return uc.ad2lc(self._lattic_cons)
 
     @property
-    def x_0(self):
+    def x_0(self) -> float:
         return self._paras['x_0']
 
     @property
-    def gamma_0(self):
+    def gamma_0(self) -> float:
         return self._paras['gamma_0']
 
     @property
-    def bulk_modulus(self):
+    def bulk_modulus(self) -> float:
+        """Estimated bulk modulus.
+        
+        Returns
+        -------
+        float
+        """
         return self._paras['B_0']
 
-    def morse_potential(self, r):
+    def morse_potential(self, r: float) -> float:
+        """Morse potential
+        
+        Parameters
+        ----------
+        r : float
+            Atomic distance
+        
+        Returns
+        -------
+        float
+            Potential energy.
+        """
         return self.c1 - 2 * self.c2 * np.exp(-self.lmd * (r - self.r_0)) + \
             self.c2 * np.exp(-2 * self.lmd * (r - self.r_0))
 
-    def debye_temperature(self, r=None):
+    def debye_temperature(self, r: float = None) -> float:
+        """Debye temperature function.
+        
+        Parameters
+        ----------
+        r : float, optional
+            Atomic distance, by default None
+        
+        Returns
+        -------
+        float
+        """
         D_0 = np.float64(41.63516) * np.power(self.r_0 * self.bulk_modulus / self._mass, 1 / 2)
         if r is None:
             return D_0
@@ -125,7 +186,22 @@ class ClusterVibration(object):
 
     # debye function
     # default n=3
-    def debye_function(self, T, r=None, *, n=3):
+    def debye_function(self, T: float, r: float = None, *, n: int = 3) -> float:
+        """Debye function.
+        
+        Parameters
+        ----------
+        T : float
+            Temperature.
+        r : float, optional
+            Atomic distance, by default None
+        n : int, optional
+            Dimssion, by default 3
+        
+        Returns
+        -------
+        float
+        """
         x = self.debye_temperature(r) / T
 
         ret, _ = quad(lambda t: t**n / (np.exp(t) - 1), 0, x)
@@ -172,9 +248,8 @@ class ClusterVibration(object):
                 raise ValueError("min_x can only be 'ws' or 'lattice' but got %s" % min_x)
             return self._ground_en * self._num
 
-        poly_min = minimize_scalar(lambda _r: self(T, r=_r),
-                                   bounds=(self._xs[0], self._xs[-1]),
-                                   method='bounded')
+        poly_min = minimize_scalar(
+            lambda _r: self(T, r=_r), bounds=(self._xs[0], self._xs[-1]), method='bounded')
 
         if min_x:
             if min_x == 'ws':

@@ -114,10 +114,6 @@ class Sample(defaultdict):
 
     def set_energies(self, energies):
 
-        def _nest(_f):
-            f_ = _f
-            return lambda self_: self_[f_]
-
         if isinstance(energies, pd.DataFrame):
             self._ens = energies
 
@@ -130,7 +126,7 @@ class Sample(defaultdict):
                 ys = energies[c]
                 self[c] = ClusterVibration(
                     c, xs, ys, energy_shift=energy_shift, mean=self.mean, vibration=self.vibration)
-                setattr(self.__class__, c, property(_nest(c)))
+                setattr(self, c, self[c])
                 if self._normalizer and c in self._normalizer:
                     ys = energies[c] + self._normalizer[c]
                     c = f'{c}_'
@@ -141,7 +137,7 @@ class Sample(defaultdict):
                         energy_shift=energy_shift,
                         mean=self.mean,
                         vibration=self.vibration)
-                    setattr(self.__class__, c, property(_nest(c)))
+                    setattr(self, c, self[c])
 
         else:
             raise TypeError(
@@ -173,10 +169,6 @@ class Sample(defaultdict):
 
     def set_normalizer(self, val):
 
-        def _nest(_f):
-            f_ = _f
-            return lambda self_: self_[f_]
-
         if isinstance(val, Normalizer):
             pass
         elif isinstance(val, dict):
@@ -200,7 +192,7 @@ class Sample(defaultdict):
                         energy_shift=energy_shift,
                         mean=self.mean,
                         vibration=self.vibration)
-                    setattr(self.__class__, k, property(_nest(k)))
+                    setattr(self, k, self[k])
 
     def __call__(self,
                  T: float,
