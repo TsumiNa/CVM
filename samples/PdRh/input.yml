@@ -11,19 +11,42 @@ experiment:
 
 # series is a list contains sets of raw data and parameters for CVM calculations
 series:
-  - energies: cluster.csv # raw energies
-    label: $T_\mathrm{FD}=800$K # The label of this sample. A label can be used to access series from the CVM instance.
-    temperature: [400, 1000, 20] # Temperature steps follow the format [start, stop, # of steps].
+  # raw energies
+  - energies: cluster.csv
 
-    tag: 800k # optional, by default None. Alias of the `label` to give a human-friendly spelling.
-    is_ry_unit: true # optional, by default true. Set to true to execute an automatic conversion from Ry to eV.
-    skip: false # optional, by default false. Set to true to skip this series instance.
-    x_1: 0.01 # optional, by default x_1 = 0.001. The initialization concentration of impurity.
-    condition: 1e-07 # optional, by default condition = 1e-07. Convergence condition.
-    host: host # optional, by default host = 'host'. The column name of host energies.
-    lattice: lattice # optional, by default lattice = 'lattice'. The column name of lattice parameters.
-    mean: 'arithmetic' # optional, by default 'arithmetic'. Specific how to mix atom weights, can be 'arithmetic', 'harmonic', and 'geometric'.
-    vibration: true # optional., by default true. Specific whether or not to import the thermal vibration effect.
+    # The label of this sample. A label can be used to access series from the CVM instance.
+    label: $T_\mathrm{FD}=800$K
+
+    # Temperature steps follow the format [start, stop, # of steps].
+    temperature: [400, 1000, 20]
+
+    # optional, by default None. Alias of the `label` to give a human-friendly spelling.
+    tag: 800k
+
+    # optional, by default true. Set to true to execute an automatic conversion from Ry to eV.
+    is_ry_unit: true
+
+    # optional, by default false. Set to true to skip this series instance.
+    skip: false
+
+    # optional, by default x_1 = 0.001. The initialization concentration of impurity.
+    x_1: 0.01
+
+    # optional, by default condition = 1e-07. Convergence condition.
+    condition: 1e-07
+
+    # optional, by default host = 'host'. The column name of host energies.
+    host: host
+
+    # optional, by default lattice = 'lattice'. The column name of lattice parameters.
+    lattice: lattice
+
+    # optional, by default 'arithmetic'. Specific how to mix atom weights.
+    # can be 'arithmetic', 'harmonic', and 'geometric'.
+    mean: 'arithmetic'
+
+    # optional., by default true. Specific whether or not to import the thermal vibration effect.
+    vibration: true
 
     # set how to estimate r_0 from the given T and c.
     # if omit, r_0 will be calculated from each phase respectively.

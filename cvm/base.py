@@ -1,14 +1,16 @@
-#!/usr/bin/env python3
-# -*- coding:utf-8 -*-
+# Copyright 2019 TsumiNa. All rights reserved.
+# Use of this source code is governed by a BSD-style
+# license that can be found in the LICENSE file.
 
 import datetime as dt
 import os
 from abc import ABCMeta, abstractmethod
-from collections import defaultdict, namedtuple
+from collections import defaultdict, namedtuple, OrderedDict
 from typing import List
 
 import numpy as np
 
+from .results import Results
 from .sample import Sample
 from .utils import parse_input_set
 
@@ -56,6 +58,7 @@ class BaseCVM(defaultdict, metaclass=ABCMeta):
         self.count = 0
         self.checker = np.float64(1.0)
         self.beta = None
+        self._results = Results()
 
         if not isinstance(meta, dict):
             raise TypeError('meta information must be a dict')
@@ -73,6 +76,16 @@ class BaseCVM(defaultdict, metaclass=ABCMeta):
             tmp = Sample(**s)
             self.add_sample(tmp)
 
+    @property
+    def results(self) -> Results:
+        """Get calculated results.
+        
+        Returns
+        -------
+        Results
+        """
+        return self._results
+
     def add_sample(self, sample: Sample):
         """Add sample data
         
@@ -87,7 +100,7 @@ class BaseCVM(defaultdict, metaclass=ABCMeta):
         self[sample.label] = sample
 
         if sample.tag is not None:
-            setattr(self, f'tag_{sample.tag}', self[sample.label])
+            setattr(self, sample.tag, self[sample.label])
 
     @classmethod
     def from_samples(cls, meta: dict, *samples: Sample, experiment: dict = None):
@@ -169,6 +182,7 @@ class BaseCVM(defaultdict, metaclass=ABCMeta):
             self.x_[1] = sample.x_1
             self.x_[0] = 1 - sample.x_1
 
+            tmp = []
             for T, r_0 in sample.ite(**sample_paras):
 
                 # β = 1/kt
@@ -182,6 +196,14 @@ class BaseCVM(defaultdict, metaclass=ABCMeta):
                     e_int = sample(T, r=r_0(self.x_[1]), **sample_paras)
                     self.update_energy(e_int, **update_en_paras)
                     self.process(**process_paras)
+
+                    # add result
+                    tmp.append(
+                        OrderedDict(
+                            temperature=T,
+                            concentration=self.x_[1],
+                            num_of_ite=self.count,
+                            **e_int._asdict()))
 
                     if verbose:
                         yield ret(
@@ -198,6 +220,11 @@ class BaseCVM(defaultdict, metaclass=ABCMeta):
                         concentration=self.x_[1],
                         num_of_ite=self.count,
                         int_energy=e_int)
+
+            if sample.tag is not None:
+                self._results.add_result(label, tmp, tag=sample.tag)
+            else:
+                self._results.add_result(label, tmp)
 
     def __repr__(self):
         s1 = '  | \n  |-'

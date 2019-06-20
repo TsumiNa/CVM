@@ -1,3 +1,7 @@
+# Copyright 2019 TsumiNa. All rights reserved.
+# Use of this source code is governed by a BSD-style
+# license that can be found in the LICENSE file.
+
 import numpy as np
 import pandas as pd
 from copy import deepcopy
@@ -10,8 +14,8 @@ class Normalizer(defaultdict):
     def __init__(self, energies, clusters, targets):
         super().__init__()
         if not isinstance(energies, pd.DataFrame):
-            raise TypeError('energies must be <pd.DataFrame> but got %s' %
-                            energies.__class__.__name__)
+            raise TypeError(
+                'energies must be <pd.DataFrame> but got %s' % energies.__class__.__name__)
 
         _ints = []
         for f in clusters:

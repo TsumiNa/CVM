@@ -84,7 +84,7 @@ class Sample(defaultdict):
         """
         super().__init__()
         self.label = label
-        self.tag = tag
+        self.tag = f'tag_{tag}'
         self.mean = mean
         self.vibration = vibration
         self.condition = condition

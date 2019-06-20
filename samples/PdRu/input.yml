@@ -15,7 +15,8 @@ series:
     label: $T_\mathrm{FD}=800$K
     temperature: [400, 1290, 50]
 
-    tag: 800k # optional, by default None. Alias of the `label` to give a human-friendly spelling.    is_ry_unit: true # optional, by default true. Set to true to execute an automatic conversion from Ry to eV.
+    tag: 800k # optional, by default None. Alias of the `label` to give a human-friendly spelling.
+    is_ry_unit: true # optional, by default true. Set to true to execute an automatic conversion from Ry to eV.
     skip: false # optional, by default false. Set to true to skip this series instance.
     x_1: 0.01 # optional, by default x_1 = 0.001. The initialization concentration of impurity.
     condition: 1e-07 # optional, by default condition = 1e-07. Convergence condition.
