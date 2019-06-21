@@ -10,6 +10,7 @@ dependencies:
   - pandas=0.24.*
   - joblib=0.13.*
   - jupyter
+  - pip
   - pip:
       - ruamel.yaml
       - tqdm
