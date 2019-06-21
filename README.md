@@ -16,7 +16,7 @@ CVM is a python package for solution limit calculation using **Cluster Variation
    $ cd cvm
    ```
 
-3. Create virtual environment for `CVM` and activate it. We are assuming you have `miniconda` been installed.
+3. Create virtual environment for `CVM` and activate it. We are assuming you have installed the `miniconda`.
 
    ```bash
    $ conda env create -f conda_env.yml
