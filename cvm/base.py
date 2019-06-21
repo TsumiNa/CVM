@@ -82,7 +82,7 @@ class BaseCVM(defaultdict, metaclass=ABCMeta):
         
         Returns
         -------
-        Results
+        results: Results
         """
         return self._results
 

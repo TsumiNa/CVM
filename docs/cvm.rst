@@ -19,18 +19,18 @@ cvm.base module
     :undoc-members:
     :show-inheritance:
 
-cvm.cvm module
---------------
-
-.. automodule:: cvm.cvm
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 cvm.normalizer module
 ---------------------
 
 .. automodule:: cvm.normalizer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cvm.results module
+------------------
+
+.. automodule:: cvm.results
     :members:
     :undoc-members:
     :show-inheritance:

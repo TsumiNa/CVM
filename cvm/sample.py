@@ -220,7 +220,7 @@ class Sample(defaultdict):
         
         Returns
         -------
-        namedtuple
+        namedtuple: namedtuple
             Named tuple contains calculated interaction energies.
         """
 
