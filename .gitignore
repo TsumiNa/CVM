@@ -105,8 +105,4 @@ ENV/
 .mypy_cache/
 
 # project ignore
-log/*.yaml
 *.pyc
-*.png
-*.jpg
-*.eps
