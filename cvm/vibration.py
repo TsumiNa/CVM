@@ -16,15 +16,39 @@ class ClusterVibration(object):
     """
 
     def __init__(self,
-                 label,
-                 xs,
-                 ys,
-                 mass,
-                 num,
+                 label: str,
+                 xs: list,
+                 ys: list,
+                 mass: float,
+                 num: int,
                  *,
-                 energy_shift=None,
-                 vibration=True,
-                 morse_paras_bounds=None):
+                 vibration: bool = True,
+                 morse_paras_bounds: list = None):
+        """Calculate phase energy using debye-sg model
+        
+        Parameters
+        ----------
+        label : str
+            Label in chemical composition format.
+        xs : list
+            List of atomic distance.
+        ys : list
+            List of phase energies.
+        mass : float
+            Mixed mass.
+        num : int
+            Number of atoms.
+        vibration : bool, optional
+            If ``True``, counting thermal vibration effect, by default ``True``.
+        morse_paras_bounds : list, optional
+            parameter bounds for fitting, by default ``None``.
+            See also, https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.curve_fit.html
+        
+        Raises
+        ------
+        ValueError
+            `xs` and `ys` must have same shape. 
+        """
 
         if not len(xs) == len(ys):
             raise ValueError('xs and ys must have same dim.')
@@ -45,38 +69,17 @@ class ClusterVibration(object):
         else:
             self._morse_paras_bounds = ([0, 0, 0, xs[0]], [10, 10, 2, xs[-1]])
 
-        # energy shift
-        if energy_shift is not None:
-
-            if isinstance(energy_shift, Iterable):
-                if len(energy_shift) != len(ys):
-                    raise ValueError('energy_shift must have same dim with ys')
-                self._ys += np.array(energy_shift)
-            else:
-                self._ys += np.full_like(ys, energy_shift)
-        self._shift = self._get_shift()
-        self._ys -= self._shift
-
         # fit parameters
         self._paras = self._fit_paras()
 
         # calculate equilibrium constant
         poly_min = minimize_scalar(
-            lambda _r: self.morse_potential(_r) + self._shift,
-            bounds=(self._xs[0], self._xs[-1]),
-            method='bounded')
+            self.morse_potential, bounds=(self._xs[0], self._xs[-1]), method='bounded')
         self._lattic_cons = poly_min.x
         self._ground_en = poly_min.fun
 
-    def _get_shift(self):
-        poly_min = minimize_scalar(
-            UnivariateSpline(self._xs, self._ys, k=4),
-            bounds=(self._xs[0], self._xs[-1]),
-            method='bounded')
-
-        return poly_min.fun
-
-    def _check_input(self, array):
+    @staticmethod
+    def _check_input(array):
         if isinstance(array, list):
             return np.array(array, dtype=np.float64)
         if isinstance(array, pd.Series):
@@ -233,22 +236,22 @@ class ClusterVibration(object):
 
         if r is not None:
             if not vibration:
-                return (self.morse_potential(r) + self._shift) * self._num
+                return (self.morse_potential(r)) * self.num
 
             # construct vibration withed energy formula
-            return (self.morse_potential(r) + self._shift + \
+            return (self.morse_potential(r) + \
                 (9 / 8) * bzc * self.debye_temperature(r) - \
                 bzc * T * (self.debye_function(T, r) - \
-                3 * np.log(1 - np.exp(-(self.debye_temperature(r) / T))))) * self._num
+                3 * np.log(1 - np.exp(-(self.debye_temperature(r) / T))))) * self.num
 
         if not vibration:
             if min_x:
                 if min_x == 'ws':
-                    return self._ground_en * self._num, self._lattic_cons
+                    return self._ground_en * self.num, self._lattic_cons
                 if min_x == 'lattice':
-                    return self._ground_en * self._num, uc.ad2lc(self._lattic_cons)
+                    return self._ground_en * self.num, uc.ad2lc(self._lattic_cons)
                 raise ValueError("min_x can only be 'ws' or 'lattice' but got %s" % min_x)
-            return self._ground_en * self._num
+            return self._ground_en * self.num
 
         poly_min = minimize_scalar(
             lambda _r: self(T, r=_r, vibration=True),
@@ -257,9 +260,9 @@ class ClusterVibration(object):
 
         if min_x:
             if min_x == 'ws':
-                return poly_min.fun * self._num, poly_min.x
+                return poly_min.fun * self.num, poly_min.x
             if min_x == 'lattice':
-                return poly_min.fun * self._num, uc.ad2lc(poly_min.x)
+                return poly_min.fun * self.num, uc.ad2lc(poly_min.x)
             raise ValueError("min_x can only be 'ws' or 'lattice' but got %s" % min_x)
         return poly_min.fun
 

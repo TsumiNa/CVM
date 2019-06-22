@@ -146,14 +146,15 @@ class Sample(defaultdict):
                 for k, v in comp.items():
                     ys -= self._en_min[k] * v
 
-                ys += host * num
-
-                self[c] = ClusterVibration(c, xs, ys, mass, num, vibration=self.vibration)
+                self[c] = ClusterVibration(
+                    c, xs, host * num + ys, mass, num, vibration=self.vibration)
                 setattr(self, c, self[c])
+
                 if self._normalizer and c in self._normalizer:
-                    ys = energies[c] + self._normalizer[c]
+                    ys += self._normalizer[c]
                     c = f'{c}_'
-                    self[c] = ClusterVibration(c, xs, ys, mass, num, vibration=self.vibration)
+                    self[c] = ClusterVibration(
+                        c, xs, host * num + ys, mass, num, vibration=self.vibration)
                     setattr(self, c, self[c])
 
         else:
