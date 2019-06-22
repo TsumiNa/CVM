@@ -19,10 +19,11 @@ class ClusterVibration(object):
                  label,
                  xs,
                  ys,
+                 mass,
+                 num,
                  *,
                  energy_shift=None,
                  vibration=True,
-                 mean='arithmetic',
                  morse_paras_bounds=None):
 
         if not len(xs) == len(ys):
@@ -31,9 +32,9 @@ class ClusterVibration(object):
         self.label = label
         if label[-1] == '_':
             label = label[:-1]
-        self._mass, self._num = mixed_atomic_weight(label, mean=mean)
+        self.mass, self.num = mass, num
         self._xs = self._check_input(xs)
-        self._ys = self._check_input(ys) / self._num
+        self._ys = self._check_input(ys) / num
 
         # parameter bounds for fitting
         # order: c1, c2, lmd, r0
@@ -46,6 +47,7 @@ class ClusterVibration(object):
 
         # energy shift
         if energy_shift is not None:
+
             if isinstance(energy_shift, Iterable):
                 if len(energy_shift) != len(ys):
                     raise ValueError('energy_shift must have same dim with ys')
@@ -179,7 +181,7 @@ class ClusterVibration(object):
         -------
         float
         """
-        D_0 = np.float64(41.63516) * np.power(self.r_0 * self.bulk_modulus / self._mass, 1 / 2)
+        D_0 = np.float64(41.63516) * np.power(self.r_0 * self.bulk_modulus / self.mass, 1 / 2)
         if r is None:
             return D_0
         return D_0 * np.power(self.r_0 / r, 3 * self.lmd * r / 2)
@@ -249,7 +251,9 @@ class ClusterVibration(object):
             return self._ground_en * self._num
 
         poly_min = minimize_scalar(
-            lambda _r: self(T, r=_r), bounds=(self._xs[0], self._xs[-1]), method='bounded')
+            lambda _r: self(T, r=_r, vibration=True),
+            bounds=(self._xs[0], self._xs[-1]),
+            method='bounded')
 
         if min_x:
             if min_x == 'ws':

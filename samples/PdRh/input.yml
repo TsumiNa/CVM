@@ -20,6 +20,12 @@ series:
     # Temperature steps follow the format [start, stop, # of steps].
     temperature: [400, 1000, 20]
 
+    # The column name of host energies calculated from band calculation.
+    host: Pd
+
+    # The column name of impurity energies calculated from band calculation.
+    impurity: Rh
+
     # optional, by default None. Alias of the `label` to give a human-friendly spelling.
     tag: 800k
 
@@ -34,9 +40,6 @@ series:
 
     # optional, by default condition = 1e-07. Convergence condition.
     condition: 1e-07
-
-    # optional, by default host = 'host'. The column name of host energies.
-    host: host
 
     # optional, by default lattice = 'lattice'. The column name of lattice parameters.
     lattice: lattice

@@ -8,9 +8,10 @@ from typing import Union, Callable
 import numpy as np
 import pandas as pd
 from scipy.interpolate import UnivariateSpline
+from scipy.optimize import minimize_scalar
 
 from .normalizer import Normalizer
-from .utils import UnitConvert
+from .utils import UnitConvert, parse_formula, mixed_atomic_weight
 from .vibration import ClusterVibration
 
 
@@ -21,6 +22,8 @@ class Sample(defaultdict):
 
     def __init__(self,
                  label: str,
+                 host: str,
+                 impurity: str,
                  *,
                  tag: str = None,
                  temperature: list = None,
@@ -31,7 +34,6 @@ class Sample(defaultdict):
                  skip: bool = False,
                  x_1: float = 0.001,
                  condition: float = 1e-07,
-                 host: str = 'host',
                  r_0: Union[float, dict] = None,
                  normalizer: Union[dict, Normalizer] = None):
         """
@@ -40,6 +42,10 @@ class Sample(defaultdict):
         ----------
         label : str
             The Sample label.
+        host : str, optional
+            The column name of host energies in ``energies``.
+        host : str, optional
+            The column name of impurity energies in ``energies``.
         tag : str, optional
             An alias of the label for human-friendly using.
             By default ``None``.
@@ -68,9 +74,6 @@ class Sample(defaultdict):
         condition : float, optional
             Convergence condition.
             By default ``1e-07``.
-        host : str, optional
-            The column name of host energies in ``energies``.
-            By default 'host'.
         r_0 : Union[float, dict, None], optional
             Set how to estimate r_0 from the given T and c.
             If ``None``, r_0 will be calculated from each phase respectively.
@@ -89,12 +92,14 @@ class Sample(defaultdict):
         self.vibration = vibration
         self.condition = condition
         self.skip = skip
+        self.host = host
+        self.impurity = impurity
         self.x_1 = x_1
 
         # ##########
         # private vars
         # ##########
-        self._host = host
+        self._en_min = defaultdict(float)
         self._r_0 = r_0
         self._ens = None
         self._lattice_func = None
@@ -118,25 +123,37 @@ class Sample(defaultdict):
             self._ens = energies
 
             # calculate debye function
-            energy_shift = energies[self._host]
+            host = energies[self.host]
+            impurity = energies[self.impurity]
             xs = UnitConvert.lc2ad(energies.index.values)
-            energies = energies.drop(columns=[self._host])
+
+            # get minimum from a polynomial
+            poly_min = minimize_scalar(
+                UnivariateSpline(xs, host, k=4), bounds=(xs[0], xs[-1]), method='bounded')
+            self._en_min[self.host] = poly_min.fun
+
+            poly_min = minimize_scalar(
+                UnivariateSpline(xs, impurity, k=4), bounds=(xs[0], xs[-1]), method='bounded')
+            self._en_min[self.impurity] = poly_min.fun
 
             for c in energies:
+                if c in [self.host, self.impurity]:
+                    continue
+                comp = parse_formula(c)
                 ys = energies[c]
-                self[c] = ClusterVibration(
-                    c, xs, ys, energy_shift=energy_shift, mean=self.mean, vibration=self.vibration)
+                mass, num = mixed_atomic_weight(c, mean=self.mean)
+
+                for k, v in comp.items():
+                    ys -= self._en_min[k] * v
+
+                ys += host * num
+
+                self[c] = ClusterVibration(c, xs, ys, mass, num, vibration=self.vibration)
                 setattr(self, c, self[c])
                 if self._normalizer and c in self._normalizer:
                     ys = energies[c] + self._normalizer[c]
                     c = f'{c}_'
-                    self[c] = ClusterVibration(
-                        c,
-                        xs,
-                        ys,
-                        energy_shift=energy_shift,
-                        mean=self.mean,
-                        vibration=self.vibration)
+                    self[c] = ClusterVibration(c, xs, ys, mass, num, vibration=self.vibration)
                     setattr(self, c, self[c])
 
         else:
@@ -179,20 +196,23 @@ class Sample(defaultdict):
 
         self._normalizer = val
         if self._ens is not None:
-            energy_shift = self._ens[self._host]
+            host = self._ens[self.host]
+            impurity = self._ens[self.impurity]
             xs = UnitConvert.lc2ad(self._ens.index.values)
-            for k, v in self._normalizer.items():
-                if k in self._ens:
-                    ys = (self._ens[k] + v)
-                    k = f'{k}_'
-                    self[k] = ClusterVibration(
-                        k,
-                        xs,
-                        ys,
-                        energy_shift=energy_shift,
-                        mean=self.mean,
-                        vibration=self.vibration)
-                    setattr(self, k, self[k])
+
+            for c, v in self._normalizer.items():
+                if c in self._ens:
+                    ys = self._ens[c] + v
+                    comp = parse_formula(c)
+                    mass, num = mixed_atomic_weight(c, mean=self.mean)
+
+                    for k_, v_ in comp.items():
+                        ys -= self._en_min[k_] * v_
+
+                    ys += host * num
+                    c = f'{c}_'
+                    self[c] = ClusterVibration(c, xs, ys, mass, num, vibration=self.vibration)
+                    setattr(self, c, self[c])
 
     def __call__(self,
                  T: float,
