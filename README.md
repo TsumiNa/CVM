@@ -4,7 +4,7 @@ CVM is a python package for solution limit calculation using **Cluster Variation
 
 ## Concept
 
-![concept](https://github.com/tsumina/cvm/raw/master/docs/_static/conceput.png)
+![concept](https://github.com/tsumina/cvm/raw/master/docs/_static/concept.png)
 
 ## Installation
 
