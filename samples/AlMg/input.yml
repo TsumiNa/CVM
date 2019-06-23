@@ -39,7 +39,7 @@ experiment:
 series:
   - energies: cluster.csv # raw energies
     label: $T_\mathrm{FD}=800$K
-    temperature: [500, 1450, 30]
+    temperature: { start: 400, stop: 1000, steps: 30, log_scale: True }
     host: Al # The column name of host energies calculated from band calculation.
     impurity: Mg # The column name of impurity energies calculated from band calculation.
 

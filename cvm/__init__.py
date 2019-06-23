@@ -9,4 +9,4 @@ from .normalizer import Normalizer
 from .sample import Sample
 from .vibration import ClusterVibration
 from .results import Results
-from .utils import UnitConvert, parse_formula, get_inp, mixed_atomic_weight
+from .utils import UnitConvert, parse_formula, get_inp, mixed_atomic_weight, logspace

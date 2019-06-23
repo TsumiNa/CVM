@@ -17,8 +17,10 @@ series:
     # The label of this sample. A label can be used to access series from the CVM instance.
     label: $T_\mathrm{FD}=800$K
 
-    # Temperature steps follow the format [start, stop, # of steps].
-    temperature: [400, 1000, 20]
+    # Temperature steps.
+    # If given as a dictionary, it should follow the format { start: [float], stop: [float], steps: [int], log_scale: [bool, optional] }.
+    # If given as a list, the calculator will iterate all temperatures in it.
+    temperature: { start: 400, stop: 1000, steps: 30, log_scale: True }
 
     # The column name of host energies calculated from band calculation.
     host: Pd

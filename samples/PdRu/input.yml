@@ -13,7 +13,7 @@ experiment:
 series:
   - energies: 800K_cluster.csv # raw energies
     label: $T_\mathrm{FD}=800$K
-    temperature: [400, 1290, 50]
+    temperature: { start: 400, stop: 1290, steps: 50, log_scale: True }
     host: Pd # The column name of host energies calculated from band calculation.
     impurity: Ru # The column name of impurity energies calculated from band calculation.
 

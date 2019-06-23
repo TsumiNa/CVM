@@ -11,7 +11,7 @@ from scipy.interpolate import UnivariateSpline
 from scipy.optimize import minimize_scalar
 
 from .normalizer import Normalizer
-from .utils import UnitConvert, parse_formula, mixed_atomic_weight
+from .utils import UnitConvert, parse_formula, mixed_atomic_weight, logspace
 from .vibration import ClusterVibration
 
 
@@ -111,7 +111,7 @@ class Sample(defaultdict):
         if normalizer is not None:
             self.set_normalizer(normalizer)
         if temperature is not None:
-            self.set_temperature(temperature)
+            self._temp = self.set_temperature(temperature)
         if clusters is not None:
             self.set_clusters(**clusters)
         if energies is not None:
@@ -128,12 +128,14 @@ class Sample(defaultdict):
             xs = UnitConvert.lc2ad(energies.index.values)
 
             # get minimum from a polynomial
-            poly_min = minimize_scalar(
-                UnivariateSpline(xs, host, k=4), bounds=(xs[0], xs[-1]), method='bounded')
+            poly_min = minimize_scalar(UnivariateSpline(xs, host, k=4),
+                                       bounds=(xs[0], xs[-1]),
+                                       method='bounded')
             self._en_min[self.host] = poly_min.fun
 
-            poly_min = minimize_scalar(
-                UnivariateSpline(xs, impurity, k=4), bounds=(xs[0], xs[-1]), method='bounded')
+            poly_min = minimize_scalar(UnivariateSpline(xs, impurity, k=4),
+                                       bounds=(xs[0], xs[-1]),
+                                       method='bounded')
             self._en_min[self.impurity] = poly_min.fun
 
             for c in energies:
@@ -146,29 +148,39 @@ class Sample(defaultdict):
                 for k, v in comp.items():
                     ys -= self._en_min[k] * v
 
-                self[c] = ClusterVibration(
-                    c, xs, host * num + ys, mass, num, vibration=self.vibration)
+                self[c] = ClusterVibration(c,
+                                           xs,
+                                           host * num + ys,
+                                           mass,
+                                           num,
+                                           vibration=self.vibration)
                 setattr(self, c, self[c])
 
                 if self._normalizer and c in self._normalizer:
                     ys += self._normalizer[c]
                     c = f'{c}_'
-                    self[c] = ClusterVibration(
-                        c, xs, host * num + ys, mass, num, vibration=self.vibration)
+                    self[c] = ClusterVibration(c,
+                                               xs,
+                                               host * num + ys,
+                                               mass,
+                                               num,
+                                               vibration=self.vibration)
                     setattr(self, c, self[c])
 
         else:
-            raise TypeError(
-                'energies must be <pd.DataFrame> but got %s' % energies.__class__.__name__)
+            raise TypeError('energies must be <pd.DataFrame> but got %s' %
+                            energies.__class__.__name__)
 
     def set_temperature(self, temp):
-        l = len(temp)  # get length of 'temp'
-        if l == 1:
-            self._temp = np.array(temp, np.single)
-        elif l == 3:
-            self._temp = np.linspace(temp[0], temp[1], temp[2])
-        else:
-            raise NameError('temperature was configured in error format')
+        if isinstance(temp, dict):
+            if 'log_scale' not in temp or not temp['log_scale']:
+                return np.linspace(temp['start'], temp['stop'], temp['steps'])
+            return logspace(temp['start'], temp['stop'], temp['steps'])
+        if isinstance(temp, (list, np.ndarray)):
+            return deepcopy(temp)
+        if isinstance(temp, (float, int)):
+            return [temp]
+        raise NameError('temperature was configured in error format')
 
     @property
     def energies(self):
@@ -308,9 +320,11 @@ class Sample(defaultdict):
             return UnivariateSpline(tmp[0, index], tmp[1, index], k=k)
 
         if temperature is not None:
-            self.set_temperature(temperature)
+            temperature = self.set_temperature(temperature)
+        else:
+            temperature = self._temp
 
-        for t in self._temp:
+        for t in temperature:
             if isinstance(self._r_0, dict):
                 yield t, r_0_func(t)
             else:

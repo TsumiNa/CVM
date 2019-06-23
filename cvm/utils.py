@@ -304,3 +304,35 @@ def cvm_context(**kwargs):
             del os.environ[k]
         else:
             os.environ[k] = v
+
+
+def logspace(start: float, end: float, num: int) -> np.ndarray:
+    """Generate log scaled series.
+    
+    Parameters
+    ----------
+    start : float
+        Start point.
+    end : float.
+        End point
+    num : int
+        Steps.
+    
+    Returns
+    -------
+    series: np.ndarray
+    """
+
+    curve_paras = [1, 8]
+    base_lin = np.linspace(np.exp2(curve_paras[0]), np.exp2(curve_paras[1]), num)
+    logs = np.log2(base_lin)
+    div = (logs[1:] - logs[:-1]) / ((curve_paras[1] - curve_paras[0]) / (num - 1))
+
+    step = ((end - start) / (num - 1)) * div
+
+    sample = np.zeros(num)
+    sample[0] = start
+    for i, v in enumerate(step):
+        sample[i + 1] = sample[i] + v
+
+    return sample
