@@ -128,14 +128,12 @@ class Sample(defaultdict):
             xs = UnitConvert.lc2ad(energies.index.values)
 
             # get minimum from a polynomial
-            poly_min = minimize_scalar(UnivariateSpline(xs, host, k=4),
-                                       bounds=(xs[0], xs[-1]),
-                                       method='bounded')
+            poly_min = minimize_scalar(
+                UnivariateSpline(xs, host, k=4), bounds=(xs[0], xs[-1]), method='bounded')
             self._en_min[self.host] = poly_min.fun
 
-            poly_min = minimize_scalar(UnivariateSpline(xs, impurity, k=4),
-                                       bounds=(xs[0], xs[-1]),
-                                       method='bounded')
+            poly_min = minimize_scalar(
+                UnivariateSpline(xs, impurity, k=4), bounds=(xs[0], xs[-1]), method='bounded')
             self._en_min[self.impurity] = poly_min.fun
 
             for c in energies:
@@ -148,28 +146,20 @@ class Sample(defaultdict):
                 for k, v in comp.items():
                     ys -= self._en_min[k] * v
 
-                self[c] = ClusterVibration(c,
-                                           xs,
-                                           host * num + ys,
-                                           mass,
-                                           num,
-                                           vibration=self.vibration)
+                self[c] = ClusterVibration(
+                    c, xs, host * num + ys, mass, num, vibration=self.vibration)
                 setattr(self, c, self[c])
 
                 if self._normalizer and c in self._normalizer:
                     ys += self._normalizer[c]
                     c = f'{c}_'
-                    self[c] = ClusterVibration(c,
-                                               xs,
-                                               host * num + ys,
-                                               mass,
-                                               num,
-                                               vibration=self.vibration)
+                    self[c] = ClusterVibration(
+                        c, xs, host * num + ys, mass, num, vibration=self.vibration)
                     setattr(self, c, self[c])
 
         else:
-            raise TypeError('energies must be <pd.DataFrame> but got %s' %
-                            energies.__class__.__name__)
+            raise TypeError(
+                'energies must be <pd.DataFrame> but got %s' % energies.__class__.__name__)
 
     def set_temperature(self, temp):
         if isinstance(temp, dict):
@@ -259,19 +249,22 @@ class Sample(defaultdict):
 
         del kwargs
 
-        def _int(cluster):
-            ret_ = 0
-            for k, v in cluster.items():
-                ret_ += self[k](T, r=r, vibration=vibration) * v
-            return ret_
-
         if convert_r:
             r = UnitConvert.lc2ad(r)
+
+        if vibration is None:
+            vibration = self.vibration
+
+        def _int(cluster, r_):
+            ret_ = 0
+            for k, v in cluster.items():
+                ret_ += self[k](T, r=r_, vibration=vibration) * v
+            return ret_
 
         ret = {}
         for k, v in self._clusters.items():
             try:
-                ret[k] = _int(v)
+                ret[k] = _int(v, r)
             except KeyError as e:
                 raise KeyError(f'configuration of `{k}` in parameter <series.clusters> '
                                f'reference an unknown phase {e}')
@@ -305,6 +298,8 @@ class Sample(defaultdict):
             returns corresponding atomic distance r.
         """
         del kwargs
+        if vibration is None:
+            vibration = self.vibration
 
         def r_0_func(t):
             x_mins = []
