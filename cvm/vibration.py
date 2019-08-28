@@ -1,13 +1,11 @@
-from collections import Iterable
-
 import numpy as np
 import pandas as pd
 from scipy.integrate import quad
-from scipy.interpolate import UnivariateSpline
 from scipy.optimize import curve_fit, minimize_scalar
 
 from .utils import UnitConvert as uc
-from .utils import mixed_atomic_weight
+
+__all__ = ['ClusterVibration']
 
 
 class ClusterVibration(object):
@@ -16,16 +14,15 @@ class ClusterVibration(object):
     """
 
     def __init__(self,
+                 *,
                  label: str,
                  xs: list,
                  ys: list,
                  mass: float,
                  num: int,
-                 *,
-                 vibration: bool = True,
                  morse_paras_bounds: list = None):
         """Calculate phase energy using debye-sg model
-        
+
         Parameters
         ----------
         label : str
@@ -38,24 +35,19 @@ class ClusterVibration(object):
             Mixed mass.
         num : int
             Number of atoms.
-        vibration : bool, optional
-            If ``True``, counting thermal vibration effect, by default ``True``.
         morse_paras_bounds : list, optional
             parameter bounds for fitting, by default ``None``.
             See also, https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.curve_fit.html
-        
+
         Raises
         ------
         ValueError
-            `xs` and `ys` must have same shape. 
+            `xs` and `ys` must have same shape.
         """
 
         if not len(xs) == len(ys):
             raise ValueError('xs and ys must have same dim.')
-        self.vibration = vibration
         self.label = label
-        if label[-1] == '_':
-            label = label[:-1]
         self.mass, self.num = mass, num
         self._xs = self._check_input(xs)
         self._ys = self._check_input(ys) / num
@@ -90,7 +82,7 @@ class ClusterVibration(object):
 
     @property
     def c1(self) -> float:
-        """Morse potential paramter `C1`.
+        """Morse potential parameter `C1`.
 
         Returns
         -------
@@ -100,7 +92,7 @@ class ClusterVibration(object):
 
     @property
     def c2(self) -> float:
-        """Morse potential paramter `C2`.
+        """Morse potential parameter `C2`.
 
         Returns
         -------
@@ -110,7 +102,7 @@ class ClusterVibration(object):
 
     @property
     def lmd(self) -> float:
-        """Morse potential paramter `lambda`.
+        """Morse potential parameter `lambda`.
 
         Returns
         -------
@@ -149,7 +141,7 @@ class ClusterVibration(object):
     @property
     def bulk_modulus(self) -> float:
         """Estimated bulk modulus.
-        
+
         Returns
         -------
         float
@@ -158,12 +150,12 @@ class ClusterVibration(object):
 
     def morse_potential(self, r: float) -> float:
         """Morse potential
-        
+
         Parameters
         ----------
         r : float
             Atomic distance
-        
+
         Returns
         -------
         float
@@ -172,20 +164,20 @@ class ClusterVibration(object):
         return self.c1 - 2 * self.c2 * np.exp(-self.lmd * (r - self.r_0)) + \
             self.c2 * np.exp(-2 * self.lmd * (r - self.r_0))
 
-    def debye_temperature(self, r: float = None) -> float:
+    def debye_temperature(self, r: [float, str] = 'local') -> float:
         """Debye temperature function.
-        
+
         Parameters
         ----------
-        r : float, optional
+        r : float, str, optional
             Atomic distance, by default None
-        
+
         Returns
         -------
         float
         """
         D_0 = np.float64(41.63516) * np.power(self.r_0 * self.bulk_modulus / self.mass, 1 / 2)
-        if r is None:
+        if r == 'local':
             return D_0
         return D_0 * np.power(self.r_0 / r, 3 * self.lmd * r / 2)
 
@@ -193,7 +185,7 @@ class ClusterVibration(object):
     # default n=3
     def debye_function(self, T: float, r: float = None, *, n: int = 3) -> float:
         """Debye function.
-        
+
         Parameters
         ----------
         T : float
@@ -202,7 +194,7 @@ class ClusterVibration(object):
             Atomic distance, by default None
         n : int, optional
             Dimssion, by default 3
-        
+
         Returns
         -------
         float
@@ -212,39 +204,45 @@ class ClusterVibration(object):
         ret, _ = quad(lambda t: t**n / (np.exp(t) - 1), 0, x)
         return (n / x**n) * ret
 
-    def __call__(self, T: float, *, r: float = None, min_x: str = None, vibration: bool = None):
+    def __call__(
+            self,
+            *,
+            T: float = None,
+            r: [float, str] = 'local',
+            min_x: str = None,
+    ):
         """Get free energy.
 
         Parameters
         ----------
-        T : float
-            Temperature.
-        r : float, optional
-            Atomic distance, by default ``None``.
-        vibration: bool
-            Specific whether or not to import the thermal vibration effect.
+        T : float, optional
+            Temperature. If ``None``, will set parameter ``vibration`` to ``False`` automatically.
+        r : float or str, optional
+            Atomic distance, If ``local``, will ues the default setting which be set when instancing.
+            by default ``None``.
         min_x: str, optional
             By default ``None``.
+            If ``None``, will ues the default setting which be set when instancing.
             If not ``None``, function will returns equilibrium lattice constant as second result.
             The string can be ``ws`` or ``lattice``.
-        
+
         """
-
         bzc = 8.6173303e-5
-        if vibration is None:
-            vibration = self.vibration
 
-        if r is not None:
-            if not vibration:
-                return (self.morse_potential(r)) * self.num
+        if isinstance(T, (float, int)) and T < 0:
+            raise RuntimeError('T must a positive number')
 
-            # construct vibration withed energy formula
-            return (self.morse_potential(r) + \
-                (9 / 8) * bzc * self.debye_temperature(r) - \
-                bzc * T * (self.debye_function(T, r) - \
-                3 * np.log(1 - np.exp(-(self.debye_temperature(r) / T))))) * self.num
+        if isinstance(r, (float, int)) and T < 0:
+            raise RuntimeError('r must a positive number or str `local`')
 
-        if not vibration:
+        if isinstance(r, (str)) and r != 'local':
+            raise RuntimeError('r must a positive number or str `local`')
+
+        if T is None and r != 'local':
+            return (self.morse_potential(r)) * self.num
+
+        # no vibration effects
+        if T is None and r == 'local':
             if min_x:
                 if min_x == 'ws':
                     return self._ground_en * self.num, self._lattic_cons
@@ -253,18 +251,24 @@ class ClusterVibration(object):
                 raise ValueError("min_x can only be 'ws' or 'lattice' but got %s" % min_x)
             return self._ground_en * self.num
 
-        poly_min = minimize_scalar(
-            lambda _r: self(T, r=_r, vibration=True),
-            bounds=(self._xs[0], self._xs[-1]),
-            method='bounded')
+        if T is not None and r != 'local':
+            return (self.morse_potential(r) + \
+                (9 / 8) * bzc * self.debye_temperature(r) - \
+                bzc * T * (self.debye_function(T, r) - \
+                3 * np.log(1 - np.exp(-(self.debye_temperature(r) / T))))) * self.num
 
-        if min_x:
-            if min_x == 'ws':
-                return poly_min.fun * self.num, poly_min.x
-            if min_x == 'lattice':
-                return poly_min.fun * self.num, uc.ad2lc(poly_min.x)
-            raise ValueError("min_x can only be 'ws' or 'lattice' but got %s" % min_x)
-        return poly_min.fun
+        # take count into vibration effects
+        if T is not None and r == 'local':
+            poly_min = minimize_scalar(
+                lambda _r: self(T=T, r=_r), bounds=(self._xs[0], self._xs[-1]), method='bounded')
+
+            if min_x:
+                if min_x == 'ws':
+                    return poly_min.fun * self.num, poly_min.x
+                if min_x == 'lattice':
+                    return poly_min.fun * self.num, uc.ad2lc(poly_min.x)
+                raise ValueError("min_x can only be 'ws' or 'lattice' but got %s" % min_x)
+            return poly_min.fun
 
     def _fit_paras(self):
         # morse potential

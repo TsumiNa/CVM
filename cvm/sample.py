@@ -14,6 +14,8 @@ from .normalizer import Normalizer
 from .utils import UnitConvert, parse_formula, mixed_atomic_weight, logspace
 from .vibration import ClusterVibration
 
+__all__ = ['Sample']
+
 
 class Sample(defaultdict):
     """
@@ -25,7 +27,6 @@ class Sample(defaultdict):
                  host: str,
                  impurity: str,
                  *,
-                 tag: str = None,
                  temperature: list = None,
                  energies: pd.DataFrame = None,
                  clusters: dict = None,
@@ -34,7 +35,7 @@ class Sample(defaultdict):
                  skip: bool = False,
                  x_1: float = 0.001,
                  condition: float = 1e-07,
-                 r_0: Union[float, dict] = None,
+                 r_0: Union[float, dict, str] = None,
                  normalizer: Union[dict, Normalizer] = None):
         """
         
@@ -46,9 +47,6 @@ class Sample(defaultdict):
             The column name of host energies in ``energies``.
         host : str, optional
             The column name of impurity energies in ``energies``.
-        tag : str, optional
-            An alias of the label for human-friendly using.
-            By default ``None``.
         temperature : list, optional
             Temperature steps follow the format [start, stop, # of steps].
             By default ``None``.
@@ -74,9 +72,9 @@ class Sample(defaultdict):
         condition : float, optional
             Convergence condition.
             By default ``1e-07``.
-        r_0 : Union[float, dict, None], optional
+        r_0 : Union[float, dict, str], optional
             Set how to estimate r_0 from the given T and c.
-            If ``None``, r_0 will be calculated from each phase respectively.
+            If ``local``, r_0 will be calculated from each phase respectively.
             If constant, will ignore T and c.
             If dict, will do a parabolic curve fitting.
             By default ``None``.
@@ -87,7 +85,6 @@ class Sample(defaultdict):
         """
         super().__init__()
         self.label = label
-        self.tag = f'tag_{tag}'
         self.mean = mean
         self.vibration = vibration
         self.condition = condition
@@ -147,14 +144,25 @@ class Sample(defaultdict):
                     ys -= self._en_min[k] * v
 
                 self[c] = ClusterVibration(
-                    c, xs, host * num + ys, mass, num, vibration=self.vibration)
+                    label=c,
+                    xs=xs,
+                    ys=host * num + ys,
+                    mass=mass,
+                    num=num,
+                )
                 setattr(self, c, self[c])
 
-                if self._normalizer and c in self._normalizer:
+                if self._normalizer is not None and c in self._normalizer:
                     ys += self._normalizer[c]
+
                     c = f'{c}_'
                     self[c] = ClusterVibration(
-                        c, xs, host * num + ys, mass, num, vibration=self.vibration)
+                        label=c,
+                        xs=xs,
+                        ys=host * num + ys,
+                        mass=mass,
+                        num=num,
+                    )
                     setattr(self, c, self[c])
 
         else:
@@ -187,6 +195,10 @@ class Sample(defaultdict):
     def normalizer(self):
         return self._normalizer
 
+    @property
+    def temperatures(self):
+        return self._temp
+
     def set_normalizer(self, val):
 
         if isinstance(val, Normalizer):
@@ -200,7 +212,6 @@ class Sample(defaultdict):
         self._normalizer = val
         if self._ens is not None:
             host = self._ens[self.host]
-            impurity = self._ens[self.impurity]
             xs = UnitConvert.lc2ad(self._ens.index.values)
 
             for c, v in self._normalizer.items():
@@ -212,16 +223,20 @@ class Sample(defaultdict):
                     for k_, v_ in comp.items():
                         ys -= self._en_min[k_] * v_
 
-                    ys += host * num
                     c = f'{c}_'
-                    self[c] = ClusterVibration(c, xs, ys, mass, num, vibration=self.vibration)
+                    self[c] = ClusterVibration(
+                        label=c,
+                        xs=xs,
+                        ys=ys + host * num,
+                        mass=mass,
+                        num=num,
+                    )
                     setattr(self, c, self[c])
 
     def __call__(self,
-                 T: float,
                  *,
-                 r: float = None,
-                 convert_r: bool = False,
+                 T: float = None,
+                 r: [float, dict, str, None] = None,
                  vibration: bool = None,
                  energy_patch: Callable[[float, float], namedtuple] = None,
                  **kwargs):
@@ -231,12 +246,10 @@ class Sample(defaultdict):
         ----------
         T : float
             Temperature.
-        r : float, optional
+        r : float, dict, str, or None, optional
             Atomic distance. By default ``None``.
         vibration: bool
             Specific whether or not to import the thermal vibration effect.
-        convert_r: bool, optional
-            If ``True``, convert parameter <r> to atomic distance.
         energy_patch: Callable[[float, float], namedtuple], optional
             A patch that will be used to correct the returns of interaction energy.
             By default ``None``.
@@ -249,17 +262,24 @@ class Sample(defaultdict):
 
         del kwargs
 
-        if convert_r:
-            r = UnitConvert.lc2ad(r)
+        def _int(cluster, r_):
+            ret_ = 0
+            for k, v in cluster.items():
+                if vibration:
+                    ret_ += self[k](T=T, r=r_) * v
+                else:
+                    ret_ += self[k](r=r_) * v
+
+            return ret_
 
         if vibration is None:
             vibration = self.vibration
 
-        def _int(cluster, r_):
-            ret_ = 0
-            for k, v in cluster.items():
-                ret_ += self[k](T, r=r_, vibration=vibration) * v
-            return ret_
+        if r is None:
+            r = self._r_0
+
+        if T is None:
+            vibration = False
 
         ret = {}
         for k, v in self._clusters.items():
@@ -273,11 +293,18 @@ class Sample(defaultdict):
             patch = energy_patch(T, r)
 
             for k, v in patch.items():
-                ret[k] += v
+                if k in ret:
+                    ret[k] += v
 
         return namedtuple('interaction_energy', self._clusters.keys())(**ret)
 
-    def ite(self, *, temperature: list = None, k: int = 3, vibration: bool = None, **kwargs):
+    def ite(self,
+            *,
+            temperature: list = None,
+            k: int = 3,
+            vibration: bool = None,
+            r_0: [float, dict, str, None] = None,
+            **kwargs):
         """Iterate over each temperature
 
         Parameters
@@ -298,15 +325,16 @@ class Sample(defaultdict):
             returns corresponding atomic distance r.
         """
         del kwargs
-        if vibration is None:
-            vibration = self.vibration
 
         def r_0_func(t):
             x_mins = []
             c_mins = []
 
-            for k_, v in self._r_0.items():
-                _, x_min = self[k_](t, min_x='ws', vibration=vibration)
+            for k_, v in r_0.items():
+                if vibration:
+                    _, x_min = self[k_](T=t, min_x='ws')
+                else:
+                    _, x_min = self[k_](min_x='ws')
                 x_mins.append(x_min)
                 c_mins.append(v)
 
@@ -314,24 +342,31 @@ class Sample(defaultdict):
             index = np.argsort(tmp[0])
             return UnivariateSpline(tmp[0, index], tmp[1, index], k=k)
 
+        if vibration is None:
+            vibration = self.vibration
+
+        if r_0 is None:
+            r_0 = self._r_0
+
         if temperature is not None:
             temperature = self.set_temperature(temperature)
         else:
             temperature = self._temp
 
         for t in temperature:
-            if isinstance(self._r_0, dict):
+            if isinstance(r_0, dict):
                 yield t, r_0_func(t)
+            elif isinstance(r_0, str) and r_0 == 'local':
+                yield t, lambda _: r_0
+            elif isinstance(r_0, (float, int)):
+                yield t, lambda _: UnitConvert.lc2ad(r_0)
             else:
-                yield t, lambda _: self._r_0
+                raise RuntimeError('r_0 must be type of `dict`, `float` or str `local`')
 
     def __repr__(self):
         s1 = '  | \n  |-'
         s2 = '  | '
-        if self.tag is not None:
-            header = [f'{self.tag}-<{self.label}>-<skip: {self.skip}>:']
-        else:
-            header = [f'{self.label}-<{self.skip}>:']
+        header = [f'{self.label}--<skip: {self.skip}>:']
 
         return f'\n{s1}'.join(header + [f'\n{s2}'.join(str(self.normalizer).split('\n'))] +
                               [f'\n{s2}'.join(str(v).split('\n')) for v in self.values()])

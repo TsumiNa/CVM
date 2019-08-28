@@ -2,16 +2,17 @@
 # Use of this source code is governed by a BSD-style
 # license that can be found in the LICENSE file.
 
-import numpy as np
-import pandas as pd
+from collections import defaultdict
 from copy import deepcopy
 
-from collections import defaultdict
+import pandas as pd
+
+__all__ = ['Normalizer']
 
 
 class Normalizer(defaultdict):
 
-    def __init__(self, energies, clusters, targets):
+    def __init__(self, energies: pd.DataFrame, clusters, targets):
         super().__init__()
         if not isinstance(energies, pd.DataFrame):
             raise TypeError(
@@ -28,6 +29,10 @@ class Normalizer(defaultdict):
         self.targets = deepcopy(targets)
         for k, v in self.targets.items():
             self[k] = self._energy_diff(**v)
+
+    @property
+    def interaction_energies(self):
+        return self._ints
 
     def _energy_diff(self, steps, ratios):
         """
